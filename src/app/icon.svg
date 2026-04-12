@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <clipPath id="bg-clip">
+      <rect width="32" height="32" rx="7"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="#0D0D0D"/>
+
+  <!-- Red corner accent (top-left triangle, same as about page) -->
+  <polygon points="0,0 15,0 0,15" fill="#C41E3A" opacity="0.75" clip-path="url(#bg-clip)"/>
+
+  <!-- Subtle border -->
+  <rect width="32" height="32" rx="7" fill="none" stroke="#2A2A2A" stroke-width="1"/>
+
+  <!-- "AD" initials -->
+  <text
+    x="16"
+    y="22"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="13"
+    font-weight="700"
+    fill="#F5F5F5"
+    letter-spacing="-0.3"
+  >AD</text>
+</svg>
