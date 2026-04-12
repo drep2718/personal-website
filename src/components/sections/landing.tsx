@@ -473,7 +473,7 @@ export function Landing() {
           display:       "flex",
           flexDirection: "column",
           alignItems:    "flex-start",
-          gap:           "1.5rem",
+          gap:           "3rem",
           opacity:       ready ? 1 : 0,
           transition:    "opacity 0.6s ease",
         }}
@@ -487,7 +487,7 @@ export function Landing() {
               style={{
                 display:    "flex",
                 alignItems: "center",
-                gap:        "0.75rem",
+                gap:        "1.25rem",
                 background: "none",
                 border:     "none",
                 padding:    0,
@@ -497,11 +497,11 @@ export function Landing() {
               {/* Dot */}
               <span
                 style={{
-                  width:        isActive ? "10px" : "6px",
-                  height:       isActive ? "10px" : "6px",
+                  width:        isActive ? "18px" : "10px",
+                  height:       isActive ? "18px" : "10px",
                   borderRadius: "50%",
                   background:   isActive ? "#C41E3A" : "rgba(255,255,255,0.35)",
-                  boxShadow:    isActive ? "0 0 10px rgba(196,30,58,0.9)" : "none",
+                  boxShadow:    isActive ? "0 0 16px rgba(196,30,58,0.9)" : "none",
                   transition:   "all 0.3s ease",
                   flexShrink:   0,
                 }}
@@ -509,13 +509,13 @@ export function Landing() {
               {/* Label */}
               <span
                 style={{
-                  fontSize:      "11px",
-                  letterSpacing: "0.22em",
+                  fontSize:      "20px",
+                  letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color:         isActive ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.38)",
+                  color:         isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.45)",
                   transition:    "color 0.3s ease",
                   fontFamily:    "inherit",
-                  fontWeight:    isActive ? 600 : 400,
+                  fontWeight:    isActive ? 600 : 300,
                   whiteSpace:    "nowrap",
                 }}
               >
