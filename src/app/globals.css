@@ -159,8 +159,11 @@ body {
   color: #111827;
 }
 
-/* Shader canvases: invert dark→white, hue-rotate keeps reds red.
-   .solar-canvas is the Three.js planet scene — never touch it. */
-.light canvas:not(.solar-canvas) {
+/* Shader canvases: invert dark→white, hue-rotate keeps reds red. */
+.light canvas {
   filter: invert(1) hue-rotate(180deg);
+}
+/* Landing page — never touch any canvas inside it (planets, stars, etc.) */
+.light .landing-scene canvas {
+  filter: none;
 }

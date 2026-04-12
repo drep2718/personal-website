@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { NAV_PAGES } from "@/lib/constants";
 import * as THREE from "three";
 import { ConstellationBackground } from "@/components/ui/constellation-background";
-import { useTheme } from "@/context/theme-context";
 
 // ─── Atmosphere Fresnel shader ────────────────────────────────────────────────
 const ATMO_VERT = /* glsl */ `
@@ -360,7 +359,6 @@ export function Landing() {
   const [activeIndex, setActiveIndex] = useState(-1); // -1=sun, 0-5=planets
   const scrollElRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
 
   const activePage = activeIndex >= 0 ? NAV_PAGES[activeIndex] : null;
 
@@ -375,7 +373,7 @@ export function Landing() {
   }, [router]);
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative", background: "#000008", overflow: "hidden" }}>
+    <div className="landing-scene" style={{ width: "100vw", height: "100vh", position: "relative", background: "#000008", overflow: "hidden" }}>
 
       {/* Constellation background — scattered star patterns forming in a loop */}
       <ConstellationBackground />
@@ -405,44 +403,6 @@ export function Landing() {
         </div>
         <style>{`@keyframes loadbar { 0%{width:0%;margin-left:0} 50%{width:60%;margin-left:20%} 100%{width:0%;margin-left:100%} }`}</style>
       </div>
-
-      {/* Theme toggle — top right */}
-      <button
-        onClick={toggleTheme}
-        aria-label="Toggle theme"
-        style={{
-          position:        "absolute",
-          top:             "1.25rem",
-          right:           "1.5rem",
-          zIndex:          20,
-          width:           "36px",
-          height:          "36px",
-          display:         "flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          borderRadius:    "50%",
-          border:          "1px solid rgba(255,255,255,0.18)",
-          background:      "rgba(255,255,255,0.06)",
-          color:           "rgba(255,255,255,0.65)",
-          cursor:          "pointer",
-          backdropFilter:  "blur(6px)",
-          transition:      "border-color 0.2s, color 0.2s",
-        }}
-      >
-        {theme === "dark" ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-          </svg>
-        ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        )}
-      </button>
 
       {/* Name / tagline */}
       <div style={{ position: "absolute", top: "2rem", left: "50%", transform: "translateX(-50%)", zIndex: 10, textAlign: "center", pointerEvents: "none" }}>
