@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { SectionWrapper } from "@/components/layout/section-wrapper";
 import { FadeIn } from "@/components/animations/fade-in";
 import { SKILLS } from "@/data/skills";
@@ -18,6 +18,37 @@ function OrbitRing({ skills, level, radius, duration, reverse = false }: OrbitPr
   const filtered = skills.filter((s) => s.level === level);
   const angleStep = 360 / filtered.length;
 
+  // Shared animation controls — all labels share one counter-rotation controller
+  const ringControls  = useAnimation();
+  const labelControls = useAnimation();
+
+  useEffect(() => {
+    ringControls.start({
+      rotate: reverse ? -360 : 360,
+      transition: { duration, repeat: Infinity, ease: "linear" },
+    });
+    labelControls.start({
+      rotate: reverse ? 360 : -360,
+      transition: { duration, repeat: Infinity, ease: "linear" },
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleHoverStart = () => {
+    ringControls.stop();
+    labelControls.stop();
+  };
+
+  const handleHoverEnd = () => {
+    ringControls.start({
+      rotate: reverse ? -360 : 360,
+      transition: { duration, repeat: Infinity, ease: "linear" },
+    });
+    labelControls.start({
+      rotate: reverse ? 360 : -360,
+      transition: { duration, repeat: Infinity, ease: "linear" },
+    });
+  };
+
   return (
     <div
       className="absolute inset-0 flex items-center justify-center"
@@ -33,8 +64,7 @@ function OrbitRing({ skills, level, radius, duration, reverse = false }: OrbitPr
       <motion.div
         className="absolute"
         style={{ width: radius * 2, height: radius * 2 }}
-        animate={{ rotate: reverse ? -360 : 360 }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
+        animate={ringControls}
       >
         {filtered.map((skill, i) => {
           const angle = ((angleStep * i - 90) * Math.PI) / 180;
@@ -51,10 +81,10 @@ function OrbitRing({ skills, level, radius, duration, reverse = false }: OrbitPr
                 transform: "translate(-50%, -50%)",
                 pointerEvents: "auto",
               }}
-              // Counter-rotate the label so it stays upright
-              animate={{ rotate: reverse ? 360 : -360 }}
-              transition={{ duration, repeat: Infinity, ease: "linear" }}
+              animate={labelControls}
               whileHover={{ scale: 1.2, zIndex: 10 }}
+              onHoverStart={handleHoverStart}
+              onHoverEnd={handleHoverEnd}
             >
               <span
                 className="block px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap cursor-default"
