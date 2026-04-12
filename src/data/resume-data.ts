@@ -20,8 +20,8 @@ export const RESUME_DATA: ResumeEntry[] = [
     startDate: "2025-06",
     endDate: null,
     description:
-      "Assisted in developing the Family Office Suite, delivering estate-planning solutions to 10,000+ monthly users. Built and maintained backend GraphQL and REST APIs and managed frontend state using Jotai. Delivered 40+ production tickets using React, C#, TypeScript, Node.js, AWS, and Docker.",
-    tags: ["JavaScript", "TypeScript", "AWS", "Node.js", "React", "GraphQL", "Docker"],
+      "Assisted in developing the Family Office Suite, delivering estate-planning solutions to 10,000+ monthly users. Built and maintained backend GraphQL and REST APIs and managed frontend state using Jotai. Delivered 40+ production tickets using React, C#, TypeScript, Node.js, AWS, and Docker. Developed AWS infrastructure as code using CDK, including Lambda functions and Step Functions for orchestrating multi-step estate-planning workflows.",
+    tags: ["TypeScript", "React", "Node.js", "GraphQL", "AWS CDK", "Lambda", "Step Functions", "Docker"],
   },
   {
     id: "exp-2",

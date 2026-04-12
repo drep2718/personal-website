@@ -28,8 +28,10 @@ export const SKILLS: Skill[] = [
   { name: "scikit-learn", category: "framework", level: 1 },
 
   // Tools & Platforms — orbit 1/2
-  { name: "AWS",          category: "tool",      level: 2 },
-  { name: "Docker",       category: "tool",      level: 2 },
-  { name: "Git",          category: "tool",      level: 3 },
-  { name: "SystemVerilog",category: "tool",      level: 1 },
+  { name: "AWS CDK",       category: "tool",      level: 2 },
+  { name: "Lambda",        category: "tool",      level: 2 },
+  { name: "Step Functions",category: "tool",      level: 2 },
+  { name: "Docker",        category: "tool",      level: 2 },
+  { name: "Git",           category: "tool",      level: 3 },
+  { name: "SystemVerilog", category: "tool",      level: 1 },
 ];
