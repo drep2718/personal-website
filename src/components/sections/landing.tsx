@@ -239,7 +239,7 @@ function Planet({
             map={tex}
             emissive={"#ffffff"}
             emissiveMap={tex}
-            emissiveIntensity={hovered ? 0.70 : 0.45}
+            emissiveIntensity={hovered ? 0.90 : 0.65}
             roughness={0.75}
             metalness={0.04}
           />
@@ -327,9 +327,10 @@ function SceneContent({ onLoaded, onSectionChange }: { onLoaded: () => void; onS
 
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[-30, 10, -80]} intensity={0.55} color="#8090FF" />
-      <directionalLight position={[30, 5, -40]}   intensity={0.20} color="#FFD0A0" />
+      <ambientLight intensity={0.80} />
+      <directionalLight position={[-30, 10, -80]} intensity={1.10} color="#8090FF" />
+      <directionalLight position={[30, 5, -40]}   intensity={0.55} color="#FFD0A0" />
+      <directionalLight position={[0, 20, -20]}   intensity={0.40} color="#ffffff" />
 
       {/* Planets are STATIC — camera moves to them */}
       <Sun sunTex={sunT} />

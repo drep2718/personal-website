@@ -12,7 +12,7 @@ export default function AboutPage() {
     <>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Waves
-          strokeColor="rgba(196,30,58,0.18)"
+          strokeColor="rgba(196,30,58,0.45)"
           backgroundColor="transparent"
           opacity={1}
         />

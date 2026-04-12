@@ -162,6 +162,6 @@ export function BgCosmicDiscs() {
 
   return (
     <canvas ref={canvasRef}
-      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.50 }} />
+      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.78 }} />
   );
 }

@@ -195,7 +195,7 @@ export function BgSea() {
   return (
     <canvas
       ref={canvasRef}
-      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.75 }}
+      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.95 }}
     />
   );
 }
