@@ -113,15 +113,31 @@ body {
    Light mode overrides (applied via .light class on <html>)
    -------------------------------------------------------------------------- */
 .light {
-  --color-bg-primary: #F8F8F8;
-  --color-bg-secondary: #F0F0F0;
+  --color-bg-primary: #F5F5F5;
+  --color-bg-secondary: #ECECEC;
   --color-bg-card: #FFFFFF;
-  --color-bg-elevated: #FFFFFF;
-  --color-border: #E0E0E0;
-  --color-border-subtle: #EBEBEB;
-  --color-border-highlight: #D0D0D0;
-  --color-text-primary: #111111;
-  --color-text-secondary: #555555;
-  --color-text-muted: #AAAAAA;
-  --color-accent-glow: rgba(196, 30, 58, 0.08);
+  --color-bg-elevated: #F9F9F9;
+  --color-border: #CCCCCC;
+  --color-border-subtle: #DEDEDE;
+  --color-border-highlight: #BBBBBB;
+  --color-text-primary: #0D0D0D;
+  --color-text-secondary: #2E2E2E;
+  --color-text-muted: #5A5A5A;
+  --color-accent-glow: rgba(196, 30, 58, 0.10);
+}
+
+/* gradient-text uses hardcoded light colours — invert for light mode */
+.light .gradient-text {
+  background: linear-gradient(135deg, #111111 0%, #444444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Skill / tag pills need visible borders in light mode */
+.light ::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+.light ::-webkit-scrollbar-thumb {
+  background: var(--color-border-highlight);
 }
