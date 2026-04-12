@@ -29,7 +29,7 @@ function TimelineEntry({ entry, accentClass }: { entry: ResumeEntry; accentClass
       />
       <p className="text-xs text-[var(--color-text-muted)] mb-1 tracking-wide">
         {formatPeriod(entry.startDate, entry.endDate)}
-        <span className="ml-2 text-[var(--color-text-muted)] opacity-60">{entry.location}</span>
+        <span className="ml-2 text-[var(--color-text-muted)]">{entry.location}</span>
       </p>
       <h4 className="text-base font-semibold text-[var(--color-text-primary)] leading-snug">
         {entry.title}
