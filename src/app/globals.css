@@ -113,31 +113,52 @@ body {
    Light mode overrides (applied via .light class on <html>)
    -------------------------------------------------------------------------- */
 .light {
-  --color-bg-primary: #F5F5F5;
-  --color-bg-secondary: #ECECEC;
-  --color-bg-card: #FFFFFF;
-  --color-bg-elevated: #F9F9F9;
-  --color-border: #CCCCCC;
-  --color-border-subtle: #DEDEDE;
-  --color-border-highlight: #BBBBBB;
-  --color-text-primary: #080808;
-  --color-text-secondary: #141414;
-  --color-text-muted: #2A2A2A;
-  --color-accent-glow: rgba(196, 30, 58, 0.10);
+  /* Pure white base — no grey tint */
+  --color-bg-primary:   #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-card:      #FFFFFF;
+  --color-bg-elevated:  #F3F4F6;
+
+  /* Borders — subtle but visible */
+  --color-border:           #E5E7EB;
+  --color-border-subtle:    #F3F4F6;
+  --color-border-highlight: #D1D5DB;
+
+  /* Text — near-black at all levels */
+  --color-text-primary:   #111827;
+  --color-text-secondary: #1F2937;
+  --color-text-muted:     #374151;
+
+  /* Keep red accent, soften glow */
+  --color-accent-red:     #C41E3A;
+  --color-accent-red-dim: #FCE7EB;
+  --color-accent-blue:    #2563EB;
+  --color-accent-glow:    rgba(196, 30, 58, 0.07);
+
+  /* Void colours aren't used in light mode pages */
+  --color-void:            #FFFFFF;
+  --color-event-horizon:   #F3F4F6;
 }
 
-/* gradient-text uses hardcoded light colours — invert for light mode */
+/* Dark WebGL shader canvases become very subtle watermarks in light mode */
+.light canvas {
+  opacity: 0.08 !important;
+}
+
+/* gradient-text: invert for light backgrounds */
 .light .gradient-text {
-  background: linear-gradient(135deg, #111111 0%, #444444 100%);
+  background: linear-gradient(135deg, #111827 0%, #374151 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Skill / tag pills need visible borders in light mode */
-.light ::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
-}
-.light ::-webkit-scrollbar-thumb {
-  background: var(--color-border-highlight);
+/* Scrollbar */
+.light ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
+.light ::-webkit-scrollbar-thumb { background: var(--color-border-highlight); }
+
+/* Selection */
+.light ::selection {
+  background-color: #FCE7EB;
+  color: #111827;
 }
