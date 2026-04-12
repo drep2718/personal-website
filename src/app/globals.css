@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+@theme {
+  /* Background */
+  --color-bg-primary: #0A0A0A;
+  --color-bg-secondary: #0F0F0F;
+  --color-bg-card: #121212;
+  --color-bg-elevated: #181818;
+
+  /* Borders */
+  --color-border: #1E1E1E;
+  --color-border-subtle: #161616;
+  --color-border-highlight: #2A2A2A;
+
+  /* Text */
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #8A8A8A;
+  --color-text-muted: #4A4A4A;
+
+  /* Accents */
+  --color-accent-red: #C41E3A;
+  --color-accent-red-dim: #7A1225;
+  --color-accent-blue: #4A6FA5;
+  --color-accent-blue-dim: #2A3F5F;
+  --color-accent-glow: rgba(196, 30, 58, 0.15);
+
+  /* Black hole specific */
+  --color-void: #000000;
+  --color-event-horizon: #1a0008;
+  --color-accretion: #C41E3A;
+  --color-accretion-outer: #4A6FA5;
+
+  /* Fonts */
+  --font-sans: var(--font-outfit), "Outfit", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", monospace;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-highlight);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Selection
+   -------------------------------------------------------------------------- */
+::selection {
+  background-color: var(--color-accent-red-dim);
+  color: var(--color-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Utility classes
+   -------------------------------------------------------------------------- */
+.glow-red {
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.3), 0 0 60px rgba(196, 30, 58, 0.1);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(74, 111, 165, 0.3), 0 0 60px rgba(74, 111, 165, 0.1);
+}
+
+.text-glow-red {
+  text-shadow: 0 0 20px rgba(196, 30, 58, 0.6);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #F5F5F5 0%, #8A8A8A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #C41E3A 0%, #4A6FA5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --------------------------------------------------------------------------
+   Light mode overrides (applied via .light class on <html>)
+   -------------------------------------------------------------------------- */
+.light {
+  --color-bg-primary: #F8F8F8;
+  --color-bg-secondary: #F0F0F0;
+  --color-bg-card: #FFFFFF;
+  --color-bg-elevated: #FFFFFF;
+  --color-border: #E0E0E0;
+  --color-border-subtle: #EBEBEB;
+  --color-border-highlight: #D0D0D0;
+  --color-text-primary: #111111;
+  --color-text-secondary: #555555;
+  --color-text-muted: #AAAAAA;
+  --color-accent-glow: rgba(196, 30, 58, 0.08);
+}
