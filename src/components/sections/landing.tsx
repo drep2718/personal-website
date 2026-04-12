@@ -174,15 +174,14 @@ function Sun({ sunTex }: { sunTex: THREE.Texture }) {
 }
 
 // ─── Planet configs ───────────────────────────────────────────────────────────
-// Solar system order: Mercury, Venus, Earth, Mars, Jupiter, Saturn
-// Labels stay in NAV_PAGES order (About, Projects, Experience, Skills, Interests, Resume)
+// Indexed in the same order as NAV_PAGES: about, projects, experience, skills, interests, resume
 const PLANET_STYLES = [
-  { size: 1.0, atmoColor: null,      atmoFalloff: 0,   atmoI: 0,    clouds: false, rings: false, rotSpeed: 0.18 }, // Mercury → About
-  { size: 1.6, atmoColor: "#C8A830", atmoFalloff: 2.5, atmoI: 0.55, clouds: false, rings: false, rotSpeed: 0.25 }, // Venus   → Projects
-  { size: 2.0, atmoColor: "#4A8FD9", atmoFalloff: 3.5, atmoI: 0.70, clouds: true,  rings: false, rotSpeed: 0.45 }, // Earth   → Experience
-  { size: 1.4, atmoColor: "#C05028", atmoFalloff: 4.0, atmoI: 0.30, clouds: false, rings: false, rotSpeed: 0.85 }, // Mars    → Skills
-  { size: 3.2, atmoColor: "#C87830", atmoFalloff: 2.8, atmoI: 0.38, clouds: false, rings: false, rotSpeed: 2.40 }, // Jupiter → Interests
-  { size: 2.5, atmoColor: "#C8A870", atmoFalloff: 3.2, atmoI: 0.35, clouds: false, rings: true,  rotSpeed: 2.20 }, // Saturn  → Resume
+  { size: 2.0, atmoColor: "#4A8FD9", atmoFalloff: 3.5, atmoI: 0.70, clouds: true,  rings: false, rotSpeed: 0.45 }, // Earth
+  { size: 1.6, atmoColor: "#C8A830", atmoFalloff: 2.5, atmoI: 0.55, clouds: false, rings: false, rotSpeed: 0.25 }, // Venus
+  { size: 1.4, atmoColor: "#C05028", atmoFalloff: 4.0, atmoI: 0.30, clouds: false, rings: false, rotSpeed: 0.85 }, // Mars
+  { size: 1.0, atmoColor: null,      atmoFalloff: 0,   atmoI: 0,    clouds: false, rings: false, rotSpeed: 0.18 }, // Mercury
+  { size: 3.2, atmoColor: "#C87830", atmoFalloff: 2.8, atmoI: 0.38, clouds: false, rings: false, rotSpeed: 2.40 }, // Jupiter
+  { size: 2.5, atmoColor: "#C8A870", atmoFalloff: 3.2, atmoI: 0.35, clouds: false, rings: true,  rotSpeed: 2.20 }, // Saturn
 ] as const;
 
 const SPACING = 30;
@@ -327,7 +326,7 @@ function SceneContent({ onLoaded, onSectionChange, onScrollReady }: { onLoaded: 
     }
   });
 
-  const texByIndex = [mercuryT, venusT, earthT, marsT, jupiterT, saturnT];
+  const texByIndex = [earthT, venusT, marsT, mercuryT, jupiterT, saturnT];
 
   return (
     <>
@@ -345,7 +344,7 @@ function SceneContent({ onLoaded, onSectionChange, onScrollReady }: { onLoaded: 
           page={page}
           style={PLANET_STYLES[i]}
           tex={texByIndex[i]}
-          cloudTex={i === 2 ? cloudsT : undefined}
+          cloudTex={i === 0 ? cloudsT : undefined}
           ringTex={i === 5 ? ringT   : undefined}
           position={PLANET_POS[i]}
         />
