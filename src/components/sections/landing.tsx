@@ -433,6 +433,68 @@ export function Landing() {
         Scroll to explore · Click to enter
       </div>
 
+      {/* Sidebar nav — right side */}
+      <nav
+        style={{
+          position:   "absolute",
+          right:      "1.75rem",
+          top:        "50%",
+          transform:  "translateY(-50%)",
+          zIndex:     15,
+          display:    "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap:        "1.15rem",
+          opacity:    ready ? 1 : 0,
+          transition: "opacity 0.6s ease",
+        }}
+      >
+        {NAV_PAGES.map((page, i) => {
+          const isActive = activeIndex === i;
+          return (
+            <a
+              key={page.id}
+              href={page.path}
+              style={{
+                display:    "flex",
+                alignItems: "center",
+                gap:        "0.6rem",
+                textDecoration: "none",
+                cursor:     "pointer",
+              }}
+            >
+              {/* Label — only visible on hover or active */}
+              <span
+                style={{
+                  fontSize:      "9px",
+                  letterSpacing: "0.28em",
+                  textTransform: "uppercase",
+                  color:         isActive ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.30)",
+                  transition:    "color 0.3s ease, opacity 0.3s ease",
+                  fontFamily:    "inherit",
+                  fontWeight:    isActive ? 600 : 400,
+                  whiteSpace:    "nowrap",
+                }}
+              >
+                {page.label}
+              </span>
+              {/* Dot */}
+              <span
+                style={{
+                  width:        isActive ? "8px" : "5px",
+                  height:       isActive ? "8px" : "5px",
+                  borderRadius: "50%",
+                  background:   isActive ? "#C41E3A" : "rgba(255,255,255,0.30)",
+                  boxShadow:    isActive ? "0 0 8px rgba(196,30,58,0.8)" : "none",
+                  transition:   "all 0.3s ease",
+                  flexShrink:   0,
+                }}
+              />
+            </a>
+          );
+        })}
+      </nav>
+
       <Canvas
         camera={{ position: [0, 2, 18], fov: 50, near: 0.1, far: 600 }}
         gl={{ antialias: true, alpha: true }}
