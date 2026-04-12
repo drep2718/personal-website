@@ -468,8 +468,9 @@ export function Landing() {
         `}</style>
       </div>
 
-      {/* Sidebar nav — left side */}
+      {/* Sidebar nav — left side (desktop only) */}
       <nav
+        className="landing-nav-desktop"
         style={{
           position:      "absolute",
           left:          "2rem",
@@ -500,7 +501,6 @@ export function Landing() {
                 cursor:     "pointer",
               }}
             >
-              {/* Dot */}
               <span
                 style={{
                   width:        isActive ? "18px" : "10px",
@@ -512,7 +512,6 @@ export function Landing() {
                   flexShrink:   0,
                 }}
               />
-              {/* Label */}
               <span
                 style={{
                   fontSize:      "20px",
@@ -523,6 +522,77 @@ export function Landing() {
                   fontFamily:    "inherit",
                   fontWeight:    isActive ? 600 : 300,
                   whiteSpace:    "nowrap",
+                }}
+              >
+                {page.label}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Bottom nav — mobile only */}
+      <nav
+        className="landing-nav-mobile"
+        style={{
+          position:       "absolute",
+          bottom:         "2rem",
+          left:           0,
+          right:          0,
+          zIndex:         15,
+          display:        "flex",
+          flexDirection:  "row",
+          justifyContent: "center",
+          alignItems:     "flex-end",
+          gap:            "0",
+          opacity:        ready ? 1 : 0,
+          transition:     "opacity 0.6s ease",
+          padding:        "0 1rem",
+        }}
+      >
+        {NAV_PAGES.map((page, i) => {
+          const isActive = activeIndex === i;
+          return (
+            <button
+              key={page.id}
+              onClick={() => scrollToSection(i)}
+              style={{
+                display:        "flex",
+                flexDirection:  "column",
+                alignItems:     "center",
+                gap:            "6px",
+                background:     "none",
+                border:         "none",
+                padding:        "8px 0",
+                cursor:         "pointer",
+                flex:           1,
+                minWidth:       0,
+              }}
+            >
+              <span
+                style={{
+                  width:        isActive ? "10px" : "6px",
+                  height:       isActive ? "10px" : "6px",
+                  borderRadius: "50%",
+                  background:   isActive ? "#C41E3A" : "rgba(255,255,255,0.35)",
+                  boxShadow:    isActive ? "0 0 10px rgba(196,30,58,0.9)" : "none",
+                  transition:   "all 0.3s ease",
+                  flexShrink:   0,
+                }}
+              />
+              <span
+                style={{
+                  fontSize:      "9px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color:         isActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.40)",
+                  transition:    "color 0.3s ease",
+                  fontFamily:    "inherit",
+                  fontWeight:    isActive ? 600 : 300,
+                  whiteSpace:    "nowrap",
+                  overflow:      "hidden",
+                  textOverflow:  "ellipsis",
+                  maxWidth:      "100%",
                 }}
               >
                 {page.label}

@@ -167,3 +167,11 @@ body {
 .light .landing-scene canvas {
   filter: none;
 }
+
+/* Landing nav — desktop sidebar visible, mobile bottom bar hidden */
+.landing-nav-mobile { display: none !important; }
+
+@media (max-width: 767px) {
+  .landing-nav-desktop { display: none !important; }
+  .landing-nav-mobile  { display: flex !important; }
+}
