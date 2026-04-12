@@ -8,12 +8,12 @@ export const SITE_META = {
 
 /** Used by the black hole disc and the page navbar */
 export const NAV_PAGES = [
-  { id: "about",     label: "About",     path: "/about" },
-  { id: "skills",    label: "Skills",    path: "/skills" },
-  { id: "projects",  label: "Projects",  path: "/projects" },
-  { id: "blog",      label: "Blog",      path: "/blog" },
-  { id: "interests", label: "Interests", path: "/interests" },
-  { id: "resume",    label: "Resume",    path: "/resume" },
+  { id: "about",      label: "About",      path: "/about" },
+  { id: "projects",   label: "Projects",   path: "/projects" },
+  { id: "experience", label: "Experience", path: "/experience" },
+  { id: "skills",     label: "Skills",     path: "/skills" },
+  { id: "interests",  label: "Interests",  path: "/interests" },
+  { id: "resume",     label: "Resume",     path: "/resume" },
 ] as const;
 
 export type PageId = (typeof NAV_PAGES)[number]["id"];

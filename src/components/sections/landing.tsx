@@ -2,10 +2,11 @@
 
 import { Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars, ScrollControls, useScroll, Html, Float, useTexture } from "@react-three/drei";
+import { ScrollControls, useScroll, Html, Float, useTexture } from "@react-three/drei";
 import { useRouter } from "next/navigation";
-import * as THREE from "three";
 import { NAV_PAGES } from "@/lib/constants";
+import * as THREE from "three";
+import { ConstellationBackground } from "@/components/ui/constellation-background";
 
 // ─── Atmosphere Fresnel shader ────────────────────────────────────────────────
 const ATMO_VERT = /* glsl */ `
@@ -107,7 +108,7 @@ function usePlanetRingGeo(innerR: number, outerR: number) {
 }
 
 function SaturnRings({ size, ringTex }: { size: number; ringTex: THREE.Texture }) {
-  const geo = usePlanetRingGeo(size * 1.35, size * 2.65);
+  const geo = usePlanetRingGeo(size * 1.38, size * 2.38);
   const mat = useMemo(() => {
     const t = ringTex.clone();
     t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
@@ -117,27 +118,17 @@ function SaturnRings({ size, ringTex }: { size: number; ringTex: THREE.Texture }
       side:        THREE.DoubleSide,
       transparent: true,
       depthWrite:  false,
-      alphaTest:   0.005,
+      // No alphaTest — proper transparent pass so depth-tests against opaque planets
     });
   }, [ringTex]);
 
   return (
-    // Tilt ~26° so rings are clearly visible from camera
-    <group rotation={[0.0, 0.0, 0.0]}>
-      <mesh geometry={geo} material={mat} rotation={[-0.42, 0, 0.18]} />
-    </group>
+    // renderOrder -1 → renders before atmospheres in transparent pass;
+    // depthTest (default true) ensures it's occluded by any closer opaque mesh
+    <mesh geometry={geo} material={mat} rotation={[-0.38, 0, 0.14]} renderOrder={-1} />
   );
 }
 
-// ─── Tiny faint Jupiter rings ─────────────────────────────────────────────────
-function JupiterRings({ size }: { size: number }) {
-  const geo = usePlanetRingGeo(size * 1.4, size * 1.95);
-  return (
-    <mesh geometry={geo} rotation={[-0.12, 0, 0.05]}>
-      <meshBasicMaterial color="#705030" side={THREE.DoubleSide} transparent opacity={0.15} depthWrite={false} />
-    </mesh>
-  );
-}
 
 // ─── Sun ──────────────────────────────────────────────────────────────────────
 function Sun({ sunTex }: { sunTex: THREE.Texture }) {
@@ -189,12 +180,31 @@ const PLANET_STYLES = [
   { size: 1.6, atmoColor: "#C8A830", atmoFalloff: 2.5, atmoI: 0.55, clouds: false, rings: false, jupRings: false, rotSpeed: 0.25 }, // Venus
   { size: 1.4, atmoColor: "#C05028", atmoFalloff: 4.0, atmoI: 0.30, clouds: false, rings: false, jupRings: false, rotSpeed: 0.85 }, // Mars
   { size: 1.0, atmoColor: null,       atmoFalloff: 0,   atmoI: 0,    clouds: false, rings: false, jupRings: false, rotSpeed: 0.18 }, // Mercury
-  { size: 3.2, atmoColor: "#C87830", atmoFalloff: 2.8, atmoI: 0.38, clouds: false, rings: false, jupRings: true,  rotSpeed: 2.40 }, // Jupiter
+  { size: 3.2, atmoColor: "#C87830", atmoFalloff: 2.8, atmoI: 0.38, clouds: false, rings: false, jupRings: false, rotSpeed: 2.40 }, // Jupiter
   { size: 2.5, atmoColor: "#C8A870", atmoFalloff: 3.2, atmoI: 0.35, clouds: false, rings: true,  jupRings: false, rotSpeed: 2.20 }, // Saturn
 ] as const;
 
-const SPACING = 24;
-const TOTAL_Z  = (NAV_PAGES.length + 1) * SPACING;
+const SPACING = 30;
+
+// Fixed world positions — planets never move, camera flies to them
+const PLANET_POS = NAV_PAGES.map((_, i): [number, number, number] => [
+  Math.sin(i * 1.1) * 2.0,
+  Math.cos(i * 0.75) * 0.9,
+  -(i + 1) * SPACING,
+]);
+
+// One camera stop per scroll page: [sun, planet0 … planet5]
+const NUM_STOPS = NAV_PAGES.length + 1;
+const CAM_STOPS = [
+  { pos: new THREE.Vector3(0, 1.5, 16),  look: new THREE.Vector3(0, 0, 0) },
+  ...PLANET_POS.map(([px, py, pz], i) => {
+    const dist = PLANET_STYLES[i].size * 5.2 + 5; // scale viewing distance to planet size
+    return {
+      pos:  new THREE.Vector3(px * 0.25, py + 2.0, pz + dist),
+      look: new THREE.Vector3(px, py, pz),
+    };
+  }),
+];
 
 // ─── Planet ───────────────────────────────────────────────────────────────────
 function Planet({
@@ -207,26 +217,16 @@ function Planet({
   cloudTex?: THREE.Texture;
   ringTex?:  THREE.Texture;
 }) {
-  const groupRef  = useRef<THREE.Group>(null);
   const meshRef   = useRef<THREE.Mesh>(null);
-  const labelRef  = useRef<HTMLDivElement>(null);
-  const wpRef     = useRef(new THREE.Vector3());
   const [hovered, setHovered] = useState(false);
   const router    = useRouter();
 
-  useFrame((state, dt) => {
+  useFrame((_, dt) => {
     if (meshRef.current) meshRef.current.rotation.y += dt * style.rotSpeed * 0.05;
-    if (groupRef.current && labelRef.current) {
-      groupRef.current.getWorldPosition(wpRef.current);
-      const dist   = Math.abs(wpRef.current.z - state.camera.position.z);
-      const opacity = Math.max(0, Math.min(1, 1 - (dist - 14) / 18));
-      labelRef.current.style.opacity       = String(opacity);
-      labelRef.current.style.pointerEvents = opacity > 0.05 ? "auto" : "none";
-    }
   });
 
   return (
-    <group ref={groupRef} position={position}>
+    <group position={position}>
       <Float speed={0.9} floatIntensity={0.28} rotationIntensity={0.04}>
         <mesh
           ref={meshRef}
@@ -237,7 +237,9 @@ function Planet({
           <sphereGeometry args={[style.size, 64, 64]} />
           <meshStandardMaterial
             map={tex}
-            emissiveIntensity={hovered ? 0.35 : 0.0}
+            emissive={"#ffffff"}
+            emissiveMap={tex}
+            emissiveIntensity={hovered ? 0.55 : 0.28}
             roughness={0.75}
             metalness={0.04}
           />
@@ -259,44 +261,18 @@ function Planet({
         {/* Saturn rings */}
         {style.rings && ringTex && <SaturnRings size={style.size} ringTex={ringTex} />}
 
-        {/* Jupiter faint rings */}
-        {style.jupRings && <JupiterRings size={style.size} />}
-
         {/* Hover glow bloom */}
         {hovered && style.atmoColor && (
           <Atmosphere size={style.size} color={style.atmoColor} scale={1.35} falloff={2.0} intensity={0.5} />
         )}
 
-        {/* Label — fades in/out via ref DOM mutation */}
-        <Html position={[0, style.size + 2.1, 0]} center occlude={false}>
-          <div ref={labelRef} style={{ opacity: 0, transition: "color 0.25s" }}>
-            <button
-              onClick={() => router.push(page.path)}
-              style={{
-                color: hovered ? "#ff7070" : "rgba(255,255,255,0.9)",
-                fontSize: "12px",
-                fontWeight: 500,
-                letterSpacing: "0.24em",
-                textTransform: "uppercase",
-                textShadow: hovered ? "0 0 14px rgba(220,60,60,0.7)" : "0 0 8px rgba(0,0,0,0.95)",
-                background: "none",
-                border:     "none",
-                cursor:     "pointer",
-                padding:     0,
-                fontFamily:  "inherit",
-              }}
-            >
-              {page.label}
-            </button>
-          </div>
-        </Html>
       </Float>
     </group>
   );
 }
 
 // ─── Scene (all textures loaded here so one Suspense catches everything) ──────
-function SceneContent({ onLoaded }: { onLoaded: () => void }) {
+function SceneContent({ onLoaded, onSectionChange }: { onLoaded: () => void; onSectionChange: (idx: number) => void }) {
   const textures = useTexture([
     "/textures/sun.jpg",
     "/textures/earth_day.jpg",
@@ -310,52 +286,64 @@ function SceneContent({ onLoaded }: { onLoaded: () => void }) {
   ]) as THREE.Texture[];
   const [sunT, earthT, cloudsT, venusT, marsT, mercuryT, jupiterT, saturnT, ringT] = textures;
 
-  const groupRef = useRef<THREE.Group>(null);
-  const scroll   = useScroll();
+  const scroll    = useScroll();
+  // Cached vectors — no allocation per frame
+  const camPos    = useRef(new THREE.Vector3(0, 1.5, 16));
+  const lookPos   = useRef(new THREE.Vector3(0, 0, 0));
+  const tmpCam    = useRef(new THREE.Vector3());
+  const tmpLook   = useRef(new THREE.Vector3());
+  const lastSection = useRef(-2);
 
   useEffect(() => { onLoaded(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFrame((state) => {
-    if (!groupRef.current) return;
-    const target = scroll.offset * TOTAL_Z;
-    groupRef.current.position.z = THREE.MathUtils.lerp(
-      groupRef.current.position.z, target, 0.058
-    );
-    state.camera.position.x = THREE.MathUtils.lerp(
-      state.camera.position.x,
-      Math.sin(state.clock.elapsedTime * 0.11) * 0.5,
-      0.018
-    );
+    // Map scroll 0→1 across all stops
+    const raw  = scroll.offset * (NUM_STOPS - 1);
+    const i0   = Math.min(Math.floor(raw), NUM_STOPS - 2);
+    const i1   = i0 + 1;
+    const t    = raw - i0;
+    // Smoothstep easing so each planet "snaps" into focus with ease-in-out
+    const ease = t * t * (3 - 2 * t);
+
+    tmpCam.current.lerpVectors(CAM_STOPS[i0].pos,  CAM_STOPS[i1].pos,  ease);
+    tmpLook.current.lerpVectors(CAM_STOPS[i0].look, CAM_STOPS[i1].look, ease);
+
+    // Damp toward target — feels like flying through space
+    camPos.current.lerp(tmpCam.current, 0.072);
+    lookPos.current.lerp(tmpLook.current, 0.072);
+
+    state.camera.position.copy(camPos.current);
+    state.camera.lookAt(lookPos.current);
+
+    // Notify active section — only fires on change, no per-frame React re-render
+    const section = Math.max(-1, Math.min(NAV_PAGES.length - 1, Math.round(raw) - 1));
+    if (section !== lastSection.current) {
+      lastSection.current = section;
+      onSectionChange(section);
+    }
   });
 
   const texByIndex = [earthT, venusT, marsT, mercuryT, jupiterT, saturnT];
 
   return (
     <>
-      <color attach="background" args={["#000008"]} />
-      <Stars radius={180} depth={80} count={7000} factor={4} fade speed={0.3} />
       <ambientLight intensity={0.08} />
       <directionalLight position={[-30, 10, -80]} intensity={0.25} color="#7070FF" />
 
-      <group ref={groupRef}>
-        <Sun sunTex={sunT} />
+      {/* Planets are STATIC — camera moves to them */}
+      <Sun sunTex={sunT} />
 
-        {NAV_PAGES.map((page, i) => (
-          <Planet
-            key={page.id}
-            page={page}
-            style={PLANET_STYLES[i]}
-            tex={texByIndex[i]}
-            cloudTex={i === 0 ? cloudsT : undefined}
-            ringTex={i === 5 ? ringT   : undefined}
-            position={[
-              Math.sin(i * 1.05) * 2.5,
-              Math.cos(i * 0.80) * 1.0,
-              -(i + 1) * SPACING,
-            ]}
-          />
-        ))}
-      </group>
+      {NAV_PAGES.map((page, i) => (
+        <Planet
+          key={page.id}
+          page={page}
+          style={PLANET_STYLES[i]}
+          tex={texByIndex[i]}
+          cloudTex={i === 0 ? cloudsT : undefined}
+          ringTex={i === 5 ? ringT   : undefined}
+          position={PLANET_POS[i]}
+        />
+      ))}
     </>
   );
 }
@@ -363,9 +351,15 @@ function SceneContent({ onLoaded }: { onLoaded: () => void }) {
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export function Landing() {
   const [ready, setReady] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1); // -1=sun, 0-5=planets
+
+  const activePage = activeIndex >= 0 ? NAV_PAGES[activeIndex] : null;
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+    <div style={{ width: "100vw", height: "100vh", position: "relative", background: "#000008", overflow: "hidden" }}>
+
+      {/* Constellation background — scattered star patterns forming in a loop */}
+      <ConstellationBackground />
 
       {/* Loading overlay */}
       <div
@@ -406,20 +400,48 @@ export function Landing() {
         </h1>
       </div>
 
+      {/* Planet label — simple text above the planet */}
+      <div
+        style={{
+          position:      "absolute",
+          top:           "30%",
+          left:          "50%",
+          transform:     "translateX(-50%)",
+          zIndex:        15,
+          textAlign:     "center",
+          pointerEvents: "none",
+          opacity:       activePage ? 1 : 0,
+          transition:    "opacity 0.45s ease",
+        }}
+      >
+        <p style={{
+          margin:        0,
+          fontSize:      "11px",
+          fontWeight:    500,
+          letterSpacing: "0.38em",
+          textTransform: "uppercase",
+          color:         "rgba(255,255,255,0.55)",
+          fontFamily:    "inherit",
+          whiteSpace:    "nowrap",
+        }}>
+          {activePage?.label}
+        </p>
+      </div>
+
       {/* Scroll hint */}
-      <div style={{ position: "absolute", bottom: "2.2rem", left: "50%", transform: "translateX(-50%)", zIndex: 10, color: "rgba(255,255,255,0.26)", fontSize: "10px", letterSpacing: "0.32em", textTransform: "uppercase", pointerEvents: "none" }}>
+      <div style={{ position: "absolute", bottom: "2.2rem", left: "50%", transform: "translateX(-50%)", zIndex: 10, color: "rgba(255,255,255,0.26)", fontSize: "10px", letterSpacing: "0.32em", textTransform: "uppercase", pointerEvents: "none", transition: "opacity 0.45s ease", opacity: activePage ? 0 : 1 }}>
         Scroll to explore · Click to enter
       </div>
 
       <Canvas
         camera={{ position: [0, 2, 18], fov: 50, near: 0.1, far: 600 }}
-        gl={{ antialias: true, alpha: false }}
+        gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
         style={{ display: "block", width: "100%", height: "100%" }}
       >
         <Suspense fallback={null}>
-          <ScrollControls pages={NAV_PAGES.length + 1} damping={0.16} distance={1}>
-            <SceneContent onLoaded={() => setReady(true)} />
+          <ScrollControls pages={NAV_PAGES.length * 2} damping={0.22} distance={1}>
+            <SceneContent onLoaded={() => setReady(true)} onSectionChange={setActiveIndex} />
           </ScrollControls>
         </Suspense>
       </Canvas>
