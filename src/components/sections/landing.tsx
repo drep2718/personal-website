@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState, useMemo } from "react";
+import { Suspense, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ScrollControls, useScroll, Html, Float, useTexture } from "@react-three/drei";
 import { useRouter } from "next/navigation";
@@ -272,7 +272,7 @@ function Planet({
 }
 
 // ─── Scene (all textures loaded here so one Suspense catches everything) ──────
-function SceneContent({ onLoaded, onSectionChange }: { onLoaded: () => void; onSectionChange: (idx: number) => void }) {
+function SceneContent({ onLoaded, onSectionChange, onScrollReady }: { onLoaded: () => void; onSectionChange: (idx: number) => void; onScrollReady: (el: HTMLElement) => void }) {
   const textures = useTexture([
     "/textures/sun.jpg",
     "/textures/earth_day.jpg",
@@ -294,7 +294,10 @@ function SceneContent({ onLoaded, onSectionChange }: { onLoaded: () => void; onS
   const tmpLook   = useRef(new THREE.Vector3());
   const lastSection = useRef(-2);
 
-  useEffect(() => { onLoaded(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    onLoaded();
+    if (scroll.el) onScrollReady(scroll.el as HTMLElement);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFrame((state) => {
     // Map scroll 0→1 across all stops
@@ -354,8 +357,20 @@ function SceneContent({ onLoaded, onSectionChange }: { onLoaded: () => void; onS
 export function Landing() {
   const [ready, setReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // -1=sun, 0-5=planets
+  const scrollElRef = useRef<HTMLElement | null>(null);
+  const router = useRouter();
 
   const activePage = activeIndex >= 0 ? NAV_PAGES[activeIndex] : null;
+
+  const scrollToSection = useCallback((index: number) => {
+    const el = scrollElRef.current;
+    if (!el) { router.push(NAV_PAGES[index].path); return; }
+    const maxScroll = el.scrollHeight - el.clientHeight;
+    const targetOffset = (index + 1) / (NUM_STOPS - 1);
+    el.scrollTo({ top: targetOffset * maxScroll, behavior: "smooth" });
+    // Navigate after camera has time to fly to the planet
+    setTimeout(() => router.push(NAV_PAGES[index].path), 2200);
+  }, [router]);
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", background: "#000008", overflow: "hidden" }}>
@@ -430,9 +445,21 @@ export function Landing() {
         </p>
       </div>
 
-      {/* Scroll hint */}
-      <div style={{ position: "absolute", bottom: "2.2rem", left: "50%", transform: "translateX(-50%)", zIndex: 10, color: "rgba(255,255,255,0.26)", fontSize: "10px", letterSpacing: "0.32em", textTransform: "uppercase", pointerEvents: "none", transition: "opacity 0.45s ease", opacity: activePage ? 0 : 1 }}>
-        Scroll to explore · Click to enter
+      {/* Scroll hint — above the sun */}
+      <div style={{ position: "absolute", top: "68%", left: "50%", transform: "translateX(-50%)", zIndex: 10, textAlign: "center", pointerEvents: "none", transition: "opacity 0.5s ease", opacity: ready && !activePage ? 1 : 0 }}>
+        <p style={{ margin: 0, marginBottom: "10px", color: "rgba(255,255,255,0.55)", fontSize: "10px", letterSpacing: "0.36em", textTransform: "uppercase", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+          Scroll to explore · Click to enter
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+          <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.25)", borderRadius: 1, animation: "scrollpulse 1.6s ease-in-out infinite" }} />
+          <div style={{ width: 0, height: 0, borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "6px solid rgba(255,255,255,0.35)", animation: "scrollpulse 1.6s ease-in-out infinite 0.15s" }} />
+        </div>
+        <style>{`
+          @keyframes scrollpulse {
+            0%, 100% { opacity: 0.25; transform: translateY(0); }
+            50%       { opacity: 0.80; transform: translateY(5px); }
+          }
+        `}</style>
       </div>
 
       {/* Sidebar nav — left side */}
@@ -454,15 +481,17 @@ export function Landing() {
         {NAV_PAGES.map((page, i) => {
           const isActive = activeIndex === i;
           return (
-            <a
+            <button
               key={page.id}
-              href={page.path}
+              onClick={() => scrollToSection(i)}
               style={{
-                display:        "flex",
-                alignItems:     "center",
-                gap:            "0.75rem",
-                textDecoration: "none",
-                cursor:         "pointer",
+                display:    "flex",
+                alignItems: "center",
+                gap:        "0.75rem",
+                background: "none",
+                border:     "none",
+                padding:    0,
+                cursor:     "pointer",
               }}
             >
               {/* Dot */}
@@ -492,7 +521,7 @@ export function Landing() {
               >
                 {page.label}
               </span>
-            </a>
+            </button>
           );
         })}
       </nav>
@@ -505,7 +534,11 @@ export function Landing() {
       >
         <Suspense fallback={null}>
           <ScrollControls pages={NAV_PAGES.length * 2} damping={0.22} distance={1}>
-            <SceneContent onLoaded={() => setReady(true)} onSectionChange={setActiveIndex} />
+            <SceneContent
+              onLoaded={() => setReady(true)}
+              onSectionChange={setActiveIndex}
+              onScrollReady={(el) => { scrollElRef.current = el; }}
+            />
           </ScrollControls>
         </Suspense>
       </Canvas>
