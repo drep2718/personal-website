@@ -410,11 +410,17 @@ export function Landing() {
         <p style={{ fontSize: "10px", letterSpacing: "0.44em", color: "rgba(255,255,255,0.36)", textTransform: "uppercase", marginBottom: "10px", fontFamily: "inherit" }}>
           Software Engineer
         </p>
-        <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 5rem)", fontWeight: 300, letterSpacing: "-0.03em", margin: 0, color: "#ffffff", fontFamily: "inherit" }}>
-          Aiden{" "}
-          <span style={{ fontWeight: 700, background: "linear-gradient(135deg, #C41E3A 20%, #ff6b8a 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            Drep
-          </span>
+        <h1 style={{
+          fontSize:      "clamp(2.0rem, 5.5vw, 4.5rem)",
+          fontWeight:    200,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          margin:        0,
+          color:         "#ffffff",
+          fontFamily:    "inherit",
+          textShadow:    "0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(196,30,58,0.15)",
+        }}>
+          Aiden Drepaniotis
         </h1>
       </div>
 
