@@ -54,7 +54,7 @@ export function BgWoven() {
 
     const mat = new THREE.PointsMaterial({
       size: 0.028, vertexColors: true,
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      blending: THREE.NormalBlending, transparent: true, depthWrite: false,
     });
     const points = new THREE.Points(geo, mat);
     scene.add(points);

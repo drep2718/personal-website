@@ -89,7 +89,7 @@ export function Skills() {
     return () => observer.disconnect();
   }, []);
 
-  const orbitSize = 340; // center area size in px
+  const orbitSize = 500; // center area size in px
 
   return (
     <SectionWrapper id="skills">
@@ -109,14 +109,14 @@ export function Skills() {
         {show && (
           <div
             className="relative flex items-center justify-center"
-            style={{ width: orbitSize + 240, height: orbitSize + 240 }}
+            style={{ width: orbitSize + 260, height: orbitSize + 260 }}
           >
             {/* Innermost: level 3 */}
-            <OrbitRing skills={SKILLS} level={3} radius={100} duration={28} />
+            <OrbitRing skills={SKILLS} level={3} radius={150} duration={28} />
             {/* Middle: level 2 */}
-            <OrbitRing skills={SKILLS} level={2} radius={185} duration={40} reverse />
+            <OrbitRing skills={SKILLS} level={2} radius={270} duration={40} reverse />
             {/* Outer: level 1 */}
-            <OrbitRing skills={SKILLS} level={1} radius={265} duration={55} />
+            <OrbitRing skills={SKILLS} level={1} radius={390} duration={55} />
 
             {/* Center dot */}
             <div

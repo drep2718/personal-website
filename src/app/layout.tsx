@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider, THEME_SCRIPT } from "@/context/theme-context";
-import { Waves } from "@/components/ui/waves";
 import { SITE_META } from "@/lib/constants";
 import "./globals.css";
 
@@ -50,18 +49,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
         <ThemeProvider>
-          {/* Fixed wave background — sits behind all page content */}
-          <div className="fixed inset-0 z-0 pointer-events-none">
-            <Waves
-              strokeColor="rgba(196,30,58,0.18)"
-              backgroundColor="transparent"
-              opacity={1}
-            />
-          </div>
-          {/* Page content sits above the wave layer */}
-          <div className="relative z-10">
-            {children}
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>
