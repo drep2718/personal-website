@@ -11,39 +11,30 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
-    id: "project-1",
-    title: "Project Alpha",
-    description: "A full-stack web application built with Next.js and a custom AI pipeline for real-time data analysis.",
-    tags: ["Next.js", "TypeScript", "AI", "PostgreSQL"],
-    url: "https://project-alpha.com",
-    repoUrl: "https://github.com/aidendrep/project-alpha",
+    id: "fpga-pricing",
+    title: "FPGA Pricing Model",
+    description:
+      "Built a floating-point unit implementing Black-Scholes on an FPGA for sub-microsecond high-frequency trading. Implemented pipelining for parallel calculations and increased throughput. Ported and benchmarked the algorithm in C++ on an ESP32 microcontroller to establish a baseline for validating FPGA acceleration.",
+    tags: ["SystemVerilog", "System Design", "Hardware Acceleration", "C++", "HFT"],
+    featured: true,
+    year: 2025,
+  },
+  {
+    id: "crypto-arbitrage",
+    title: "Crypto Arbitrage Engine",
+    description:
+      "Designed a dynamic arbitrage model leveraging Bellman-Ford for optimal pathfinding across currency pairs. Implemented real-time data processing via Binance WebSockets for efficient trade execution. Generated synthetic market data to stress-test the model under various volatility regimes.",
+    tags: ["Python", "Binance API", "WebSockets", "Bellman-Ford", "Quant Finance"],
+    featured: true,
+    year: 2025,
+  },
+  {
+    id: "pushup-counter",
+    title: "Push-Up Counter",
+    description:
+      "Developed a neural network using Keras trained on a self-collected dataset for push-up recognition and form correction. Implemented computer vision with MediaPipe's Pose model to track and analyze body movements in real time. Designed an automated system to filter incorrect reps and distinguish between active and idle states.",
+    tags: ["Python", "Keras", "MediaPipe", "OpenCV", "Machine Learning"],
     featured: true,
     year: 2024,
-  },
-  {
-    id: "project-2",
-    title: "Project Beta",
-    description: "High-performance Rust CLI tool for processing large datasets with sub-millisecond latency.",
-    tags: ["Rust", "CLI", "Performance"],
-    repoUrl: "https://github.com/aidendrep/project-beta",
-    featured: true,
-    year: 2024,
-  },
-  {
-    id: "project-3",
-    title: "Project Gamma",
-    description: "Distributed microservices architecture deployed on AWS with automated CI/CD pipelines.",
-    tags: ["Go", "AWS", "Docker", "Kubernetes"],
-    featured: false,
-    year: 2023,
-  },
-  {
-    id: "project-4",
-    title: "Project Delta",
-    description: "Open-source Python library for time-series forecasting using transformer models.",
-    tags: ["Python", "ML", "Open Source"],
-    repoUrl: "https://github.com/aidendrep/project-delta",
-    featured: false,
-    year: 2023,
   },
 ];

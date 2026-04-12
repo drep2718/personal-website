@@ -44,31 +44,32 @@ export function About() {
             </h2>
             <div className="space-y-4 text-[var(--color-text-secondary)] leading-relaxed">
               <p>
-                I&apos;m a software engineer who cares deeply about craft — both in the
-                code I write and the experiences I build. I work at the intersection
-                of performance, design, and elegant problem-solving.
+                I&apos;m a Computer Science &amp; Mathematics student at Purdue University,
+                building at the intersection of systems, machine learning, and quantitative
+                finance. I care about craft — both in the code I write and the problems I choose to solve.
               </p>
               <p>
-                When I&apos;m not shipping features, I&apos;m exploring the edges of what&apos;s
-                possible: experimenting with generative visuals, optimizing systems
-                until they feel frictionless, and chasing that rare moment when
-                something just <em>works.</em>
+                Currently interning at Wealth.com, where I ship full-stack features for
+                estate-planning tools used by 10,000+ monthly users. Outside of work I lead
+                quant education at Boiler Quant Finance and a robotics team at Purdue&apos;s
+                Autonomous Robotics Club.
               </p>
               <p>
-                Based wherever my laptop is. Currently drinking too much coffee and
-                building in public.
+                I gravitate toward hard problems — from FPGA hardware acceleration and
+                real-time arbitrage engines to neural network-based computer vision. If
+                it runs fast or thinks for itself, I&apos;m interested.
               </p>
             </div>
 
             <div className="mt-8 flex gap-6">
               <div>
-                <p className="text-2xl font-light text-[var(--color-text-primary)]">4+</p>
-                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Years building</p>
+                <p className="text-2xl font-light text-[var(--color-text-primary)]">40+</p>
+                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Tickets shipped</p>
               </div>
               <div className="w-px bg-[var(--color-border)]" />
               <div>
-                <p className="text-2xl font-light text-[var(--color-text-primary)]">20+</p>
-                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Projects shipped</p>
+                <p className="text-2xl font-light text-[var(--color-text-primary)]">60+</p>
+                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Students mentored</p>
               </div>
               <div className="w-px bg-[var(--color-border)]" />
               <div>
