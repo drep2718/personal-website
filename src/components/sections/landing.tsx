@@ -397,7 +397,7 @@ export function Landing() {
         }}
       >
         <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px", letterSpacing: "0.4em", textTransform: "uppercase", fontFamily: "inherit" }}>
-          Loading Solar System
+          Loading
         </p>
         <div style={{ width: 120, height: 2, background: "rgba(255,255,255,0.08)", borderRadius: 1, overflow: "hidden" }}>
           <div style={{ height: "100%", background: "rgba(196,30,58,0.7)", animation: "loadbar 1.8s ease-in-out infinite", borderRadius: 1 }} />
