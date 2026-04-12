@@ -140,9 +140,9 @@ body {
   --color-event-horizon:   #F3F4F6;
 }
 
-/* Dark WebGL shader canvases become very subtle watermarks in light mode */
+/* Shader backgrounds in light mode — visible red but not overpowering */
 .light canvas {
-  opacity: 0.08 !important;
+  opacity: 0.28 !important;
 }
 
 /* gradient-text: invert for light backgrounds */
