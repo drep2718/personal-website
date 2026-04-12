@@ -158,3 +158,8 @@ body {
   background-color: #FCE7EB;
   color: #111827;
 }
+
+/* Shader canvases: invert dark→white, hue-rotate keeps reds red */
+.light canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
