@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { Blog } from "@/components/sections/blog";
 
 export const metadata = {
-  title: "Blog — Aiden Drep",
+  title: "Blog — Aiden Drepaniotis",
 };
 
 export default function BlogPage() {

@@ -4,7 +4,7 @@ import { About } from "@/components/sections/about";
 import { Waves } from "@/components/ui/waves";
 
 export const metadata = {
-  title: "About — Aiden Drep",
+  title: "About — Aiden Drepaniotis",
 };
 
 export default function AboutPage() {

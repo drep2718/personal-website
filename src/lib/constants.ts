@@ -1,9 +1,18 @@
 export const SITE_META = {
-  name: "Aiden Drep",
-  title: "Aiden Drep — Developer & Builder",
+  name: "Aiden Drepaniotis",
+  title: "Aiden Drepaniotis — Software Engineer",
   description:
-    "Personal portfolio of Aiden Drep — software engineer, builder, and curious mind.",
+    "Personal portfolio of Aiden Drepaniotis — software engineer, CS & Math student at Purdue University, intern at Wealth.com, and builder of systems, ML, and quant tools.",
   url: "https://aidendrep.com",
+  keywords: [
+    "Aiden Drepaniotis",
+    "Aiden Drep",
+    "software engineer",
+    "Purdue University",
+    "Wealth.com",
+    "computer science",
+    "portfolio",
+  ],
 };
 
 /** Used by the black hole disc and the page navbar */

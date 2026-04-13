@@ -4,7 +4,7 @@ import { Interests } from "@/components/sections/interests";
 import { BgSea } from "@/components/ui/bg-sea";
 
 export const metadata = {
-  title: "Interests — Aiden Drep",
+  title: "Interests — Aiden Drepaniotis",
 };
 
 export default function InterestsPage() {

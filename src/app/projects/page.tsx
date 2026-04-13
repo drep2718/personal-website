@@ -4,7 +4,7 @@ import { Projects } from "@/components/sections/projects";
 import { BgFractals } from "@/components/ui/bg-fractals";
 
 export const metadata = {
-  title: "Projects — Aiden Drep",
+  title: "Projects — Aiden Drepaniotis",
 };
 
 export default function ProjectsPage() {

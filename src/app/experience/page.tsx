@@ -4,7 +4,7 @@ import { Experience } from "@/components/sections/experience";
 import { BgCosmicDiscs } from "@/components/ui/bg-cosmic-discs";
 
 export const metadata = {
-  title: "Experience — Aiden Drep",
+  title: "Experience — Aiden Drepaniotis",
 };
 
 export default function ExperiencePage() {

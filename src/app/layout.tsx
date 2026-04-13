@@ -19,17 +19,23 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: SITE_META.title,
   description: SITE_META.description,
+  keywords: SITE_META.keywords,
+  authors: [{ name: SITE_META.name, url: SITE_META.url }],
   metadataBase: new URL(SITE_META.url),
+  alternates: { canonical: SITE_META.url },
   openGraph: {
     title: SITE_META.title,
     description: SITE_META.description,
     url: SITE_META.url,
+    siteName: SITE_META.name,
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_META.title,
     description: SITE_META.description,
+    creator: "@aidendrepaniotis",
   },
 };
 
@@ -44,8 +50,28 @@ export default function RootLayout({
     >
       <head suppressHydrationWarning>
         {/* Blocking theme script — prevents flash of light mode */}
-        {/* suppressHydrationWarning prevents Chrome extension script injection from causing hydration errors */}
         <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        {/* JSON-LD Person schema — helps Google associate this page with the name */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Aiden Drepaniotis",
+              alternateName: "Aiden Drep",
+              url: "https://aidendrep.com",
+              sameAs: [
+                "https://linkedin.com/in/aiden-drepaniotis",
+                "https://github.com/drep2718",
+              ],
+              jobTitle: "Software Engineer",
+              worksFor: { "@type": "Organization", name: "Wealth.com" },
+              alumniOf: { "@type": "CollegeOrUniversity", name: "Purdue University" },
+              email: "aidendrepaniotis@gmail.com",
+            }),
+          }}
+        />
       </head>
       <body className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
         <ThemeProvider>

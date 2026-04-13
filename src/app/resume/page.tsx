@@ -4,7 +4,7 @@ import { Resume } from "@/components/sections/resume";
 import { BgRaymarch } from "@/components/ui/bg-raymarch";
 
 export const metadata = {
-  title: "Résumé — Aiden Drep",
+  title: "Résumé — Aiden Drepaniotis",
 };
 
 export default function ResumePage() {

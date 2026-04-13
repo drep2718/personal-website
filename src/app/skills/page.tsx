@@ -4,7 +4,7 @@ import { Skills } from "@/components/sections/skills";
 import { BgHills } from "@/components/ui/bg-hills";
 
 export const metadata = {
-  title: "Skills — Aiden Drep",
+  title: "Skills — Aiden Drepaniotis",
 };
 
 export default function SkillsPage() {
