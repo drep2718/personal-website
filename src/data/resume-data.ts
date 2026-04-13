@@ -69,7 +69,7 @@ export const RESUME_DATA: ResumeEntry[] = [
   {
     id: "org-1",
     type: "leadership",
-    title: "Director of Quantitative Development Education",
+    title: "Co-Director of Quantitative Development Education",
     organization: "Boiler Quantitative Finance Group",
     location: "West Lafayette, IN",
     startDate: "2024-09",

@@ -36,7 +36,7 @@ const EXPERIENCES = [
   },
   {
     id: "org-1",
-    role: "Director of Quantitative Development Education",
+    role: "Co-Director of Quantitative Development Education",
     company: "Boiler Quantitative Finance Group",
     location: "West Lafayette, IN",
     start: "Fall 2024",
