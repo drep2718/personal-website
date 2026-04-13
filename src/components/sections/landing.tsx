@@ -358,18 +358,21 @@ export function Landing() {
   const [ready, setReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1); // -1=sun, 0-5=planets
   const scrollElRef = useRef<HTMLElement | null>(null);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
   const activePage = activeIndex >= 0 ? NAV_PAGES[activeIndex] : null;
 
   const scrollToSection = useCallback((index: number) => {
+    // Cancel any pending navigation so only the last click wins
+    if (navTimerRef.current) clearTimeout(navTimerRef.current);
+
     const el = scrollElRef.current;
     if (!el) { router.push(NAV_PAGES[index].path); return; }
     const maxScroll = el.scrollHeight - el.clientHeight;
     const targetOffset = (index + 1) / (NUM_STOPS - 1);
     el.scrollTo({ top: targetOffset * maxScroll, behavior: "smooth" });
-    // Navigate after camera has time to fly to the planet
-    setTimeout(() => router.push(NAV_PAGES[index].path), 2200);
+    navTimerRef.current = setTimeout(() => router.push(NAV_PAGES[index].path), 2200);
   }, [router]);
 
   return (
