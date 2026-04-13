@@ -5,6 +5,7 @@ import { Waves } from "@/components/ui/waves";
 
 export const metadata = {
   title: "About — Aiden Drepaniotis",
+  robots: { index: false, follow: false },
 };
 
 export default function AboutPage() {
