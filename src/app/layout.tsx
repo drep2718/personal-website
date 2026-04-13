@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   authors: [{ name: SITE_META.name, url: SITE_META.url }],
   metadataBase: new URL(SITE_META.url),
   alternates: { canonical: SITE_META.url },
+  verification: { google: "p91U9gouBG-RKkJUMOAztkclrhJNg9TZ2eKzOv5ILNg" },
   openGraph: {
     title: SITE_META.title,
     description: SITE_META.description,
