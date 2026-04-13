@@ -3,7 +3,7 @@ export const SITE_META = {
   title: "Aiden Drepaniotis — Software Engineer",
   description:
     "Personal portfolio of Aiden Drepaniotis — software engineer, CS & Math student at Purdue University, intern at Wealth.com, and builder of systems, ML, and quant tools.",
-  url: "https://aidendrep.com",
+  url: "https://aidendrepaniotis.com",
   keywords: [
     "Aiden Drepaniotis",
     "Aiden Drep",

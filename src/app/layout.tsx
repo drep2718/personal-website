@@ -61,7 +61,7 @@ export default function RootLayout({
               "@type": "Person",
               name: "Aiden Drepaniotis",
               alternateName: "Aiden Drep",
-              url: "https://aidendrep.com",
+              url: "https://aidendrepaniotis.com",
               sameAs: [
                 "https://linkedin.com/in/aiden-drepaniotis",
                 "https://github.com/drep2718",
