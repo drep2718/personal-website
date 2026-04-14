@@ -88,28 +88,13 @@ export function GlitchReveal() {
               }, i * 28);
             });
 
-            // Restart loop
+            // Stop glitching once all chars are locked in — leave name displayed
             setTimeout(
               () => {
                 glitching = false;
                 clearInterval(glitchLoop);
-                if (running) {
-                  animate(
-                    allSpans.map((s) => s.span),
-                    {
-                      opacity: [1, 0],
-                      y: [0, -24],
-                      duration: 500,
-                      delay: stagger(20, { from: "last" }),
-                      easing: "easeInExpo",
-                      onComplete: () => {
-                        if (running) setTimeout(run, 600);
-                      },
-                    }
-                  );
-                }
               },
-              allSpans.length * 28 + 2800
+              allSpans.length * 28 + 200
             );
           },
         }
