@@ -11,13 +11,10 @@ export default function SecretPage() {
     const video = videoRef.current;
     if (!video) return;
 
-    video.play().catch(() => {
-      // Autoplay blocked — redirect anyway
-      router.replace("/");
-    });
-
     const onEnded = () => router.replace("/");
     video.addEventListener("ended", onEnded);
+    video.play();
+
     return () => video.removeEventListener("ended", onEnded);
   }, [router]);
 
@@ -37,7 +34,7 @@ export default function SecretPage() {
         ref={videoRef}
         src="/FINALFINAL.mp4"
         playsInline
-        muted={false}
+        muted
         style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
     </div>
