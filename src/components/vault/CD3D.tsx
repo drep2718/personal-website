@@ -12,7 +12,7 @@ interface Props {
 
 const DISC_D  = 152; // CD disc diameter
 const HEIGHT  = 170; // spine height (slightly taller than disc for case look)
-const SPINE_W = 10;  // thin case spine
+const SPINE_W = 16;  // CD case spine
 const DISC_TOP = Math.round((HEIGHT - DISC_D) / 2); // center disc on spine
 
 const T_ON  = "rotateY(-30deg) translateZ(76px) translateY(-12px)";
@@ -86,7 +86,7 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
             writingMode:   "vertical-rl",
             transform:     "rotate(180deg)",
             fontFamily:    "var(--font-mono), monospace",
-            fontSize:      "5px",
+            fontSize:      "7px",
             fontWeight:    600,
             color:         "rgba(200,200,200,0.5)",
             letterSpacing: "0.08em",

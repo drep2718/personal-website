@@ -23,7 +23,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
   const SPINE_W = 24 + (seed % 14);   // 24–38 px
   const HEIGHT  = 172 + (seed % 46);  // 172–218 px
   // Font size: small enough to never look cramped, shrinks for long titles
-  const spineFont = Math.max(6, Math.min(9, Math.floor((HEIGHT - 40) / item.title.length * 1.05)));
+  const spineFont = Math.max(8, Math.min(12, Math.floor((HEIGHT - 40) / item.title.length * 1.3)));
 
   // Direct DOM mutations only — zero React re-renders, zero animation resets
   const handleEnter = useCallback(() => {
