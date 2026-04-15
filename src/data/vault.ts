@@ -2,7 +2,6 @@ export type VaultCategory = "books" | "anime";
 export type VaultStatus =
   | "completed"
   | "reading"
-  | "playing"
   | "watching"
   | "dropped"
   | "on-hold"
