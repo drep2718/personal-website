@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import Image from "next/image";
 import type { VaultItem } from "@/data/vault";
 
@@ -10,50 +10,49 @@ interface Props {
   dimmed: boolean;
 }
 
-const COVER_DEPTH = 135; // how deep the cover goes back into shelf
+const COVER_DEPTH = 135;
+
+const TRANSFORM_ON  = "rotateY(-22deg) translateZ(68px) translateY(-18px)";
+const TRANSFORM_OFF = "rotateY(0deg) translateZ(0px) translateY(0px)";
 
 export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
-  const [hovered, setHovered] = useState(false);
+  const bookRef = useRef<HTMLDivElement>(null);
 
-  // Deterministic size from item id
+  // Deterministic size — stable across renders
   const seed = item.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const SPINE_W = 20 + (seed % 14); // 20–34 px
-  const HEIGHT = 172 + (seed % 46); // 172–218 px
+  const SPINE_W = 20 + (seed % 14);
+  const HEIGHT  = 172 + (seed % 46);
 
-  const enter = useCallback(
-    (e: React.MouseEvent) => {
-      if (dimmed) return;
-      setHovered(true);
-      onHover(item);
-    },
-    [dimmed, item, onHover]
-  );
+  // Direct DOM mutation — no setState, no re-render, no animation interrupt
+  const handleEnter = useCallback(() => {
+    if (dimmed) return;
+    if (bookRef.current) bookRef.current.style.transform = TRANSFORM_ON;
+    onHover(item);
+  }, [dimmed, item, onHover]);
 
-  const leave = useCallback(() => {
-    setHovered(false);
+  const handleLeave = useCallback(() => {
+    if (bookRef.current) bookRef.current.style.transform = TRANSFORM_OFF;
     onHover(null);
   }, [onHover]);
 
   return (
     <div
+      ref={bookRef}
       onClick={() => !dimmed && onSelect(item)}
-      onMouseEnter={enter}
-      onMouseLeave={leave}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       style={{
         width: SPINE_W,
         height: HEIGHT,
         flexShrink: 0,
         position: "relative",
         transformStyle: "preserve-3d",
-        transform: hovered
-          ? `rotateY(-22deg) translateZ(68px) translateY(-18px)`
-          : "rotateY(0deg) translateZ(0px) translateY(0px)",
+        transform: TRANSFORM_OFF,
         transition: "transform 0.42s cubic-bezier(0.34, 1.48, 0.64, 1)",
         cursor: dimmed ? "default" : "pointer",
-        zIndex: hovered ? 40 : 1,
       }}
     >
-      {/* ── SPINE face (faces viewer) ─────────────────────── */}
+      {/* ── SPINE ─────────────────────────────────────────── */}
       <div
         style={{
           pointerEvents: "none",
@@ -77,24 +76,12 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           borderLeft: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        {/* Top gold rule */}
-        <div
-          style={{
-            width: "55%",
-            height: "1px",
-            background: "rgba(201,168,76,0.5)",
-            flexShrink: 0,
-            marginBottom: 5,
-          }}
-        />
-
-        {/* Vertical title */}
+        <div style={{ width: "55%", height: 1, background: "rgba(201,168,76,0.5)", flexShrink: 0, marginBottom: 5 }} />
         <span
           style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
-            fontFamily:
-              "var(--font-playfair), 'Playfair Display', Georgia, serif",
+            fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
             fontSize: Math.max(9, SPINE_W - 11) + "px",
             fontWeight: 600,
             color: "rgba(232,220,200,0.92)",
@@ -108,32 +95,15 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
         >
           {item.title}
         </span>
+        <div style={{ width: "55%", height: 1, background: "rgba(201,168,76,0.5)", flexShrink: 0, marginTop: 5 }} />
 
-        {/* Bottom gold rule */}
-        <div
-          style={{
-            width: "55%",
-            height: "1px",
-            background: "rgba(201,168,76,0.5)",
-            flexShrink: 0,
-            marginTop: 5,
-          }}
-        />
-
-        {/* Dimmed overlay — avoids opacity on 3D container */}
+        {/* Dimmed overlay — no opacity on 3D container */}
         {dimmed && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(8,5,3,0.82)",
-              pointerEvents: "none",
-            }}
-          />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(8,5,3,0.82)", pointerEvents: "none" }} />
         )}
       </div>
 
-      {/* ── COVER face (right side, revealed when tilted) ─── */}
+      {/* ── COVER face ────────────────────────────────────── */}
       <div
         style={{
           pointerEvents: "none",
@@ -150,24 +120,11 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           boxShadow: "inset 6px 0 16px rgba(0,0,0,0.6)",
         }}
       >
-        <Image
-          src={item.cover}
-          alt={item.title}
-          fill
-          style={{ objectFit: "cover" }}
-          sizes="135px"
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 40%)",
-          }}
-        />
+        <Image src={item.cover} alt={item.title} fill style={{ objectFit: "cover", pointerEvents: "none" }} sizes="135px" />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 40%)", pointerEvents: "none" }} />
       </div>
 
-      {/* ── PAGES face (left side — cream fore-edge) ─────── */}
+      {/* ── PAGES face ────────────────────────────────────── */}
       <div
         style={{
           pointerEvents: "none",
@@ -178,13 +135,12 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           right: 0,
           transformOrigin: "100% 50%",
           transform: "rotateY(-90deg)",
-          background:
-            "linear-gradient(to right, #A89878, #D4C9A8 20%, #E8DCC8 80%, #D4C9A8)",
+          background: "linear-gradient(to right, #A89878, #D4C9A8 20%, #E8DCC8 80%, #D4C9A8)",
           backfaceVisibility: "hidden",
         }}
       />
 
-      {/* ── TOP face ─────────────────────────────────────── */}
+      {/* ── TOP face ──────────────────────────────────────── */}
       <div
         style={{
           pointerEvents: "none",
@@ -203,30 +159,13 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
   );
 }
 
-// ── Color helpers ─────────────────────────────────────────────────
 function parseHex(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
-  return [
-    parseInt(h.slice(0, 2), 16) || 30,
-    parseInt(h.slice(2, 4), 16) || 20,
-    parseInt(h.slice(4, 6), 16) || 10,
-  ];
+  return [parseInt(h.slice(0,2),16)||20, parseInt(h.slice(2,4),16)||14, parseInt(h.slice(4,6),16)||8];
 }
-
-function lighten(hex: string, factor = 1.4): string {
-  try {
-    const [r, g, b] = parseHex(hex);
-    return `rgb(${Math.min(255, Math.round(r * factor))},${Math.min(255, Math.round(g * factor))},${Math.min(255, Math.round(b * factor))})`;
-  } catch {
-    return hex;
-  }
+function lighten(hex: string, f = 1.4): string {
+  try { const [r,g,b] = parseHex(hex); return `rgb(${Math.min(255,Math.round(r*f))},${Math.min(255,Math.round(g*f))},${Math.min(255,Math.round(b*f))})`; } catch { return hex; }
 }
-
-function darken(hex: string, factor = 0.65): string {
-  try {
-    const [r, g, b] = parseHex(hex);
-    return `rgb(${Math.round(r * factor)},${Math.round(g * factor)},${Math.round(b * factor)})`;
-  } catch {
-    return hex;
-  }
+function darken(hex: string, f = 0.65): string {
+  try { const [r,g,b] = parseHex(hex); return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`; } catch { return hex; }
 }
