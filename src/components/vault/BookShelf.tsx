@@ -37,7 +37,6 @@ const FILLERS: { w: number; h: number; color: string }[] = [
 ];
 
 function FillerBook({ filler }: { filler: (typeof FILLERS)[0] }) {
-  const seed = filler.w * 7 + filler.h;
   return (
     <div
       style={{
@@ -49,8 +48,10 @@ function FillerBook({ filler }: { filler: (typeof FILLERS)[0] }) {
           "inset 2px 0 3px rgba(255,255,255,0.04), inset -2px 0 5px rgba(0,0,0,0.5)",
         borderLeft: "1px solid rgba(255,255,255,0.04)",
         position: "relative",
+        zIndex: 0,          // always behind a hovered real book (z-index: 100)
         alignSelf: "flex-end",
         overflow: "hidden",
+        pointerEvents: "none",
       }}
     >
       {/* Subtle spine texture line */}
@@ -100,30 +101,20 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
     [search]
   );
 
-  // Interleave fillers and real books for a natural look
+  // Real books first (always visible, always on top via z-index),
+  // then filler books pad the shelf. Fillers come AFTER so they never
+  // sit in front of a real book in DOM stacking order.
   const shelfItems = useMemo(() => {
     const result: Array<
       | { type: "book"; item: VaultItem }
       | { type: "filler"; filler: (typeof FILLERS)[0] }
     > = [];
 
-    // 2–3 fillers at the start
-    result.push({ type: "filler", filler: FILLERS[0] });
-    result.push({ type: "filler", filler: FILLERS[1] });
+    items.forEach((item) => result.push({ type: "book", item }));
 
-    items.forEach((item, i) => {
-      result.push({ type: "book", item });
-      // 2–4 fillers between/after real books
-      const count = 2 + (i % 3);
-      for (let j = 0; j < count; j++) {
-        const fi = (i * 3 + j + 2) % FILLERS.length;
-        result.push({ type: "filler", filler: FILLERS[fi] });
-      }
-    });
-
-    // Pad to ~20 items total
-    while (result.length < 20) {
-      result.push({ type: "filler", filler: FILLERS[result.length % FILLERS.length] });
+    const needed = Math.max(0, 18 - items.length);
+    for (let i = 0; i < needed; i++) {
+      result.push({ type: "filler", filler: FILLERS[i % FILLERS.length] });
     }
 
     return result;
