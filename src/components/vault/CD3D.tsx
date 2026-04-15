@@ -127,7 +127,7 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
             src={item.cover}
             alt={item.title}
             fill
-            style={{ objectFit: "cover", pointerEvents: "none" }}
+            style={{ objectFit: "contain", pointerEvents: "none" }}
             sizes="152px"
           />
 

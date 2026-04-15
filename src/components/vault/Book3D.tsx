@@ -122,7 +122,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           boxShadow: "inset 6px 0 16px rgba(0,0,0,0.6)",
         }}>
           <Image src={item.cover} alt={item.title} fill
-            style={{ objectFit: "cover", pointerEvents: "none" }} sizes="135px" />
+            style={{ objectFit: "contain", pointerEvents: "none" }} sizes="135px" />
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
             background: "linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 40%)" }} />
         </div>
