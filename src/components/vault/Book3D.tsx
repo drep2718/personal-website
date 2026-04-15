@@ -56,6 +56,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
       {/* ── SPINE face (faces viewer) ─────────────────────── */}
       <div
         style={{
+          pointerEvents: "none",
           position: "absolute",
           inset: 0,
           background: `linear-gradient(
@@ -135,6 +136,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
       {/* ── COVER face (right side, revealed when tilted) ─── */}
       <div
         style={{
+          pointerEvents: "none",
           position: "absolute",
           width: COVER_DEPTH,
           height: HEIGHT,
@@ -168,6 +170,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
       {/* ── PAGES face (left side — cream fore-edge) ─────── */}
       <div
         style={{
+          pointerEvents: "none",
           position: "absolute",
           width: COVER_DEPTH,
           height: HEIGHT,
@@ -184,6 +187,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
       {/* ── TOP face ─────────────────────────────────────── */}
       <div
         style={{
+          pointerEvents: "none",
           position: "absolute",
           width: SPINE_W,
           height: COVER_DEPTH,
