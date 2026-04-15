@@ -14,6 +14,7 @@ import {
   type VaultCategory,
 } from "@/data/vault";
 import { Book3D } from "./Book3D";
+import { CD3D } from "./CD3D";
 import { VaultModal } from "./VaultModal";
 
 // ── Decorative filler books ───────────────────────────────────────
@@ -48,35 +49,37 @@ function FillerBook({ filler }: { filler: (typeof FILLERS)[0] }) {
           "inset 2px 0 3px rgba(255,255,255,0.04), inset -2px 0 5px rgba(0,0,0,0.5)",
         borderLeft: "1px solid rgba(255,255,255,0.04)",
         position: "relative",
-        zIndex: 0,          // always behind a hovered real book (z-index: 100)
+        zIndex: 0,
         alignSelf: "flex-end",
         overflow: "hidden",
         pointerEvents: "none",
       }}
     >
-      {/* Subtle spine texture line */}
-      <div
-        style={{
-          position: "absolute",
-          top: "12px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "55%",
-          height: "1px",
-          background: "rgba(150,120,80,0.2)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "12px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "55%",
-          height: "1px",
-          background: "rgba(150,120,80,0.2)",
-        }}
-      />
+      <div style={{ position:"absolute", top:"12px", left:"50%", transform:"translateX(-50%)", width:"55%", height:"1px", background:"rgba(150,120,80,0.2)" }} />
+      <div style={{ position:"absolute", bottom:"12px", left:"50%", transform:"translateX(-50%)", width:"55%", height:"1px", background:"rgba(150,120,80,0.2)" }} />
+    </div>
+  );
+}
+
+function FillerCD({ filler }: { filler: (typeof FILLERS)[0] }) {
+  return (
+    <div
+      style={{
+        width: 10,
+        height: filler.h,
+        flexShrink: 0,
+        background: `linear-gradient(to right, #080808, #1A1A1A 40%, #282828 70%, #1A1A1A)`,
+        boxShadow: "inset 1px 0 2px rgba(255,255,255,0.06), inset -1px 0 3px rgba(0,0,0,0.8)",
+        borderLeft: "1px solid rgba(255,255,255,0.06)",
+        position: "relative",
+        zIndex: 0,
+        alignSelf: "flex-end",
+        overflow: "hidden",
+        pointerEvents: "none",
+      }}
+    >
+      {/* Glossy sheen */}
+      <div style={{ position:"absolute", top:0, left:0, right:0, height:"40%", background:"linear-gradient(to bottom, rgba(255,255,255,0.05), transparent)" }} />
     </div>
   );
 }
@@ -187,13 +190,25 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
         >
           {shelfItems.map((entry, idx) =>
             entry.type === "book" ? (
-              <Book3D
-                key={entry.item.id}
-                item={entry.item}
-                onSelect={onSelect}
-                onHover={onHover}
-                dimmed={search.trim() !== "" && !matches(entry.item)}
-              />
+              category === "anime" ? (
+                <CD3D
+                  key={entry.item.id}
+                  item={entry.item}
+                  onSelect={onSelect}
+                  onHover={onHover}
+                  dimmed={search.trim() !== "" && !matches(entry.item)}
+                />
+              ) : (
+                <Book3D
+                  key={entry.item.id}
+                  item={entry.item}
+                  onSelect={onSelect}
+                  onHover={onHover}
+                  dimmed={search.trim() !== "" && !matches(entry.item)}
+                />
+              )
+            ) : category === "anime" ? (
+              <FillerCD key={`filler-${category}-${idx}`} filler={entry.filler} />
             ) : (
               <FillerBook key={`filler-${category}-${idx}`} filler={entry.filler} />
             )
@@ -227,7 +242,7 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
 }
 
 // ── Main BookShelf ────────────────────────────────────────────────
-const CATEGORIES: VaultCategory[] = ["books", "games", "anime"];
+const CATEGORIES: VaultCategory[] = ["books", "anime"];
 
 export function BookShelf() {
   const [search, setSearch] = useState("");
