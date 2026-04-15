@@ -190,7 +190,7 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
         >
           {shelfItems.map((entry, idx) =>
             entry.type === "book" ? (
-              category === "anime" ? (
+              category === "anime" && entry.item.genre !== "Manga" ? (
                 <CD3D
                   key={entry.item.id}
                   item={entry.item}
