@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { VaultHero } from "@/components/vault/VaultHero";
-import { VaultLibrary } from "@/components/vault/VaultLibrary";
+import { BookShelf } from "@/components/vault/BookShelf";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function VaultPage() {
   return (
-    <main style={{ background: "#0C0906" }}>
+    <main style={{ background: "#0A0703" }}>
       <VaultHero />
-      <VaultLibrary />
+      <BookShelf />
     </main>
   );
 }
