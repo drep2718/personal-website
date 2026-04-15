@@ -20,8 +20,10 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
   const bookRef    = useRef<HTMLDivElement>(null);
 
   const seed    = item.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const SPINE_W = 20 + (seed % 14);   // 20–34 px
+  const SPINE_W = 24 + (seed % 14);   // 24–38 px
   const HEIGHT  = 172 + (seed % 46);  // 172–218 px
+  // Font size: small enough to never look cramped, shrinks for long titles
+  const spineFont = Math.max(6, Math.min(9, Math.floor((HEIGHT - 40) / item.title.length * 1.05)));
 
   // Direct DOM mutations only — zero React re-renders, zero animation resets
   const handleEnter = useCallback(() => {
@@ -91,7 +93,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
             fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
-            fontSize: Math.max(9, SPINE_W - 11) + "px",
+            fontSize: spineFont + "px",
             fontWeight: 600, color: "rgba(232,220,200,0.92)",
             letterSpacing: "0.07em", lineHeight: 1,
             overflow: "hidden", flex: 1,
