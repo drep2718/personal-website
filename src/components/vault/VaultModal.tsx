@@ -99,14 +99,14 @@ export function VaultModal({ item, onClose }: Props) {
 
         {/* ── Details ─────────────────────────────────────── */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.35em", color: "#2A1A0A", marginBottom: "18px" }}>
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.35em", color: "#7A6A52", marginBottom: "18px" }}>
             // {item.category.toUpperCase()} · {item.genre.toUpperCase()}
           </p>
 
           <h2
             style={{
               fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
-              fontSize: "clamp(30px, 4.5vw, 58px)",
+              fontSize: "clamp(26px, 4vw, 52px)",
               fontWeight: 700,
               color: "#E8DCC8",
               lineHeight: 1.05,
@@ -118,17 +118,30 @@ export function VaultModal({ item, onClose }: Props) {
             {item.title}
           </h2>
 
-          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "#6A5840", marginBottom: "6px" }}>
+          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "#B09878", marginBottom: "4px" }}>
             {item.author}
           </p>
-          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "13px", color: "#3A2A1A", marginBottom: "28px" }}>
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: "0.1em", color: "#6A5A42", marginBottom: "20px" }}>
             {item.year}
           </p>
 
-          <div style={{ height: 1, background: "linear-gradient(to right, rgba(201,168,76,0.3), transparent)", marginBottom: "28px" }} />
+          <div style={{ height: 1, background: "linear-gradient(to right, rgba(201,168,76,0.3), transparent)", marginBottom: "18px" }} />
+
+          {/* Description */}
+          {"description" in item && item.description && (
+            <p style={{
+              fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+              fontSize: "14px",
+              color: "#C8B898",
+              lineHeight: 1.75,
+              marginBottom: "20px",
+            }}>
+              {(item as {description: string}).description}
+            </p>
+          )}
 
           {/* Status */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: status.color, boxShadow: `0 0 12px ${status.color}`, flexShrink: 0 }} />
             <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.22em", color: status.color }}>
               {status.label}
@@ -136,7 +149,7 @@ export function VaultModal({ item, onClose }: Props) {
           </div>
 
           {/* Stars */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
             {stars.map((filled, i) => (
               <div key={i} style={{
                 width: 10, height: 10, borderRadius: "50%",
@@ -151,11 +164,11 @@ export function VaultModal({ item, onClose }: Props) {
             <p style={{
               fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
               fontStyle: "italic",
-              fontSize: "15px",
-              color: "#6A5A48",
+              fontSize: "13px",
+              color: "#8A7A62",
               lineHeight: 1.8,
               borderLeft: "2px solid rgba(201,168,76,0.2)",
-              paddingLeft: 18,
+              paddingLeft: 16,
               margin: 0,
             }}>
               &ldquo;{item.notes}&rdquo;
@@ -166,9 +179,9 @@ export function VaultModal({ item, onClose }: Props) {
         {/* Close */}
         <button
           onClick={onClose}
-          style={{ position: "absolute", top: 0, right: 0, background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.15em", color: "#3A2A1A", padding: "4px 8px" }}
+          style={{ position: "absolute", top: 0, right: 0, background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.15em", color: "#6A5A42", padding: "4px 8px" }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#C9A84C"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#3A2A1A"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6A5A42"; }}
         >
           ESC ✕
         </button>

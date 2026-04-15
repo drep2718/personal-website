@@ -18,6 +18,7 @@ export interface VaultItem {
   genre: string;
   status: VaultStatus;
   rating: number; // 1–5
+  description?: string;
   notes?: string;
 }
 
@@ -34,6 +35,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Memoir",
     status: "completed",
     rating: 4,
+    description: "A memoir about how two rescue dogs—a golden retriever and a scrappy mutt—helped the author survive the grief of her son's addiction and her own unraveling.",
     notes: "A quiet, honest memoir about healing through the unexpected bond with two dogs.",
   },
 
@@ -49,6 +51,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Sci-Fi",
     status: "completed",
     rating: 5,
+    description: "On the desert planet Arrakis, young Paul Atreides navigates deadly politics and discovers his destiny after his noble family is betrayed and nearly destroyed.",
     notes: "The greatest science fiction novel ever written. A complete world.",
   },
 
@@ -63,6 +66,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Sci-Fi",
     status: "completed",
     rating: 4,
+    description: "Twelve years after becoming Emperor, Paul Atreides finds his prescient vision turning to ash as a web of conspirators closes in to dismantle everything he built.",
     notes: "A necessary deconstruction. Herbert tears down the myth he built.",
   },
 
@@ -78,6 +82,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "In a Roman-inspired empire where power is gained by surrendering your will to the hierarchy, an outsider with a hidden past must survive the empire's elite academy while uncovering a terrifying conspiracy.",
     notes: "One of the best fantasy debuts in years. The Roman-inspired world is immersive and the mystery is airtight.",
   },
   {
@@ -91,6 +96,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Vis Telimus returns to a world upended by war, forced to confront the full cost of the secrets he's been keeping as the Hierarchy's true nature is finally exposed.",
     notes: "Islington delivers on every promise the first book made.",
   },
 
@@ -106,6 +112,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "At Oxford's Royal Institute of Translation in an alternate 1830s, a Chinese scholar discovers that the silver-working magic powering the British Empire is built on stolen language—and decides what he's willing to do about it.",
     notes: "A furious, brilliant book about language, colonialism, and the cost of complicity.",
   },
   {
@@ -119,6 +126,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "A young woman descends into a mythological underworld to reclaim what was taken from her, only to find that the dead have their own demands and the cost of return is nothing she expected.",
     notes: "Kuang descends into myth and returns with something darker and stranger than expected.",
   },
 
@@ -134,6 +142,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Classic / Poetry",
     status: "completed",
     rating: 5,
+    description: "Ovid's epic poem traces the history of the world from primordial chaos through Julius Caesar's apotheosis, weaving together over two hundred myths through the single thread of transformation.",
     notes: "Two thousand years old and still the most alive thing on any shelf.",
   },
 
@@ -149,6 +158,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "An orphaned boy who grew up sleeping in a cupboard under the stairs discovers on his eleventh birthday that he is a wizard and has a place waiting for him at Hogwarts School of Witchcraft and Wizardry.",
     notes: "The one that started everything. Still magical every time.",
   },
   {
@@ -162,6 +172,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "Harry returns to Hogwarts for his second year to find that something is petrifying students and leaving threatening messages on the walls, with all signs pointing to him as the heir of Slytherin.",
     notes: "Darker in all the right ways. The basilisk reveal still lands.",
   },
   {
@@ -175,6 +186,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Harry learns that a dangerous mass murderer has escaped from the wizarding prison of Azkaban—and that the man is somehow connected to the night his parents were killed.",
     notes: "The series finds its soul here. Time-turners and Marauders and Lupin.",
   },
   {
@@ -188,6 +200,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Harry is mysteriously entered into the deadly Triwizard Tournament, and by its end he witnesses Voldemort's return to a physical body in a graveyard that changes the wizarding world forever.",
     notes: "The turning point. Nothing is safe after that graveyard.",
   },
   {
@@ -201,6 +214,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "While the Ministry of Magic refuses to believe Voldemort has returned, Harry and his friends form Dumbledore's Army to learn real defensive magic—and Harry discovers a dangerous mental connection to the Dark Lord.",
     notes: "Umbridge is the most effective villain Rowling ever wrote.",
   },
   {
@@ -214,6 +228,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Dumbledore takes Harry on private lessons to uncover Voldemort's past and the nature of his immortality, while a mysterious annotated potions textbook reveals dangerous secrets.",
     notes: "The penultimate grief. Dumbledore's exit is one of fiction's great farewells.",
   },
   {
@@ -227,6 +242,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Harry, Ron, and Hermione abandon Hogwarts to hunt down Voldemort's remaining horcruxes, racing against time as the wizarding world falls under dark rule and everything they love is threatened.",
     notes: "A fitting end. The forest scene is perfect literature.",
   },
 
@@ -242,6 +258,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "Prince Raoden wakes one morning as an Elantrian—once a god-like being, now a decaying wretch in a cursed city—and must find a way to restore Elantris's lost magic before his kingdom is destroyed.",
     notes: "Sanderson's debut still holds up — a city of fallen gods and a mystery worth solving.",
   },
 
@@ -257,6 +274,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "A team of thieves and revolutionaries plots the impossible heist of overthrowing the immortal Lord Ruler, who has ruled a world of ash and mist for a thousand years.",
     notes: "The heist that became an epic. Allomancy is the gold standard of hard magic.",
   },
   {
@@ -270,6 +288,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "With the Lord Ruler dead and the empire in chaos, Vin and Elend struggle to hold a city under siege while ancient secrets from the Well of Ascension threaten to undo everything they fought for.",
     notes: "The difficult middle book that earns its ending. Vin's arc deepens beautifully.",
   },
   {
@@ -283,6 +302,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "As ash buries the world and the mists begin killing people in daylight, the crew must unravel the final secrets of their reality before the prophecized Hero of Ages arrives—or fails to.",
     notes: "The ending that recontextualizes everything. Sanderson at his most ambitious.",
   },
 
@@ -298,6 +318,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "Two sisters from a small, cold kingdom arrive in the cosmopolitan city of Hallandren, where Breath—a piece of a person's life force—can be sold, traded, and used to animate the dead.",
     notes: "Sanderson at his most playful. The magic of Breath and color is endlessly clever.",
   },
 
@@ -313,6 +334,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "On a world scoured by magical highstorms, a slave-soldier, a young thief, and a female scholar are each drawn toward an ancient order of warriors and a secret that could save or destroy their world.",
     notes: "The most ambitious fantasy of the modern era. Dalinar alone is worth the thousand pages.",
   },
   {
@@ -326,6 +348,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Shallan travels to the Shattered Plains to find Urithiru while Kaladin struggles with the oaths he must speak to unlock his true power, as the Everstorm approaches and the Voidbringers return.",
     notes: "Shallan comes into her own and the climax is breathtaking.",
   },
   {
@@ -339,6 +362,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Dalinar Kholin must unite the nations of Roshar against the ancient enemy now that the Everstorm has returned, while confronting the monstrous truth of what he did before he became the man he is now.",
     notes: "Dalinar's flashbacks are the best thing Sanderson has ever written.",
   },
   {
@@ -352,6 +376,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "Navani Kholin races to unlock the secrets of the tower of Urithiru's ancient Sibling while Kaladin fights a different kind of war—against his own fracturing mind—as the Fused occupy their home.",
     notes: "The deepest dive into fabrials and Navani's arc is quietly the heart of the series.",
   },
   {
@@ -365,6 +390,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "Dalinar Kholin enters Shadesmar to confront Odium himself in a contest of champions that will decide the fate of Roshar, while the pieces of ten books of buildup finally converge.",
     notes: "The end of the first arc. Everything converges and nothing is the same after.",
   },
 
@@ -380,6 +406,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "A Forger with the power to rewrite the history of any object is arrested and given an impossible commission: create a new soul for the comatose emperor in one hundred days, or be executed.",
     notes: "Perfect novella. The Forging magic is Sanderson's most intimate and elegant system.",
   },
   {
@@ -393,6 +420,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "A widow who runs a waystation in a forest full of deadly Shades must outwit ruthless bounty hunters while protecting her family, using every ounce of her knowledge to survive the night.",
     notes: "Dark, tense, and brilliant. One of the best Cosmere novellas.",
   },
   {
@@ -406,6 +434,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "A lone trapper on a dangerous predatory archipelago discovers that offworlders have arrived with technology that could change his world forever—and suspects their motives are not what they claim.",
     notes: "A tight Cosmere novella — deceptively small in scope, vast in implication.",
   },
 
@@ -421,6 +450,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 4,
+    description: "Hana inherits a pawnshop that trades in debts owed to the spirit world, where she must broker impossible deals between the living and supernatural creditors before the balance tips too far.",
     notes: "Dreamy and melancholic. A pawnshop at the edge of the world.",
   },
 
@@ -436,6 +466,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "A warrior woman in an isolated village questions everything her society has taught her when her husband returns from the outside world carrying secrets that could shatter the foundation of their entire culture.",
     notes: "The most emotionally devastating fantasy novel I have ever read.",
   },
   {
@@ -449,6 +480,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Fantasy",
     status: "completed",
     rating: 5,
+    description: "A brilliant scholarship student at a prestigious magic academy uncovers a conspiracy that implicates the people she most admires, forcing her to choose between loyalty to her world and the truth.",
     notes: "A brutal, brilliant gut-punch. M.L. Wang writes darkness with surgical precision.",
   },
 
@@ -464,6 +496,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Sci-Fi",
     status: "completed",
     rating: 5,
+    description: "Astronaut Mark Watney is accidentally left behind on Mars after a storm forces an emergency evacuation, and must use nothing but his botany skills and engineering ingenuity to survive until rescue.",
     notes: "Pure problem-solving joy. Watney is one of fiction's great protagonists.",
   },
   {
@@ -477,6 +510,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Sci-Fi",
     status: "completed",
     rating: 5,
+    description: "An astronaut wakes up alone in a spacecraft with no memory, millions of miles from Earth, and gradually pieces together that he is humanity's last hope against a microscopic organism consuming the sun's energy.",
     notes: "The best first-contact story ever written. Rocky alone is worth the price.",
   },
 
@@ -492,6 +526,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "Denji, a broke teenager indentured to the yakuza as a devil hunter, merges with his chainsaw devil Pochita after being killed—and wakes up as Chainsaw Man, a human-devil hybrid working for a mysterious government agency.",
     notes: "Nothing else reads like this. Fujimoto breaks every rule and makes it work.",
   },
   {
@@ -505,6 +540,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "The devastating conclusion to Part 1 tears apart everything Denji has built, as Makima's true nature and her plan for Chainsaw Man are finally revealed in full.",
     notes: "The end of Part 1. One of the most devastating finales in manga.",
   },
   {
@@ -518,6 +554,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "Part 2 deepens as Denji navigates high school while a new generation of devil hunters emerges, and the consequences of Chainsaw Man's legend continue to spiral outward.",
     notes: "Part 2 deepens in ways that feel completely unpredictable.",
   },
   {
@@ -531,6 +568,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "Fujimoto pushes Part 2 into darker and stranger territory as the relationships between Denji, Asa, and the War Devil become increasingly tangled and dangerous.",
     notes: "Fujimoto refuses to let anything be comfortable.",
   },
   {
@@ -544,6 +582,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "The War arc escalates as Fujimoto deploys surreal imagery and unexpected emotional gut-punches in some of the most visually inventive pages of the series.",
     notes: "The colors alone are a statement. Fujimoto at peak form.",
   },
   {
@@ -557,6 +596,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Manga",
     status: "completed",
     rating: 5,
+    description: "The War arc reaches a fever pitch of violence and absurdity, with Fujimoto delivering the kind of chaotic, maximalist storytelling that only he could make emotionally coherent.",
     notes: "War arc chaos rendered in pure kinetic madness.",
   },
 
@@ -572,6 +612,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     genre: "Historical",
     status: "completed",
     rating: 5,
+    description: "Young Thorfinn joins the Viking mercenaries who killed his father, living only for revenge—but the war and slavery that follow slowly strip him of everything, leaving only the question of what it means to truly live.",
     notes: "A meditation on violence, purpose, and what it means to live.",
   },
 ];
