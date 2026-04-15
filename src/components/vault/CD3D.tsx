@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import Image from "next/image";
 import type { VaultItem } from "@/data/vault";
 
@@ -21,11 +21,18 @@ const T_OFF = "rotateY(0deg)   translateZ(0px)  translateY(0px)";
 export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const caseRef    = useRef<HTMLDivElement>(null);
+  const [showImage, setShowImage] = useState(false);
+
+  // Set initial transform via DOM — keeps React from resetting it on re-renders
+  useEffect(() => {
+    if (caseRef.current) caseRef.current.style.transform = T_OFF;
+  }, []);
 
   const handleEnter = useCallback(() => {
     if (dimmed) return;
     if (wrapperRef.current) wrapperRef.current.style.zIndex = "100";
     if (caseRef.current)    caseRef.current.style.transform = T_ON;
+    setShowImage(true);
     onHover(item);
   }, [dimmed, item, onHover]);
 
@@ -57,7 +64,6 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
           inset:          0,
           pointerEvents:  "none",
           transformStyle: "preserve-3d",
-          transform:      T_OFF,
           transition:     "transform 0.40s cubic-bezier(0.34, 1.48, 0.64, 1)",
         }}
       >
@@ -122,14 +128,16 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
           backfaceVisibility: "hidden",
           boxShadow:          "-8px 0 24px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06)",
         }}>
-          {/* Cover art — fills the disc */}
-          <Image
-            src={item.cover}
-            alt={item.title}
-            fill
-            style={{ objectFit: "contain", pointerEvents: "none" }}
-            sizes="152px"
-          />
+          {/* Cover art — fills the disc (deferred until first hover) */}
+          {showImage && (
+            <Image
+              src={item.cover}
+              alt={item.title}
+              fill
+              style={{ objectFit: "contain", pointerEvents: "none" }}
+              sizes="152px"
+            />
+          )}
 
           {/* Outer ring — polycarbonate / data area (dark ring at edge) */}
           <div style={{

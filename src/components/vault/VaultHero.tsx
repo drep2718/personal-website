@@ -42,6 +42,7 @@ export function VaultHero() {
 
     let frame: number;
     let t = 0;
+    let running = true;
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -60,13 +61,26 @@ export function VaultHero() {
         ctx.fill();
       });
 
-      frame = requestAnimationFrame(draw);
+      if (running) frame = requestAnimationFrame(draw);
     };
     draw();
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        running = false;
+        cancelAnimationFrame(frame);
+      } else {
+        running = true;
+        draw();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      running = false;
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", setSize);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 

@@ -91,7 +91,6 @@ export function VaultModal({ item, onClose }: Props) {
             fill
             style={{ objectFit: "cover" }}
             sizes="(max-width: 640px) 220px, 400px"
-            priority
           />
           {/* Inner edge shadow for depth */}
           <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 0 50px rgba(0,0,0,0.25)", pointerEvents: "none" }} />
