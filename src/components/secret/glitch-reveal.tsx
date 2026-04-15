@@ -9,7 +9,11 @@ const LINES = [
   { text: "DREPANIOTIS", size: "clamp(22px,3.8vw,56px)", weight: "700", color: "#fff", spacing: "0.18em" },
 ];
 
-export function GlitchReveal() {
+interface Props {
+  onComplete?: () => void;
+}
+
+export function GlitchReveal({ onComplete }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -93,6 +97,7 @@ export function GlitchReveal() {
               () => {
                 glitching = false;
                 clearInterval(glitchLoop);
+                if (running) onComplete?.();
               },
               allSpans.length * 28 + 200
             );
