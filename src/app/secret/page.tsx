@@ -80,10 +80,10 @@ export default function SecretPage() {
             {/* Vault entry link — fades in after name locks */}
             <a
               ref={vaultLinkRef}
-              href="/vault"
+              href="/secret/vault"
               onClick={(e) => {
                 e.preventDefault();
-                router.push("/vault");
+                router.push("/secret/vault");
               }}
               style={{
                 opacity: 0,
