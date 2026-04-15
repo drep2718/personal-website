@@ -9,7 +9,7 @@ import {
 import { VaultCard } from "./VaultCard";
 import { VaultModal } from "./VaultModal";
 
-const CATEGORIES: VaultCategory[] = ["books", "games", "anime"];
+const CATEGORIES: VaultCategory[] = ["books", "anime"];
 
 export function VaultLibrary() {
   const [active, setActive] = useState<VaultCategory>("books");
