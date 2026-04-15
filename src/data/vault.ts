@@ -533,7 +533,7 @@ export const CATEGORY_META: Record<
 > = {
   books: { label: "BOOKS", accent: "#C9A84C", dim: "rgba(201,168,76,0.12)" },
 
-  anime: { label: "ANIME", accent: "#9A6AAA", dim: "rgba(154,106,170,0.12)" },
+  anime: { label: "ANIME / FAVOURITE MANGA VOLUMES", accent: "#9A6AAA", dim: "rgba(154,106,170,0.12)" },
 };
 
 export const STATUS_META: Record<
