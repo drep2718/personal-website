@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { animate, stagger } from "animejs";
 
 export function VaultHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,7 +31,7 @@ export function VaultHero() {
       phase: number;
     };
 
-    const particles: Particle[] = Array.from({ length: 90 }, () => ({
+    const particles: Particle[] = Array.from({ length: 55 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 1.4 + 0.2,
@@ -42,12 +43,13 @@ export function VaultHero() {
 
     let frame: number;
     let t = 0;
+    let running = true;
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       t += 0.008;
 
-      particles.forEach((p) => {
+      for (const p of particles) {
         p.y -= p.speed;
         p.x += p.drift + Math.sin(t + p.phase) * 0.15;
         if (p.y < -4) {
@@ -58,33 +60,55 @@ export function VaultHero() {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(201,168,76,${p.opacity})`;
         ctx.fill();
-      });
+      }
 
-      frame = requestAnimationFrame(draw);
+      if (running) frame = requestAnimationFrame(draw);
     };
     draw();
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        running = false;
+        cancelAnimationFrame(frame);
+      } else {
+        running = true;
+        draw();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      running = false;
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", setSize);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
-  // Entrance animations
+  // Entrance animations — anime.js is statically imported so it is
+  // already parsed and ready the moment this effect fires.
   useEffect(() => {
-    const run = async () => {
-      const { animate, stagger } = await import("animejs");
+    const els = [titleRef.current!, subtitleRef.current!, ruleRef.current!];
 
-      animate([titleRef.current!, subtitleRef.current!, ruleRef.current!], {
-        opacity: [0, 1],
-        translateY: [20, 0],
-        duration: 1000,
-        delay: stagger(150, { start: 400 }),
-        ease: "easeOutExpo",
-      });
+    // Prime GPU compositor layers before animating
+    for (const el of els) el.style.willChange = "opacity, transform";
 
-      // Arrow bounce loop
-      animate(arrowRef.current!, {
+    animate(els, {
+      opacity: [0, 1],
+      translateY: [20, 0],
+      duration: 1000,
+      delay: stagger(150, { start: 400 }),
+      ease: "easeOutExpo",
+      complete: () => {
+        // Release compositor layers — no longer needed after animation
+        for (const el of els) el.style.willChange = "auto";
+      },
+    });
+
+    // Arrow bounce loop
+    if (arrowRef.current) {
+      arrowRef.current.style.willChange = "opacity, transform";
+      animate(arrowRef.current, {
         translateY: [-7, 7],
         opacity: [0.45, 0.85],
         duration: 1600,
@@ -92,8 +116,7 @@ export function VaultHero() {
         alternate: true,
         ease: "easeInOutSine",
       });
-    };
-    run();
+    }
   }, []);
 
   const scrollDown = () => {

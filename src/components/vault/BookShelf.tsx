@@ -296,6 +296,10 @@ export function BookShelf() {
           paddingBottom: "80px",
           position: "relative",
           overflow: "hidden",
+          // Skip rendering this below-fold section until the user scrolls near it.
+          // Frees up CPU/GPU for the hero animation on initial load.
+          contentVisibility: "auto",
+          containIntrinsicSize: "auto 800px",
         }}
       >
         {/* Back wall texture — vertical panel lines */}
