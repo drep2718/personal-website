@@ -10,6 +10,7 @@ export type VaultStatus =
 export interface VaultItem {
   id: string;
   title: string;
+  author: string;
   category: VaultCategory;
   cover: string;
   coverColor: string;
@@ -25,6 +26,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "mattie-milo-me",
     title: "Mattie, Milo, and Me",
+    author: "Anne Abel",
     category: "books",
     cover: "/covers/mattie-milo-me.png",
     coverColor: "#5B9EA0",
@@ -39,6 +41,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "dune",
     title: "Dune",
+    author: "Frank Herbert",
     category: "books",
     cover: "/covers/dune.png",
     coverColor: "#4A2C0A",
@@ -52,6 +55,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "dune-messiah",
     title: "Dune Messiah",
+    author: "Frank Herbert",
     category: "books",
     cover: "/covers/dune-messiah.png",
     coverColor: "#0D0D2A",
@@ -66,6 +70,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "will-of-the-many",
     title: "The Will of the Many",
+    author: "James Islington",
     category: "books",
     cover: "/covers/will-of-the-many.png",
     coverColor: "#3A2A10",
@@ -78,6 +83,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "strength-of-the-few",
     title: "The Strength of the Few",
+    author: "James Islington",
     category: "books",
     cover: "/covers/strength-of-the-few.png",
     coverColor: "#1A2A3A",
@@ -92,6 +98,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "babel",
     title: "Babel",
+    author: "R.F. Kuang",
     category: "books",
     cover: "/covers/babel.png",
     coverColor: "#0D0A08",
@@ -104,6 +111,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "katabasis",
     title: "Katabasis",
+    author: "R.F. Kuang",
     category: "books",
     cover: "/covers/katabasis.png",
     coverColor: "#1A1814",
@@ -118,6 +126,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "metamorphoses",
     title: "Metamorphoses",
+    author: "Ovid",
     category: "books",
     cover: "/covers/metamorphoses.png",
     coverColor: "#0A0A0A",
@@ -132,6 +141,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-sorcerers-stone",
     title: "Harry Potter and the Sorcerer's Stone",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-sorcerers-stone.png",
     coverColor: "#6A3A10",
@@ -144,6 +154,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-chamber-of-secrets",
     title: "Harry Potter and the Chamber of Secrets",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-chamber-of-secrets.png",
     coverColor: "#1A3A1A",
@@ -156,6 +167,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-prisoner-of-azkaban",
     title: "Harry Potter and the Prisoner of Azkaban",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-prisoner-of-azkaban.png",
     coverColor: "#1A1A3A",
@@ -168,6 +180,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-goblet-of-fire",
     title: "Harry Potter and the Goblet of Fire",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-goblet-of-fire.png",
     coverColor: "#2A1A0A",
@@ -180,6 +193,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-order-of-the-phoenix",
     title: "Harry Potter and the Order of the Phoenix",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-order-of-the-phoenix.png",
     coverColor: "#0A1A2A",
@@ -192,6 +206,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-half-blood-prince",
     title: "Harry Potter and the Half-Blood Prince",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-half-blood-prince.png",
     coverColor: "#0A2A0A",
@@ -204,6 +219,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hp-deathly-hallows",
     title: "Harry Potter and the Deathly Hallows",
+    author: "J.K. Rowling",
     category: "books",
     cover: "/covers/hp-deathly-hallows.png",
     coverColor: "#3A1A08",
@@ -218,6 +234,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "elantris",
     title: "Elantris",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/elantris.png",
     coverColor: "#2A2010",
@@ -230,6 +247,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "mistborn-final-empire",
     title: "Mistborn: The Final Empire",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/mistborn-final-empire.png",
     coverColor: "#3A2A4A",
@@ -242,6 +260,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "well-of-ascension",
     title: "The Well of Ascension",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/well-of-ascension.png",
     coverColor: "#3A2A18",
@@ -254,6 +273,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "hero-of-ages",
     title: "The Hero of Ages",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/hero-of-ages.png",
     coverColor: "#3A2A3A",
@@ -266,6 +286,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "warbreaker",
     title: "Warbreaker",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/warbreaker.png",
     coverColor: "#0D1A3A",
@@ -278,6 +299,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "way-of-kings",
     title: "The Way of Kings",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/way-of-kings.png",
     coverColor: "#3A2A10",
@@ -290,6 +312,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "emperors-soul",
     title: "The Emperor's Soul",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/emperors-soul.png",
     coverColor: "#3A2A1A",
@@ -302,6 +325,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "shadows-for-silence",
     title: "Shadows for Silence in the Forests of Hell",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/shadows-for-silence.png",
     coverColor: "#0D0D1A",
@@ -314,6 +338,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "words-of-radiance",
     title: "Words of Radiance",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/words-of-radiance.png",
     coverColor: "#2A1A10",
@@ -326,6 +351,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "sixth-of-the-dusk",
     title: "Sixth of the Dusk",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/sixth-of-the-dusk.png",
     coverColor: "#1A3A4A",
@@ -338,6 +364,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "oathbringer",
     title: "Oathbringer",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/oathbringer.png",
     coverColor: "#1A1A2A",
@@ -350,6 +377,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "rhythm-of-war",
     title: "Rhythm of War",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/rhythm-of-war.png",
     coverColor: "#2A1A08",
@@ -362,6 +390,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "wind-and-truth",
     title: "Wind and Truth",
+    author: "Brandon Sanderson",
     category: "books",
     cover: "/covers/wind-and-truth.png",
     coverColor: "#0A1A2A",
@@ -376,6 +405,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "water-moon",
     title: "Water Moon",
+    author: "Samantha Sotto Yambao",
     category: "books",
     cover: "/covers/water-moon.png",
     coverColor: "#3A4A7A",
@@ -390,6 +420,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "sword-of-kaigen",
     title: "The Sword of Kaigen",
+    author: "M.L. Wang",
     category: "books",
     cover: "/covers/sword-of-kaigen.png",
     coverColor: "#1A2A3A",
@@ -402,6 +433,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "blood-over-bright-haven",
     title: "Blood Over Bright Haven",
+    author: "M.L. Wang",
     category: "books",
     cover: "/covers/blood-over-bright-haven.png",
     coverColor: "#1A0808",
@@ -416,6 +448,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "the-martian",
     title: "The Martian",
+    author: "Andy Weir",
     category: "books",
     cover: "/covers/the-martian.png",
     coverColor: "#8A3A10",
@@ -428,6 +461,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "project-hail-mary",
     title: "Project Hail Mary",
+    author: "Andy Weir",
     category: "books",
     cover: "/covers/project-hail-mary.png",
     coverColor: "#1A1A0A",
@@ -442,6 +476,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-1",
     title: "Chainsaw Man Vol. 1",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-1.png",
     coverColor: "#8A0A0A",
@@ -454,6 +489,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-10",
     title: "Chainsaw Man Vol. 10",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-10.png",
     coverColor: "#3A2418",
@@ -466,6 +502,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-19",
     title: "Chainsaw Man Vol. 19",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-19.png",
     coverColor: "#1A2A1A",
@@ -478,6 +515,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-20",
     title: "Chainsaw Man Vol. 20",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-20.png",
     coverColor: "#0A1020",
@@ -490,6 +528,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-22",
     title: "Chainsaw Man Vol. 22",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-22.png",
     coverColor: "#4A1A3A",
@@ -502,6 +541,7 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "chainsaw-man-vol-23",
     title: "Chainsaw Man Vol. 23",
+    author: "Tatsuki Fujimoto",
     category: "anime",
     cover: "/covers/chainsaw-man-vol-23.png",
     coverColor: "#3A3A08",
@@ -516,9 +556,10 @@ export const VAULT_ITEMS: VaultItem[] = [
   {
     id: "vinland-saga",
     title: "Vinland Saga",
+    author: "Makoto Yukimura",
     category: "anime",
-    cover: "/covers/vinland-saga.jpg",
-    coverColor: "#1E2D1A",
+    cover: "/covers/vinland-saga.png",
+    coverColor: "#5A0A0A",
     year: 2019,
     genre: "Historical",
     status: "completed",

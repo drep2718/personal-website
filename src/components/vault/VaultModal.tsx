@@ -118,7 +118,10 @@ export function VaultModal({ item, onClose }: Props) {
             {item.title}
           </h2>
 
-          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "#4A3A28", marginBottom: "28px" }}>
+          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "#6A5840", marginBottom: "6px" }}>
+            {item.author}
+          </p>
+          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: "13px", color: "#3A2A1A", marginBottom: "28px" }}>
             {item.year}
           </p>
 

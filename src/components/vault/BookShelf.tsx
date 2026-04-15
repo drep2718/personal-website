@@ -100,6 +100,7 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
     (item: VaultItem) =>
       !search.trim() ||
       item.title.toLowerCase().includes(search.toLowerCase()) ||
+      item.author.toLowerCase().includes(search.toLowerCase()) ||
       item.genre.toLowerCase().includes(search.toLowerCase()),
     [search]
   );
@@ -510,10 +511,21 @@ export function BookShelf() {
               fontSize: "13px",
               fontWeight: 700,
               color: "#E8DCC8",
-              marginBottom: "4px",
+              marginBottom: "2px",
             }}
           >
             {hoveredItem.title}
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+              fontStyle: "italic",
+              fontSize: "11px",
+              color: "#7A6A58",
+              marginBottom: "4px",
+            }}
+          >
+            {hoveredItem.author}
           </div>
           <div
             style={{
