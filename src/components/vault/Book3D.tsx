@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useRef, useCallback } from "react";
 import Image from "next/image";
 import type { VaultItem } from "@/data/vault";
 
@@ -18,7 +18,6 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
   // Two refs: wrapper owns hit-testing + z-index; book owns 3D transform
   const wrapperRef = useRef<HTMLDivElement>(null);
   const bookRef    = useRef<HTMLDivElement>(null);
-  const [showImage, setShowImage] = useState(false);
 
   const seed    = item.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const SPINE_W = 24 + (seed % 14);   // 24–38 px
@@ -26,17 +25,11 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
   // Font size: small enough to never look cramped, shrinks for long titles
   const spineFont = Math.max(8, Math.min(12, Math.floor((HEIGHT - 40) / item.title.length * 1.3)));
 
-  // Set initial transform via DOM — keeps React from resetting it on re-renders
-  useEffect(() => {
-    if (bookRef.current) bookRef.current.style.transform = T_OFF;
-  }, []);
-
   // Direct DOM mutations only — zero React re-renders, zero animation resets
   const handleEnter = useCallback(() => {
     if (dimmed) return;
     if (wrapperRef.current) wrapperRef.current.style.zIndex = "100";
     if (bookRef.current)    bookRef.current.style.transform  = T_ON;
-    setShowImage(true);
     onHover(item);
   }, [dimmed, item, onHover]);
 
@@ -76,6 +69,7 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           inset: 0,
           pointerEvents: "none",
           transformStyle: "preserve-3d",
+          transform: T_OFF,
           transition: "transform 0.42s cubic-bezier(0.34, 1.48, 0.64, 1)",
         }}
       >
@@ -127,10 +121,8 @@ export function Book3D({ item, onSelect, onHover, dimmed }: Props) {
           overflow: "hidden", backfaceVisibility: "hidden",
           boxShadow: "inset 6px 0 16px rgba(0,0,0,0.6)",
         }}>
-          {showImage && (
-            <Image src={item.cover} alt={item.title} fill
-              style={{ objectFit: "contain", pointerEvents: "none" }} sizes="135px" />
-          )}
+          <Image src={item.cover} alt={item.title} fill
+            style={{ objectFit: "contain", pointerEvents: "none" }} sizes="135px" />
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
             background: "linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 40%)" }} />
         </div>

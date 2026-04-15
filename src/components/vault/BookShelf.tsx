@@ -13,14 +13,9 @@ import {
   type VaultItem,
   type VaultCategory,
 } from "@/data/vault";
-import dynamic from "next/dynamic";
 import { Book3D } from "./Book3D";
 import { CD3D } from "./CD3D";
-
-const VaultModal = dynamic(
-  () => import("./VaultModal").then((m) => ({ default: m.VaultModal })),
-  { ssr: false }
-);
+import { VaultModal } from "./VaultModal";
 
 // ── Decorative filler books ───────────────────────────────────────
 const FILLERS: { w: number; h: number; color: string }[] = [
