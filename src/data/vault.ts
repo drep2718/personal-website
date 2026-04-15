@@ -230,7 +230,7 @@ export const VAULT_ITEMS: VaultItem[] = [
     notes: "A fitting end. The forest scene is perfect literature.",
   },
 
-  // ── BOOKS — Brandon Sanderson ─────────────────────────────
+  // ── BOOKS — Brandon Sanderson — Elantris (standalone) ────
   {
     id: "elantris",
     title: "Elantris",
@@ -244,6 +244,8 @@ export const VAULT_ITEMS: VaultItem[] = [
     rating: 4,
     notes: "Sanderson's debut still holds up — a city of fallen gods and a mystery worth solving.",
   },
+
+  // ── BOOKS — Brandon Sanderson — Mistborn trilogy ──────────
   {
     id: "mistborn-final-empire",
     title: "Mistborn: The Final Empire",
@@ -283,6 +285,8 @@ export const VAULT_ITEMS: VaultItem[] = [
     rating: 5,
     notes: "The ending that recontextualizes everything. Sanderson at his most ambitious.",
   },
+
+  // ── BOOKS — Brandon Sanderson — Warbreaker (standalone) ───
   {
     id: "warbreaker",
     title: "Warbreaker",
@@ -296,6 +300,8 @@ export const VAULT_ITEMS: VaultItem[] = [
     rating: 4,
     notes: "Sanderson at his most playful. The magic of Breath and color is endlessly clever.",
   },
+
+  // ── BOOKS — Brandon Sanderson — Stormlight Archive ────────
   {
     id: "way-of-kings",
     title: "The Way of Kings",
@@ -310,32 +316,6 @@ export const VAULT_ITEMS: VaultItem[] = [
     notes: "The most ambitious fantasy of the modern era. Dalinar alone is worth the thousand pages.",
   },
   {
-    id: "emperors-soul",
-    title: "The Emperor's Soul",
-    author: "Brandon Sanderson",
-    category: "books",
-    cover: "/covers/emperors-soul.png",
-    coverColor: "#3A2A1A",
-    year: 2012,
-    genre: "Fantasy",
-    status: "completed",
-    rating: 5,
-    notes: "Perfect novella. The Forging magic is Sanderson's most intimate and elegant system.",
-  },
-  {
-    id: "shadows-for-silence",
-    title: "Shadows for Silence in the Forests of Hell",
-    author: "Brandon Sanderson",
-    category: "books",
-    cover: "/covers/shadows-for-silence.png",
-    coverColor: "#0D0D1A",
-    year: 2013,
-    genre: "Fantasy",
-    status: "completed",
-    rating: 4,
-    notes: "Dark, tense, and brilliant. One of the best Cosmere novellas.",
-  },
-  {
     id: "words-of-radiance",
     title: "Words of Radiance",
     author: "Brandon Sanderson",
@@ -347,19 +327,6 @@ export const VAULT_ITEMS: VaultItem[] = [
     status: "completed",
     rating: 5,
     notes: "Shallan comes into her own and the climax is breathtaking.",
-  },
-  {
-    id: "sixth-of-the-dusk",
-    title: "Sixth of the Dusk",
-    author: "Brandon Sanderson",
-    category: "books",
-    cover: "/covers/sixth-of-the-dusk.png",
-    coverColor: "#1A3A4A",
-    year: 2014,
-    genre: "Fantasy",
-    status: "completed",
-    rating: 4,
-    notes: "A tight Cosmere novella — deceptively small in scope, vast in implication.",
   },
   {
     id: "oathbringer",
@@ -399,6 +366,47 @@ export const VAULT_ITEMS: VaultItem[] = [
     status: "completed",
     rating: 5,
     notes: "The end of the first arc. Everything converges and nothing is the same after.",
+  },
+
+  // ── BOOKS — Brandon Sanderson — Cosmere novellas ──────────
+  {
+    id: "emperors-soul",
+    title: "The Emperor's Soul",
+    author: "Brandon Sanderson",
+    category: "books",
+    cover: "/covers/emperors-soul.png",
+    coverColor: "#3A2A1A",
+    year: 2012,
+    genre: "Fantasy",
+    status: "completed",
+    rating: 5,
+    notes: "Perfect novella. The Forging magic is Sanderson's most intimate and elegant system.",
+  },
+  {
+    id: "shadows-for-silence",
+    title: "Shadows for Silence in the Forests of Hell",
+    author: "Brandon Sanderson",
+    category: "books",
+    cover: "/covers/shadows-for-silence.png",
+    coverColor: "#0D0D1A",
+    year: 2013,
+    genre: "Fantasy",
+    status: "completed",
+    rating: 4,
+    notes: "Dark, tense, and brilliant. One of the best Cosmere novellas.",
+  },
+  {
+    id: "sixth-of-the-dusk",
+    title: "Sixth of the Dusk",
+    author: "Brandon Sanderson",
+    category: "books",
+    cover: "/covers/sixth-of-the-dusk.png",
+    coverColor: "#1A3A4A",
+    year: 2014,
+    genre: "Fantasy",
+    status: "completed",
+    rating: 4,
+    notes: "A tight Cosmere novella — deceptively small in scope, vast in implication.",
   },
 
   // ── BOOKS — Samantha Sotto Yambao ─────────────────────────
