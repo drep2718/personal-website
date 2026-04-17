@@ -228,7 +228,7 @@ export function VaultHero() {
             opacity: 0,
           }}
         >
-          Books · Games · Anime
+          Books · Anime
         </p>
 
         {/* Ornamental rule */}
