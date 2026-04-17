@@ -93,8 +93,44 @@ interface ShelfRowProps {
   onHover: (item: VaultItem | null) => void;
 }
 
+type ShelfEntry =
+  | { type: "book"; item: VaultItem }
+  | { type: "filler"; filler: (typeof FILLERS)[0] };
+
+/** Estimate the rendered px width of a shelf entry (item + 2px gap). */
+function entryWidth(entry: ShelfEntry, category: VaultCategory): number {
+  if (entry.type === "filler") {
+    return (category === "anime" ? 10 : entry.filler.w) + 2;
+  }
+  if (category === "anime" && entry.item.genre !== "Manga") return 16 + 2; // CD
+  const seed = entry.item.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return (24 + (seed % 14)) + 2; // Book
+}
+
+const SHELF_PLANK = (
+  <div
+    style={{
+      height: "20px",
+      background: "linear-gradient(to bottom, #4A2C14 0%, #3A2010 30%, #2A1608 70%, #1E0F05 100%)",
+      borderTop: "2px solid #5A3820",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.85), 0 2px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
+    }}
+  />
+);
+
 function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps) {
   const meta = CATEGORY_META[category];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [rowWidth, setRowWidth] = useState(1200);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    setRowWidth(el.offsetWidth);
+    const ro = new ResizeObserver(([e]) => setRowWidth(e.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const matches = useCallback(
     (item: VaultItem) =>
@@ -105,28 +141,64 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
     [search]
   );
 
-  // Real books first (always visible, always on top via z-index),
-  // then filler books pad the shelf. Fillers come AFTER so they never
-  // sit in front of a real book in DOM stacking order.
-  const shelfItems = useMemo(() => {
-    const result: Array<
-      | { type: "book"; item: VaultItem }
-      | { type: "filler"; filler: (typeof FILLERS)[0] }
-    > = [];
-
-    items.forEach((item) => result.push({ type: "book", item }));
-
-    const needed = Math.max(0, 18 - items.length);
-    for (let i = 0; i < needed; i++) {
+  // Build full item list: real items + trailing fillers to pad the last row
+  const allEntries = useMemo<ShelfEntry[]>(() => {
+    const result: ShelfEntry[] = items.map((item) => ({ type: "book", item }));
+    for (let i = 0; i < FILLERS.length; i++) {
       result.push({ type: "filler", filler: FILLERS[i % FILLERS.length] });
     }
-
     return result;
   }, [items]);
 
+  // Split into rows based on measured container width
+  const rows = useMemo<ShelfEntry[][]>(() => {
+    const rows: ShelfEntry[][] = [];
+    let row: ShelfEntry[] = [];
+    let used = 0;
+
+    for (const entry of allEntries) {
+      const w = entryWidth(entry, category);
+      if (used + w > rowWidth && row.length > 0) {
+        rows.push(row);
+        row = [entry];
+        used = w;
+      } else {
+        row.push(entry);
+        used += w;
+      }
+    }
+    if (row.length) rows.push(row);
+    return rows;
+  }, [allEntries, rowWidth, category]);
+
+  const renderEntry = (entry: ShelfEntry, idx: number, rowIdx: number) =>
+    entry.type === "book" ? (
+      category === "anime" && entry.item.genre !== "Manga" ? (
+        <CD3D
+          key={entry.item.id}
+          item={entry.item}
+          onSelect={onSelect}
+          onHover={onHover}
+          dimmed={search.trim() !== "" && !matches(entry.item)}
+        />
+      ) : (
+        <Book3D
+          key={entry.item.id}
+          item={entry.item}
+          onSelect={onSelect}
+          onHover={onHover}
+          dimmed={search.trim() !== "" && !matches(entry.item)}
+        />
+      )
+    ) : category === "anime" ? (
+      <FillerCD key={`filler-${category}-${rowIdx}-${idx}`} filler={entry.filler} />
+    ) : (
+      <FillerBook key={`filler-${category}-${rowIdx}-${idx}`} filler={entry.filler} />
+    );
+
   return (
     <div style={{ marginBottom: 0, position: "relative" }}>
-      {/* Category label tab */}
+      {/* Category label */}
       <div
         style={{
           display: "flex",
@@ -136,108 +208,47 @@ function ShelfRow({ category, items, search, onSelect, onHover }: ShelfRowProps)
           marginBottom: "4px",
         }}
       >
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "9px",
-            letterSpacing: "0.35em",
-            color: meta.accent,
-            opacity: 0.7,
-          }}
-        >
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", letterSpacing: "0.35em", color: meta.accent, opacity: 0.7 }}>
           {meta.label}
         </span>
-        <div
-          style={{
-            flex: 1,
-            height: "1px",
-            background: `linear-gradient(to right, ${meta.accent}30, transparent)`,
-          }}
-        />
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "8px",
-            letterSpacing: "0.15em",
-            color: meta.accent,
-            opacity: 0.35,
-          }}
-        >
+        <div style={{ flex: 1, height: "1px", background: `linear-gradient(to right, ${meta.accent}30, transparent)` }} />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "8px", letterSpacing: "0.15em", color: meta.accent, opacity: 0.35 }}>
           {items.length} {items.length === 1 ? "TITLE" : "TITLES"}
         </span>
       </div>
 
-      {/* Books container — perspective applied here */}
-      <div
-        style={{
-          perspective: "1100px",
-          perspectiveOrigin: "50% -40px",
-          padding: "0 clamp(24px, 6vw, 80px)",
-          overflowX: "auto",
-          overflowY: "visible",
-          scrollbarWidth: "none",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: "2px",
-            minHeight: "240px",
-            paddingBottom: "6px",
-            width: "max-content",
-            minWidth: "100%",
-          }}
-        >
-          {shelfItems.map((entry, idx) =>
-            entry.type === "book" ? (
-              category === "anime" && entry.item.genre !== "Manga" ? (
-                <CD3D
-                  key={entry.item.id}
-                  item={entry.item}
-                  onSelect={onSelect}
-                  onHover={onHover}
-                  dimmed={search.trim() !== "" && !matches(entry.item)}
-                />
-              ) : (
-                <Book3D
-                  key={entry.item.id}
-                  item={entry.item}
-                  onSelect={onSelect}
-                  onHover={onHover}
-                  dimmed={search.trim() !== "" && !matches(entry.item)}
-                />
-              )
-            ) : category === "anime" ? (
-              <FillerCD key={`filler-${category}-${idx}`} filler={entry.filler} />
-            ) : (
-              <FillerBook key={`filler-${category}-${idx}`} filler={entry.filler} />
-            )
-          )}
-        </div>
+      {/* Measured container — rows rendered inside */}
+      <div ref={containerRef} style={{ padding: "0 clamp(24px, 6vw, 80px)" }}>
+        {rows.map((row, rowIdx) => (
+          <div key={rowIdx}>
+            {/* Items row with perspective */}
+            <div style={{ perspective: "1100px", perspectiveOrigin: "50% -40px", overflowY: "visible" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: "2px",
+                  minHeight: "240px",
+                  paddingBottom: "6px",
+                }}
+              >
+                {row.map((entry, idx) => renderEntry(entry, idx, rowIdx))}
+              </div>
+            </div>
+
+            {/* Shelf plank after every row */}
+            {SHELF_PLANK}
+
+            {/* Shadow gap between shelves (skip after last row) */}
+            {rowIdx < rows.length - 1 && (
+              <div style={{ height: "36px", background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 100%)", marginBottom: "28px" }} />
+            )}
+          </div>
+        ))}
       </div>
 
-      {/* Wooden shelf plank */}
-      <div
-        style={{
-          height: "20px",
-          background:
-            "linear-gradient(to bottom, #4A2C14 0%, #3A2010 30%, #2A1608 70%, #1E0F05 100%)",
-          borderTop: "2px solid #5A3820",
-          boxShadow:
-            "0 8px 24px rgba(0,0,0,0.85), 0 2px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)",
-        }}
-      />
-
-      {/* Shadow below shelf */}
-      <div
-        style={{
-          height: "40px",
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%)",
-          marginBottom: "32px",
-        }}
-      />
+      {/* Final shadow below the last plank */}
+      <div style={{ height: "40px", background: "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%)", marginBottom: "32px" }} />
     </div>
   );
 }
