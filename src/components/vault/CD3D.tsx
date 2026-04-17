@@ -66,20 +66,24 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
           pointerEvents:  "none",
           position:       "absolute",
           inset:          0,
-          background:     "linear-gradient(to right, #030303, #111 30%, #1c1c1c 60%, #0a0a0a)",
-          boxShadow:      "inset 1px 0 2px rgba(255,255,255,0.08), inset -1px 0 3px rgba(0,0,0,0.9)",
-          borderLeft:     "1px solid rgba(255,255,255,0.07)",
+          background:     `linear-gradient(to right,
+            ${darken(item.coverColor, 0.45)},
+            ${item.coverColor} 30%,
+            ${lighten(item.coverColor, 1.25)} 60%,
+            ${darken(item.coverColor, 0.55)})`,
+          boxShadow:      "inset 1px 0 2px rgba(255,255,255,0.12), inset -1px 0 3px rgba(0,0,0,0.8)",
+          borderLeft:     "1px solid rgba(255,255,255,0.09)",
           display:        "flex",
           flexDirection:  "column",
           alignItems:     "center",
           justifyContent: "center",
           overflow:       "hidden",
         }}>
-          {/* Iridescent sheen on spine */}
+          {/* Iridescent sheen — keeps the plastic jewel-case feel over the color */}
           <div style={{
             position:      "absolute",
             inset:         0,
-            background:    "linear-gradient(180deg, rgba(120,80,200,0.08) 0%, rgba(80,200,200,0.06) 40%, rgba(200,80,80,0.06) 70%, transparent 100%)",
+            background:    "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(120,80,200,0.07) 35%, rgba(80,200,200,0.06) 65%, rgba(0,0,0,0.15) 100%)",
             pointerEvents: "none",
           }} />
           <span style={{
@@ -88,12 +92,12 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
             fontFamily:    "var(--font-mono), monospace",
             fontSize:      "7px",
             fontWeight:    600,
-            color:         "rgba(200,200,200,0.5)",
+            color:         "rgba(232,220,200,0.75)",
             letterSpacing: "0.08em",
             overflow:      "hidden",
             flex:          1,
             maxHeight:     HEIGHT - 16,
-            textShadow:    "none",
+            textShadow:    `0 1px 3px rgba(0,0,0,0.8)`,
           }}>
             {item.title}
           </span>
@@ -205,10 +209,23 @@ export function CD3D({ item, onSelect, onHover, dimmed }: Props) {
           left:               0,
           transformOrigin:    "50% 0%",
           transform:          "rotateX(90deg)",
-          background:         "linear-gradient(to bottom, #1c1c1c, #080808)",
+          background:         `linear-gradient(to bottom, ${lighten(item.coverColor, 1.1)}, ${darken(item.coverColor, 0.5)})`,
           backfaceVisibility: "hidden",
         }} />
       </div>
     </div>
   );
+}
+
+function parseHex(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [parseInt(h.slice(0,2),16)||20, parseInt(h.slice(2,4),16)||14, parseInt(h.slice(4,6),16)||8];
+}
+function lighten(hex: string, f = 1.4): string {
+  try { const [r,g,b] = parseHex(hex); return `rgb(${Math.min(255,Math.round(r*f))},${Math.min(255,Math.round(g*f))},${Math.min(255,Math.round(b*f))})`; }
+  catch { return hex; }
+}
+function darken(hex: string, f = 0.55): string {
+  try { const [r,g,b] = parseHex(hex); return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`; }
+  catch { return hex; }
 }
