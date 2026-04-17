@@ -16,7 +16,9 @@ export default function SecretPage() {
     const video = videoRef.current;
     if (!video) return;
     video.play().catch(() => {});
-  }, []);
+    // Prefetch vault page JS while the video is playing so navigation is instant
+    router.prefetch("/secret/vault");
+  }, [router]);
 
   // Animate vault link in after reveal completes
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function SecretPage() {
         <div style={{ position: "absolute", inset: 0, zIndex: 10 }}>
           <video
             ref={videoRef}
-            src="/FINALFINAL.mp4"
+            src="/FINALFINAL_web.mp4"
             playsInline
             muted
             onEnded={() => setVideoEnded(true)}
