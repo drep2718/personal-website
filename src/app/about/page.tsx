@@ -11,7 +11,7 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <>
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="bg-scene fixed inset-0 z-0 pointer-events-none">
         <Waves
           strokeColor="rgba(196,30,58,0.45)"
           backgroundColor="transparent"

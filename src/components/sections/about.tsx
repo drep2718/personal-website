@@ -3,6 +3,12 @@
 import { FadeIn } from "@/components/animations/fade-in";
 import { SectionWrapper } from "@/components/layout/section-wrapper";
 
+const STATS = [
+  { value: "40+", label: "Tickets shipped" },
+  { value: "60+", label: "Students mentored" },
+  { value: "∞",   label: "Tabs open", isInfinity: true },
+];
+
 export function About() {
   return (
     <SectionWrapper id="about">
@@ -32,9 +38,9 @@ export function About() {
           </div>
         </FadeIn>
 
-        {/* Bio */}
+        {/* Bio — panel keeps the copy legible over the animated backdrop */}
         <FadeIn direction="left" delay={0.1}>
-          <div>
+          <div className="content-panel p-8 md:p-10">
             <p className="text-xs tracking-[0.3em] text-[var(--color-text-muted)] uppercase mb-4">
               About Me
             </p>
@@ -60,26 +66,38 @@ export function About() {
                 it runs fast or thinks for itself, I&apos;m interested.
               </p>
             </div>
-
-            <div className="mt-8 flex gap-6">
-              <div>
-                <p className="text-2xl font-light text-[var(--color-text-primary)]">40+</p>
-                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Tickets shipped</p>
-              </div>
-              <div className="w-px bg-[var(--color-border)]" />
-              <div>
-                <p className="text-2xl font-light text-[var(--color-text-primary)]">60+</p>
-                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Students mentored</p>
-              </div>
-              <div className="w-px bg-[var(--color-border)]" />
-              <div>
-                <p className="text-2xl font-light text-[var(--color-text-primary)]">∞</p>
-                <p className="text-xs text-[var(--color-text-muted)] tracking-wide mt-1">Tabs open</p>
-              </div>
-            </div>
           </div>
         </FadeIn>
       </div>
+
+      {/* Stats — centered, figures front and center */}
+      <FadeIn direction="up" delay={0.2}>
+        <div className="content-panel mt-16 px-8 py-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+            {STATS.map((stat, i) => (
+              <div key={stat.label} className="flex items-center">
+                {i > 0 && (
+                  <div className="hidden sm:block w-px h-14 bg-[var(--color-border)] mx-10 md:mx-14" />
+                )}
+                <div className="text-center">
+                  <p
+                    className={
+                      stat.isInfinity
+                        ? "text-6xl md:text-7xl font-light leading-none text-[var(--color-accent-red)] text-glow-red"
+                        : "text-4xl md:text-5xl font-light leading-none text-[var(--color-text-primary)]"
+                    }
+                  >
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mt-3">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </FadeIn>
     </SectionWrapper>
   );
 }

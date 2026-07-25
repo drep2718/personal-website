@@ -78,9 +78,10 @@ export function Experience() {
         </div>
       </FadeIn>
 
-      <div className="relative">
+      {/* Panel keeps the timeline legible over the animated backdrop */}
+      <div className="relative content-panel p-6 md:p-10">
         {/* Vertical timeline line */}
-        <div className="absolute left-0 top-2 bottom-2 w-px bg-[var(--color-border)] hidden md:block" />
+        <div className="absolute left-6 md:left-10 top-8 bottom-8 w-px bg-[var(--color-border)] hidden md:block" />
 
         <div className="space-y-12">
           {EXPERIENCES.map((exp, i) => (

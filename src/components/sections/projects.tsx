@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 function SpotlightCard({ project }: { project: Project }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [spotlight, setSpotlight] = useState({ x: 0, y: 0, show: false });
+  const primaryLink = project.repoUrl ?? project.url;
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect();
@@ -57,7 +58,19 @@ function SpotlightCard({ project }: { project: Project }) {
       )}
 
       <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-accent-red)] transition-colors">
-        {project.title}
+        {primaryLink ? (
+          // Stretched link — the whole card is clickable when a link exists
+          <a
+            href={primaryLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="after:absolute after:inset-0 after:content-['']"
+          >
+            {project.title}
+          </a>
+        ) : (
+          project.title
+        )}
       </h3>
       <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
         {project.description}
@@ -75,8 +88,8 @@ function SpotlightCard({ project }: { project: Project }) {
         ))}
       </div>
 
-      {/* Links */}
-      <div className="flex items-center gap-3">
+      {/* Links — z-10 keeps them above the stretched card link */}
+      <div className="relative z-10 flex items-center gap-3">
         {project.url && (
           <a
             href={project.url}
@@ -119,10 +132,10 @@ export function Projects() {
             </h2>
           </div>
           <a
-            href="https://github.com/aidendrep"
+            href="https://github.com/drep2718"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] transition-colors"
+            className="flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent-red)] transition-colors"
           >
             View all <ArrowUpRight size={14} />
           </a>

@@ -20,6 +20,16 @@ export const PROJECTS: Project[] = [
     year: 2025,
   },
   {
+    id: "sofa-gdl",
+    title: "Moving Sofa Optimizer",
+    description:
+      "Differentiable shape optimizer attacking Moser's 1966 unsolved Moving Sofa Problem — recovered 93.5% of Gerver's conjectured optimum from scratch using polar B-splines, augmented Lagrangian constraints, and a geometric deep learning symmetry group sweep across 6 parameterizations.",
+    tags: ["Python", "Geometric Deep Learning", "Optimization", "Open Math Problem"],
+    repoUrl: "https://github.com/drep2718/sofa-gdl",
+    featured: true,
+    year: 2026,
+  },
+  {
     id: "crypto-arbitrage",
     title: "Crypto Arbitrage Engine",
     description:
@@ -27,6 +37,26 @@ export const PROJECTS: Project[] = [
     tags: ["Python", "Binance API", "WebSockets", "Bellman-Ford", "Quant Finance"],
     featured: true,
     year: 2025,
+  },
+  {
+    id: "sightplay",
+    title: "SightPlay",
+    description:
+      "Full-stack music sight-reading trainer with four drill modes — flash cards, sheet music, interval recognition, and measure-by-measure practice — real-time sheet music rendering, cross-device account sync, JWT auth with Google OAuth, and a Postgres + Redis backend deployed via Docker and nginx.",
+    tags: ["TypeScript", "Postgres", "Redis", "Docker", "OAuth"],
+    repoUrl: "https://github.com/drep2718/sightplay",
+    featured: false,
+    year: 2026,
+  },
+  {
+    id: "markets",
+    title: "Markets Dashboard",
+    description:
+      "Next.js commodities dashboard that aggregates real-time market news via RSS, LLM-ranks and summarizes articles by market impact using Llama 3.1, tracks economic events, and includes a structured finance curriculum with 6 learning modules and progress tracking.",
+    tags: ["Next.js", "LLM", "RSS", "Quant Finance", "Groq"],
+    repoUrl: "https://github.com/drep2718/markets",
+    featured: false,
+    year: 2026,
   },
   {
     id: "pushup-counter",

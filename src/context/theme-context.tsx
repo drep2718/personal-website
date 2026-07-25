@@ -41,12 +41,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export const useTheme = () => useContext(ThemeContext);
 
-// Blocking script string — injected into <head> to prevent flash
+// Blocking script string — injected into <head> to prevent flash.
+// Light mode is disabled until its color contrast passes an a11y review,
+// so the site always starts (and stays) dark.
 export const THEME_SCRIPT = `
 (function() {
   try {
-    var t = localStorage.getItem('theme');
-    if (t === 'light') document.documentElement.classList.add('light');
+    document.documentElement.classList.remove('light');
+    localStorage.removeItem('theme');
   } catch(e) {}
 })();
 `.trim();

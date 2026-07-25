@@ -195,6 +195,7 @@ export function BgSea() {
   return (
     <canvas
       ref={canvasRef}
+      className="bg-scene"
       style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.95 }}
     />
   );

@@ -64,8 +64,9 @@ function TimelineEntry({ entry, accentClass }: { entry: ResumeEntry; accentClass
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  // Each section sits in its own panel so it reads clearly over the backdrop
   return (
-    <div>
+    <div className="content-panel p-6 md:p-8 h-full">
       <h3 className="text-xs tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-6 pb-2 border-b border-[var(--color-border)]">
         {title}
       </h3>
@@ -75,6 +76,32 @@ function Section({ title, children }: { title: string; children: React.ReactNode
           {children}
         </div>
       </div>
+    </div>
+  );
+}
+
+function TimelineLegend() {
+  return (
+    <div className="content-panel flex flex-wrap items-center gap-x-8 gap-y-2 px-5 py-3.5 mb-10">
+      <span className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
+        Legend
+      </span>
+      <span className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+        <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent-red)] border-2 border-[var(--color-accent-red)]" />
+        Current
+      </span>
+      <span className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+        <span className="w-2.5 h-2.5 rounded-full bg-transparent border-2 border-[var(--color-border-highlight)]" />
+        Completed
+      </span>
+      <span className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+        <span className="w-2 h-2 rounded-sm bg-[var(--color-accent-red)]" />
+        Experience &amp; leadership
+      </span>
+      <span className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+        <span className="w-2 h-2 rounded-sm bg-[var(--color-accent-blue)]" />
+        Education
+      </span>
     </div>
   );
 }
@@ -105,6 +132,10 @@ export function Resume() {
             <Download size={14} /> Download PDF
           </a>
         </div>
+      </FadeIn>
+
+      <FadeIn direction="up" delay={0.05}>
+        <TimelineLegend />
       </FadeIn>
 
       <div className="space-y-14">
@@ -146,7 +177,7 @@ export function Resume() {
 
         {/* Certifications — full width */}
         <FadeIn direction="up" delay={0.3}>
-          <div>
+          <div className="content-panel p-6 md:p-8">
             <h3 className="text-xs tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-6 pb-2 border-b border-[var(--color-border)]">
               Certifications
             </h3>

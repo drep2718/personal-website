@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { ScrollControls, useScroll, Html, Float, useTexture } from "@react-three/drei";
+import { ScrollControls, useScroll, Float, useTexture } from "@react-three/drei";
 import { useRouter } from "next/navigation";
 import { NAV_PAGES } from "@/lib/constants";
 import * as THREE from "three";
@@ -163,12 +163,6 @@ function Sun({ sunTex }: { sunTex: THREE.Texture }) {
           metalness={0}
         />
       </mesh>
-
-      <Html position={[0, 2.9, 0]} center style={{ pointerEvents: "none" }}>
-        <div style={{ color: "rgba(255,175,80,0.6)", fontSize: "10px", letterSpacing: "0.35em", textTransform: "uppercase", fontWeight: 500, textShadow: "0 0 12px rgba(255,100,0,0.5)", whiteSpace: "nowrap" }}>
-          Home
-        </div>
-      </Html>
     </group>
   );
 }
@@ -426,47 +420,20 @@ export function Landing() {
         </h1>
       </div>
 
-      {/* Planet label — simple text above the planet */}
-      <div
-        style={{
-          position:      "absolute",
-          top:           "30%",
-          left:          "50%",
-          transform:     "translateX(-50%)",
-          zIndex:        15,
-          textAlign:     "center",
-          pointerEvents: "none",
-          opacity:       activePage ? 1 : 0,
-          transition:    "opacity 0.45s ease",
-        }}
-      >
-        <p style={{
-          margin:        0,
-          fontSize:      "11px",
-          fontWeight:    500,
-          letterSpacing: "0.38em",
-          textTransform: "uppercase",
-          color:         "rgba(255,255,255,0.55)",
-          fontFamily:    "inherit",
-          whiteSpace:    "nowrap",
-        }}>
-          {activePage?.label}
-        </p>
-      </div>
-
-      {/* Scroll hint — above the sun */}
-      <div style={{ position: "absolute", top: "68%", left: "50%", transform: "translateX(-50%)", zIndex: 10, textAlign: "center", pointerEvents: "none", transition: "opacity 0.5s ease", opacity: ready && !activePage ? 1 : 0 }}>
-        <p style={{ margin: 0, marginBottom: "10px", color: "rgba(255,255,255,0.55)", fontSize: "10px", letterSpacing: "0.36em", textTransform: "uppercase", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+      {/* Scroll hint — corner pill with its own backdrop so it stays legible
+          and never overlaps the planets. The sidebar legend names each page. */}
+      <div className="landing-scroll-hint" style={{ opacity: ready && !activePage ? 1 : 0 }}>
+        <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: "10px", letterSpacing: "0.3em", textTransform: "uppercase", fontFamily: "inherit", whiteSpace: "nowrap" }}>
           Scroll to explore · Click to enter
         </p>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
-          <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.25)", borderRadius: 1, animation: "scrollpulse 1.6s ease-in-out infinite" }} />
-          <div style={{ width: 0, height: 0, borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "6px solid rgba(255,255,255,0.35)", animation: "scrollpulse 1.6s ease-in-out infinite 0.15s" }} />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+          <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.45)", borderRadius: 1, animation: "scrollpulse 1.6s ease-in-out infinite" }} />
+          <div style={{ width: 0, height: 0, borderLeft: "4px solid transparent", borderRight: "4px solid transparent", borderTop: "5px solid rgba(255,255,255,0.55)", animation: "scrollpulse 1.6s ease-in-out infinite 0.15s" }} />
         </div>
         <style>{`
           @keyframes scrollpulse {
             0%, 100% { opacity: 0.25; transform: translateY(0); }
-            50%       { opacity: 0.80; transform: translateY(5px); }
+            50%       { opacity: 0.80; transform: translateY(4px); }
           }
         `}</style>
       </div>
