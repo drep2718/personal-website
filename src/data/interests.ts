@@ -69,6 +69,17 @@ export const INTERESTS: Interest[] = [
     link: { href: "/secret/vault", label: "Enter the vault" },
   },
   {
+    id: "photography",
+    title: "Photography",
+    tagline: "Chasing light — and the frames worth keeping.",
+    emoji: "📷",
+    details: [
+      "I'm always half-looking for a good frame — long shadows, city geometry, the sky doing something unusual. Photography is how I slow down and actually notice where I am.",
+      "I keep a rolling gallery of the shots I'm proud of. Take a look — it grows whenever I do.",
+    ],
+    link: { href: "/secret/photos", label: "Open the gallery" },
+  },
+  {
     id: "barista",
     title: "Home Barista",
     tagline: "Espresso shots, dialed in daily.",
@@ -76,6 +87,8 @@ export const INTERESTS: Interest[] = [
     details: [
       "I like to pretend I'm a barista at home — espresso machine hissing, grinder dialed to the gram, chasing that one perfect 25-second shot.",
       "Most mornings start with a small ritual of tamping, timing, and tasting. The latte art is a work in progress; the caffeine dependency is fully shipped.",
+      "I also write up what I'm learning — pours, roasts, and the occasional tangent — on my little blog.",
     ],
+    link: { href: "/secret/blog", label: "Read the blog" },
   },
 ];

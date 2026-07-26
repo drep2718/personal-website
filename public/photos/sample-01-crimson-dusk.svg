@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a0a14"/>
+      <stop offset="0.5" stop-color="#C41E3A"/>
+      <stop offset="1" stop-color="#1a0710"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#g1)"/>
+  <circle cx="640" cy="340" r="150" fill="#ffd9a0" opacity="0.85"/>
+  <text x="450" y="1130" font-family="sans-serif" font-size="34" fill="#ffffff" opacity="0.55" text-anchor="middle" letter-spacing="6">SAMPLE — REPLACE ME</text>
+</svg>
