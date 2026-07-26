@@ -209,12 +209,12 @@ export function Skills() {
               className="relative flex items-center justify-center"
               style={{ width: orbitSize + 260, height: orbitSize + 260 }}
             >
-              {/* Innermost: level 3 */}
-              <OrbitRing skills={SKILLS} level={3} radius={150} duration={40} />
+              {/* Innermost: level 3 — wider radius to fit the core ring */}
+              <OrbitRing skills={SKILLS} level={3} radius={175} duration={40} />
               {/* Middle: level 2 */}
-              <OrbitRing skills={SKILLS} level={2} radius={270} duration={55} reverse />
-              {/* Outer: level 1 */}
-              <OrbitRing skills={SKILLS} level={1} radius={390} duration={70} />
+              <OrbitRing skills={SKILLS} level={2} radius={280} duration={55} reverse />
+              {/* Outer: level 1 — pulled in since it's a leaner ring now */}
+              <OrbitRing skills={SKILLS} level={1} radius={370} duration={70} />
 
               {/* Center dot */}
               <div
