@@ -3,12 +3,6 @@
 import { FadeIn } from "@/components/animations/fade-in";
 import { SectionWrapper } from "@/components/layout/section-wrapper";
 
-const STATS = [
-  { value: "40+", label: "Tickets shipped" },
-  { value: "60+", label: "Students mentored" },
-  { value: "∞",   label: "Tabs open", isInfinity: true },
-];
-
 export function About() {
   return (
     <SectionWrapper id="about">
@@ -50,54 +44,23 @@ export function About() {
             </h2>
             <div className="space-y-4 text-[var(--color-text-secondary)] leading-relaxed">
               <p>
-                I&apos;m a Computer Science &amp; Mathematics student at Purdue University,
-                building at the intersection of systems, machine learning, and quantitative
-                finance. I care about craft — both in the code I write and the problems I choose to solve.
+                Hey, I&apos;m Aiden — a Computer Science &amp; Mathematics student at
+                Purdue. Mostly I just like building things and figuring out how they work.
               </p>
               <p>
-                Currently interning at Wealth.com, where I ship full-stack features for
-                estate-planning tools used by 10,000+ monthly users. Outside of work I lead
-                quant education at Boiler Quant Finance and a robotics team at Purdue&apos;s
-                Autonomous Robotics Club.
+                A lot of what I&apos;m into lives around computer science, hardware, quant
+                finance, and robotics — anything that&apos;s a little tricky and lets me
+                learn something along the way.
               </p>
               <p>
-                I gravitate toward hard problems — from FPGA hardware acceleration and
-                real-time arbitrage engines to neural network-based computer vision. If
-                it runs fast or thinks for itself, I&apos;m interested.
+                When I&apos;m away from a screen you&apos;ll usually find me with a good
+                book or on a climbing wall. I read a lot, I climb whenever I can, and
+                I&apos;m always chasing whatever catches my curiosity next.
               </p>
             </div>
           </div>
         </FadeIn>
       </div>
-
-      {/* Stats — centered, figures front and center */}
-      <FadeIn direction="up" delay={0.2}>
-        <div className="content-panel mt-16 px-8 py-10">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
-            {STATS.map((stat, i) => (
-              <div key={stat.label} className="flex items-center">
-                {i > 0 && (
-                  <div className="hidden sm:block w-px h-14 bg-[var(--color-border)] mx-10 md:mx-14" />
-                )}
-                <div className="text-center">
-                  <p
-                    className={
-                      stat.isInfinity
-                        ? "text-6xl md:text-7xl font-light leading-none text-[var(--color-accent-red)] text-glow-red"
-                        : "text-4xl md:text-5xl font-light leading-none text-[var(--color-text-primary)]"
-                    }
-                  >
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mt-3">
-                    {stat.label}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </FadeIn>
     </SectionWrapper>
   );
 }
