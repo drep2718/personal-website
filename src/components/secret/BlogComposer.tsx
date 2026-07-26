@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Lock, Copy, Download, Check, ArrowLeft } from "lucide-react";
+import { Lock, Copy, Download, Check, ArrowLeft, Send, Loader2, ExternalLink } from "lucide-react";
 import { renderMarkdown } from "@/lib/markdown";
 
 // SHA-256 of the passphrase — the plaintext is never stored in the repo.
 // Override at deploy time with NEXT_PUBLIC_BLOGENTRY_SHA256 if you rotate it.
+// This only gates the UI; the server (/api/publish) enforces the real check.
 const EXPECTED_HASH =
   process.env.NEXT_PUBLIC_BLOGENTRY_SHA256 ||
   "489bbc0d333cc0fcd2353cc392df98440f0adcb4e51adbb10a4d422a50eeac92";
 
 const CATEGORIES = ["Coffee", "Life", "Tech", "Climbing", "Books", "Photography"];
-const STORAGE_KEY = "blogentry-unlocked";
 
 async function sha256Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
@@ -37,21 +37,13 @@ export function BlogComposer() {
   const [error, setError] = useState(false);
   const [checking, setChecking] = useState(false);
 
-  // Restore an unlocked session (survives refresh, not a new tab/session).
-  useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY) === "1") {
-      setUnlocked(true);
-    }
-  }, []);
-
   const submitPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setChecking(true);
     setError(false);
     const hash = await sha256Hex(password);
     if (hash === EXPECTED_HASH) {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-      setUnlocked(true);
+      setUnlocked(true); // password kept in memory for the publish request
     } else {
       setError(true);
       setPassword("");
@@ -66,9 +58,7 @@ export function BlogComposer() {
           <div className="w-12 h-12 mx-auto mb-5 flex items-center justify-center rounded-full border border-[var(--color-border-highlight)] text-[var(--color-accent-red)]">
             <Lock size={18} />
           </div>
-          <h1 className="text-xl font-light text-[var(--color-text-primary)] mb-2">
-            Author access
-          </h1>
+          <h1 className="text-xl font-light text-[var(--color-text-primary)] mb-2">Author access</h1>
           <p className="text-sm text-[var(--color-text-secondary)] mb-6">
             Enter the passphrase to open the composer.
           </p>
@@ -80,9 +70,7 @@ export function BlogComposer() {
             placeholder="Passphrase"
             className="w-full text-center rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-[var(--color-text-primary)] outline-none focus:border-[var(--color-accent-red)] transition-colors"
           />
-          {error && (
-            <p className="mt-3 text-sm text-[var(--color-accent-red)]">Nope — try again.</p>
-          )}
+          {error && <p className="mt-3 text-sm text-[var(--color-accent-red)]">Nope — try again.</p>}
           <button
             type="submit"
             disabled={checking || !password}
@@ -101,22 +89,29 @@ export function BlogComposer() {
     );
   }
 
-  return <Composer />;
+  return <Composer password={password} />;
 }
 
-function Composer() {
+type PublishState =
+  | { status: "idle" }
+  | { status: "publishing" }
+  | { status: "success"; actionsUrl?: string }
+  | { status: "error"; message: string };
+
+function Composer({ password }: { password: string }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Coffee");
   const [date, setDate] = useState(today());
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
   const [copied, setCopied] = useState(false);
+  const [publish, setPublish] = useState<PublishState>({ status: "idle" });
 
   const slug = slugify(title) || "untitled";
   const filename = `${date}-${slug}.md`;
 
   const fileContent = useMemo(() => {
-    const fm = [
+    return [
       "---",
       `title: ${title || "Untitled"}`,
       `date: ${date}`,
@@ -127,7 +122,6 @@ function Composer() {
       body,
       "",
     ].join("\n");
-    return fm;
   }, [title, date, category, excerpt, body]);
 
   const previewHtml = useMemo(() => renderMarkdown(body || "_Start typing to preview…_"), [body]);
@@ -146,6 +140,29 @@ function Composer() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const publishToSite = async () => {
+    if (!title.trim() || !body.trim()) {
+      setPublish({ status: "error", message: "Add a title and a body first." });
+      return;
+    }
+    setPublish({ status: "publishing" });
+    try {
+      const res = await fetch("/api/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, title, category, date, excerpt, body }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setPublish({ status: "success", actionsUrl: data.actionsUrl });
+      } else {
+        setPublish({ status: "error", message: data.error || `Failed (${res.status}).` });
+      }
+    } catch {
+      setPublish({ status: "error", message: "Network error — couldn't reach the server." });
+    }
   };
 
   return (
@@ -204,37 +221,85 @@ function Composer() {
             />
           </Field>
 
-          <Field label="Body (markdown)">
+          <Field label="Body (plain text or markdown)">
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={14}
-              placeholder={"## A heading\n\nWrite in **markdown**. Lists, *italics*, `code`, and [links](https://example.com) all work."}
+              placeholder={"Just write. Blank lines start new paragraphs.\n\nMarkdown works too: ## headings, - lists, **bold**, *italic*, `code`, [links](https://example.com)."}
               className="composer-input font-mono text-sm leading-relaxed resize-y"
             />
           </Field>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1">
+          {/* Primary: publish straight to the site */}
+          <div className="pt-1">
             <button
-              onClick={download}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent-red)] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              onClick={publishToSite}
+              disabled={publish.status === "publishing"}
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent-red)] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
-              <Download size={14} /> Download {filename}
+              {publish.status === "publishing" ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Publishing…
+                </>
+              ) : (
+                <>
+                  <Send size={15} /> Publish to site
+                </>
+              )}
             </button>
-            <button
-              onClick={copy}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border-highlight)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
-            >
-              {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied" : "Copy markdown"}
-            </button>
+
+            {publish.status === "success" && (
+              <div className="mt-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 text-sm">
+                <p className="text-[var(--color-text-primary)] font-medium mb-1">
+                  Published — the workflow is building your post.
+                </p>
+                <p className="text-[var(--color-text-secondary)]">
+                  It goes live in a minute or so.{" "}
+                  <Link href="/secret/blog" className="text-[var(--color-accent-red)]">
+                    View the journal
+                  </Link>
+                  {publish.actionsUrl && (
+                    <>
+                      {" · "}
+                      <a
+                        href={publish.actionsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[var(--color-accent-red)]"
+                      >
+                        Watch the workflow <ExternalLink size={12} />
+                      </a>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+            {publish.status === "error" && (
+              <p className="mt-3 text-sm text-[var(--color-accent-red)]">{publish.message}</p>
+            )}
           </div>
 
-          <p className="text-xs text-[var(--color-text-muted)] leading-relaxed pt-1">
-            Save this file into <code className="text-[var(--color-text-secondary)]">content/blog/</code>,
-            commit, and push. It appears on{" "}
-            <Link href="/secret/blog" className="text-[var(--color-accent-red)]">/secret/blog</Link>{" "}
-            once deployed.
-          </p>
+          {/* Secondary: export the file by hand */}
+          <div className="pt-3 border-t border-[var(--color-border)]">
+            <p className="text-xs text-[var(--color-text-muted)] mb-3">
+              Or export the file and commit it yourself:
+            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={download}
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border-highlight)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+              >
+                <Download size={14} /> {filename}
+              </button>
+              <button
+                onClick={copy}
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border-highlight)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied" : "Copy markdown"}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Preview */}

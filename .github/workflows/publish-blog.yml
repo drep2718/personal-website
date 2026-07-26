@@ -1,0 +1,40 @@
+name: Publish blog post
+
+# Triggered by a repository_dispatch event that the site's /api/publish route
+# sends when you hit "Publish" in the composer. Turns the submitted text into
+# a markdown file under content/blog and commits it — which redeploys the site.
+on:
+  repository_dispatch:
+    types: [new-blog-post]
+
+# The built-in GITHUB_TOKEN needs write access to commit the new post.
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write the post file
+        env:
+          TITLE: ${{ github.event.client_payload.title }}
+          CATEGORY: ${{ github.event.client_payload.category }}
+          DATE: ${{ github.event.client_payload.date }}
+          EXCERPT: ${{ github.event.client_payload.excerpt }}
+          BODY: ${{ github.event.client_payload.body }}
+        run: node .github/scripts/write-post.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "blog-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/blog
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "blog: ${{ github.event.client_payload.title }}"
+            git push
+          fi
