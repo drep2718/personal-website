@@ -1,0 +1,898 @@
+<meta charset="utf-8">
+<title>NERV // MAGI Terminal — Aiden Drepaniotis</title>
+<style>
+  /* ============ NERV × HERMES // single deliberate world (electric-blue) ============ */
+  :root{
+    --ground:#0000F2;        /* Hermes electric ultramarine — the signature */
+    --ground-2:#0a0ac9;      /* panels / sidebar */
+    --ground-3:#00007e;      /* insets / terminal wells */
+    --ground-hair:#12128f;
+    --line:rgba(255,255,255,.22);
+    --line-soft:rgba(255,255,255,.12);
+    --ink:#EDEBFF;
+    --ink-dim:rgba(237,235,255,.62);
+    --ink-faint:rgba(237,235,255,.40);
+    --paper:#F6F5FF;
+    --amber:#FF6A00;         /* NERV orange — critical / rejected */
+    --green:#25F5A0;         /* MAGI green — good / submitted */
+    --gold:#FFC400;          /* in-progress / highlight */
+    --red:#FF3B3B;           /* critical alert */
+    --serif:'Didot','Bodoni 72','Playfair Display',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,ui-sans-serif,'Helvetica Neue',Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Monaco,'Cascadia Code',monospace;
+    --sb:248px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--amber);color:#fff}
+  a{color:inherit}
+  /* faint halftone/scanline texture over everything */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.10) 0 1px,transparent 1px 3px);
+    mix-blend-mode:multiply;opacity:.35;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:8;
+    background:radial-gradient(120% 80% at 78% 0%,rgba(255,255,255,.10),transparent 55%);
+  }
+
+  /* ---------- APP SHELL ---------- */
+  .app{display:grid;grid-template-columns:var(--sb) 1fr;min-height:100vh}
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+    background:var(--ground-2);
+    border-right:1px solid var(--line);
+    padding:22px 16px 28px;
+    display:flex;flex-direction:column;gap:22px;
+    z-index:5;
+  }
+  .brand{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
+  .emblem{width:58px;height:58px}
+  .brand .wm{font-family:var(--serif);font-size:26px;letter-spacing:.12em;line-height:.9}
+  .brand .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.34em;color:var(--ink-dim);text-transform:uppercase}
+
+  .magi{border:1px solid var(--line-soft);background:var(--ground-3);padding:10px}
+  .magi h4{margin:0 0 8px;font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ink-dim);font-weight:600;text-transform:uppercase}
+  .magi .node{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;padding:3px 0;color:var(--ink-dim)}
+  .magi .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+
+  nav{display:flex;flex-direction:column;gap:2px}
+  .nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ink-faint);text-transform:uppercase;padding:6px 8px 4px}
+  .navitem{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+    background:none;border:0;color:var(--ink-dim);
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;
+    padding:8px 8px;border-radius:2px;transition:background .12s,color .12s;
+    border-left:2px solid transparent;
+  }
+  .navitem .idx{font-size:9px;color:var(--ink-faint);width:20px}
+  .navitem:hover{background:rgba(255,255,255,.06);color:var(--ink)}
+  .navitem.active{background:rgba(255,255,255,.10);color:#fff;border-left-color:var(--amber)}
+  .navitem.active .idx{color:var(--amber)}
+  .side-foot{margin-top:auto;font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.1em;line-height:1.7;border-top:1px solid var(--line-soft);padding-top:14px}
+
+  /* ---------- MAIN ---------- */
+  .main{min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    position:sticky;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:12px 30px;background:rgba(0,0,242,.82);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-dim);text-transform:uppercase}
+  .crumb b{color:var(--ink)}
+  .status-cluster{display:flex;align-items:center;gap:18px}
+  .stat-chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-dim);display:flex;align-items:center;gap:7px}
+  .stat-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  #clock{color:var(--ink);font-variant-numeric:tabular-nums}
+
+  .content{padding:34px 30px 90px;max-width:1160px;width:100%}
+  .section{display:none;animation:fade .5s ease}
+  .section.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
+  h1.title{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,74px);line-height:.92;letter-spacing:-.01em;margin:0 0 6px;text-wrap:balance}
+  h2.sec{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.4vw,52px);line-height:.96;margin:0 0 4px}
+  .lede{max-width:60ch;color:var(--ink-dim);font-size:15px;margin:0 0 26px}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;
+    border:1px solid var(--line);padding:36px;margin-bottom:30px;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.05),transparent 60%)}
+  .hero .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:16px}
+  .hero p{color:var(--ink-dim);max-width:40ch;font-size:15px}
+  #rays{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none}
+  .hero .art{position:relative;height:280px;display:flex;align-items:center;justify-content:center}
+  .hero-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    border:1px solid var(--ink);padding:11px 18px;cursor:pointer;background:none;color:var(--ink);margin-top:22px;transition:.15s}
+  .hero-cta:hover{background:var(--ink);color:var(--ground)}
+
+  /* ---------- STAT GRID ---------- */
+  .grid{display:grid;gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .tile{border:1px solid var(--line);padding:18px 18px 16px;background:var(--ground-2);position:relative;overflow:hidden}
+  .tile .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase}
+  .tile .big{font-family:var(--serif);font-size:44px;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums}
+  .tile .meta{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:8px;letter-spacing:.06em}
+  .tile.accent .big{color:var(--amber)}
+  .tile .spark{position:absolute;right:12px;top:14px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink-faint)}
+
+  .panel{border:1px solid var(--line);background:var(--ground-2);padding:22px 22px 24px;margin-bottom:20px}
+  .panel h3{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 16px;font-weight:600;display:flex;align-items:center;gap:10px}
+  .panel h3::before{content:"◈";color:var(--amber);font-size:12px}
+
+  /* ---------- TABLE ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--ground-3)}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+  thead th{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);
+    text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--ground-2);position:sticky;top:0;white-space:nowrap;font-weight:600}
+  tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink)}
+  tbody td[contenteditable]{outline:none;cursor:text;min-width:60px}
+  tbody td[contenteditable]:focus{background:rgba(255,255,255,.09);box-shadow:inset 0 0 0 1px var(--amber)}
+  tbody td[contenteditable]:empty::before{content:"—";color:var(--ink-faint)}
+  tbody tr:hover{background:rgba(255,255,255,.04)}
+  td.num{font-family:var(--mono);color:var(--ink-dim);font-variant-numeric:tabular-nums;width:34px}
+  td.rowdel{width:30px;text-align:center}
+  .rowdel button{background:none;border:0;color:var(--ink-faint);cursor:pointer;font-family:var(--mono);font-size:13px;opacity:0;transition:.12s}
+  tr:hover .rowdel button{opacity:1}
+  .rowdel button:hover{color:var(--red)}
+  a.ext{font-family:var(--mono);font-size:11px;color:var(--green);text-decoration:none;border-bottom:1px dotted var(--green)}
+  a.ext:hover{color:#fff;border-color:#fff}
+
+  /* status + difficulty selects */
+  select.pill{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+    border:1px solid currentColor;background:transparent;color:var(--ink);
+    padding:4px 8px;cursor:pointer;border-radius:2px;-webkit-appearance:none;appearance:none;
+  }
+  select.pill option{background:var(--ground-3);color:var(--ink)}
+  .pill.s-Submitted{color:var(--green)}
+  .pill.s-Rejected{color:var(--amber)}
+  .pill.s-InProgress{color:var(--gold)}
+  .pill.s-Needcontact{color:var(--ink-dim)}
+  .pill.d-Easy{color:var(--green)}
+  .pill.d-Medium{color:var(--gold)}
+  .pill.d-Hard{color:var(--amber)}
+
+  .addrow{margin-top:12px;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    background:none;border:1px dashed var(--line);color:var(--ink-dim);padding:8px 14px;cursor:pointer;transition:.14s}
+  .addrow:hover{border-color:var(--amber);color:var(--amber)}
+  .savenote{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.1em;margin-left:14px}
+
+  /* ---------- KEY / legend panel ---------- */
+  .keygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+  .keycard{border:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:6px;background:var(--ground-2)}
+  .keycard .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .keycard .k .sw{width:10px;height:10px;border-radius:2px}
+  .keycard .v{font-family:var(--serif);font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+
+  /* ---------- BLOG ---------- */
+  .blog-form{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+  .blog-form input,.blog-form textarea{
+    font-family:var(--sans);background:var(--ground-3);border:1px solid var(--line);color:var(--ink);
+    padding:11px 14px;font-size:14px;width:100%;resize:vertical}
+  .blog-form input::placeholder,.blog-form textarea::placeholder{color:var(--ink-faint)}
+  .blog-form input:focus,.blog-form textarea:focus{outline:none;border-color:var(--amber)}
+  .btn{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;background:var(--amber);color:#180000;border:0;padding:11px 20px;cursor:pointer;align-self:flex-start;font-weight:700;transition:.14s}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+  .btn.ghost:hover{border-color:var(--amber);color:var(--amber)}
+  .logentry{border:1px solid var(--line);border-left:2px solid var(--amber);background:var(--ground-2);padding:18px 20px;margin-bottom:14px;position:relative}
+  .logentry .lh{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:8px}
+  .logentry h4{font-family:var(--serif);font-size:24px;font-weight:400;margin:0;line-height:1.1}
+  .logentry .ts{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.1em;white-space:nowrap}
+  .logentry p{margin:0;color:var(--ink-dim);white-space:pre-wrap;font-size:14.5px;line-height:1.65}
+  .logentry .del{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--ink-faint);cursor:pointer;font-family:var(--mono);opacity:0;transition:.12s}
+  .logentry:hover .del{opacity:1}
+  .logentry .del:hover{color:var(--red)}
+
+  /* ---------- CALENDAR ---------- */
+  .cal-cta{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .cal-box{border:1px solid var(--line);background:var(--ground-2);padding:22px}
+  .cal-box .num{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--amber);text-transform:uppercase;margin-bottom:10px}
+  .cal-box p{color:var(--ink-dim);font-size:13.5px;margin:0 0 14px}
+  .cal-box ol{margin:0;padding-left:18px;color:var(--ink-dim);font-size:13px;line-height:1.9}
+  .cal-box code{font-family:var(--mono);font-size:11.5px;background:var(--ground-3);padding:2px 6px;border:1px solid var(--line-soft)}
+  .biglink{display:flex;align-items:center;justify-content:center;gap:12px;text-decoration:none;
+    font-family:var(--mono);font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--ground);background:var(--ink);
+    padding:22px;transition:.15s;font-weight:600}
+  .biglink:hover{background:var(--amber);color:#180000}
+
+  /* ---------- HEX / AT-FIELD decor ---------- */
+  .atfield{position:absolute;right:-40px;bottom:-60px;width:280px;height:280px;opacity:.14;pointer-events:none}
+
+  /* ---------- BOOT OVERLAY ---------- */
+  #boot{position:fixed;inset:0;z-index:50;background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;font-family:var(--mono)}
+  #boot.done{opacity:0;pointer-events:none;transition:opacity .6s .2s}
+  #boot .bemblem{width:90px;height:90px;animation:spin 8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #bootlog{width:min(560px,84vw);font-size:11.5px;line-height:1.9;color:var(--green);letter-spacing:.06em;min-height:170px}
+  #bootlog .ok{color:var(--ink)}
+  #bootlog .warn{color:var(--gold)}
+  #boot .title{font-family:var(--serif);font-size:40px;letter-spacing:.1em}
+  #boot .skip{position:absolute;bottom:26px;font-size:10px;letter-spacing:.24em;color:var(--ink-faint);text-transform:uppercase;cursor:pointer;background:none;border:0}
+  #boot .bar{width:min(560px,84vw);height:3px;background:var(--ground-3);overflow:hidden}
+  #boot .bar i{display:block;height:100%;width:0;background:var(--amber);box-shadow:0 0 10px var(--amber)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.05ms!important}
+    #rays{opacity:.4}
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    :root{--sb:0px}
+    .app{grid-template-columns:1fr}
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;transform:translateX(-100%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.4)}
+    .sidebar.open{transform:none}
+    .hamburger{display:inline-flex!important}
+    .hero{grid-template-columns:1fr}
+    .hero .art{height:200px}
+    .g4,.g3{grid-template-columns:repeat(2,1fr)}
+    .keygrid{grid-template-columns:repeat(2,1fr)}
+    .cal-cta{grid-template-columns:1fr}
+    .content{padding:24px 16px 80px}
+  }
+  .hamburger{display:none;background:none;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;padding:6px 10px;cursor:pointer;margin-right:6px}
+  @media (max-width:520px){.g4,.g3,.g2,.keygrid{grid-template-columns:1fr}}
+
+  /* ---------- INTERACTIVE CALENDAR ---------- */
+  .cal-shell{border:1px solid var(--line);background:var(--ground-2);padding:18px;margin-bottom:18px}
+  .cal-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .cal-month{font-family:var(--serif);font-size:28px;flex:1;letter-spacing:.02em}
+  .cal-nav,.cal-today{font-family:var(--mono);font-size:11px;letter-spacing:.12em;background:none;border:1px solid var(--line);color:var(--ink);padding:7px 12px;cursor:pointer;transition:.14s}
+  .cal-nav:hover,.cal-today:hover{border-color:var(--amber);color:var(--amber)}
+  .cal-today{color:var(--amber);border-color:var(--amber)}
+  .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+  .cal-dow span{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-dim);text-align:center;text-transform:uppercase}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal-cell{min-height:78px;border:1px solid var(--line-soft);background:var(--ground-3);padding:6px 7px;cursor:pointer;position:relative;transition:.12s;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+  .cal-cell:hover{border-color:var(--amber);background:rgba(255,255,255,.04)}
+  .cal-cell.empty{background:transparent;border-color:transparent;cursor:default}
+  .cal-cell.today{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+  .cal-cell.sel{background:rgba(255,255,255,.09)}
+  .cal-cell .dnum{font-family:var(--mono);font-size:12px;color:var(--ink-dim);font-variant-numeric:tabular-nums}
+  .cal-cell.today .dnum{color:var(--amber);font-weight:700}
+  .cal-ev{font-family:var(--mono);font-size:9.5px;line-height:1.35;background:var(--amber);color:#1a0800;padding:1px 4px;border-radius:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+  .cal-ev.more{background:none;color:var(--ink-faint);padding:0 2px;font-weight:400}
+  .day-panel{border:1px solid var(--line);border-left:2px solid var(--amber);background:var(--ground-2);padding:16px 20px;margin-bottom:20px}
+  .day-panel h4{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--amber);margin:0 0 12px;text-transform:uppercase}
+  .day-panel .evrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:14px;color:var(--ink)}
+  .day-panel .evrow button{margin-left:auto;background:none;border:0;color:var(--ink-faint);cursor:pointer;font-family:var(--mono);font-size:12px;transition:.12s}
+  .day-panel .evrow button:hover{color:var(--red)}
+  .day-add{display:flex;gap:8px;margin-top:14px}
+  .day-add input{flex:1;background:var(--ground-3);border:1px solid var(--line);color:var(--ink);padding:10px 12px;font-size:13px;font-family:var(--sans)}
+  .day-add input:focus{outline:none;border-color:var(--amber)}
+  .up-row{display:flex;gap:14px;align-items:baseline;font-family:var(--mono);font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+  .up-row .update{color:var(--amber);white-space:nowrap;min-width:66px}
+  .up-row .uptxt{color:var(--ink)}
+  @media (max-width:640px){.cal-cell{min-height:58px}.cal-ev{display:none}.cal-cell.hasev .dnum::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--amber);margin-left:5px;vertical-align:middle}}
+</style>
+
+<!-- ================= BOOT OVERLAY ================= -->
+<div id="boot">
+  <svg class="bemblem" viewBox="0 0 100 100" fill="none" stroke="#EDEBFF" stroke-width="1.4">
+    <polygon points="50,6 88,28 88,72 50,94 12,72 12,28" stroke="#FF6A00"/>
+    <polygon points="50,20 76,35 76,65 50,80 24,65 24,35"/>
+    <circle cx="50" cy="50" r="9" stroke="#25F5A0"/>
+    <line x1="50" y1="6" x2="50" y2="94" stroke-opacity=".4"/>
+    <line x1="12" y1="28" x2="88" y2="72" stroke-opacity=".4"/>
+    <line x1="88" y1="28" x2="12" y2="72" stroke-opacity=".4"/>
+  </svg>
+  <div class="title">NERV</div>
+  <div id="bootlog"></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <button class="skip" onclick="finishBoot()">▸ skip sequence</button>
+</div>
+
+<!-- ================= APP ================= -->
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg class="emblem" viewBox="0 0 100 100" fill="none" stroke="#EDEBFF" stroke-width="1.6">
+        <polygon points="50,6 88,28 88,72 50,94 12,72 12,28" stroke="#FF6A00"/>
+        <polygon points="50,22 74,36 74,64 50,78 26,64 26,36"/>
+        <circle cx="50" cy="50" r="8" stroke="#25F5A0"/>
+      </svg>
+      <div class="wm">NERV</div>
+      <div class="sub">MAGI Terminal</div>
+    </div>
+
+    <div class="magi">
+      <h4>MAGI System · Online</h4>
+      <div class="node"><span>MELCHIOR·1</span><span class="dot"></span></div>
+      <div class="node"><span>BALTHASAR·2</span><span class="dot"></span></div>
+      <div class="node"><span>CASPER·3</span><span class="dot"></span></div>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-label">Command</div>
+      <button class="navitem active" data-sec="home"><span class="idx">00</span> TERMINAL</button>
+      <div class="nav-label">Operations</div>
+      <button class="navitem" data-sec="classes"><span class="idx">01</span> ACADEMY</button>
+      <button class="navitem" data-sec="leetcode"><span class="idx">02</span> SYNC TRIALS</button>
+      <button class="navitem" data-sec="intern"><span class="idx">03</span> DEPLOYMENT</button>
+      <div class="nav-label">Records</div>
+      <button class="navitem" data-sec="blog"><span class="idx">04</span> PILOT LOG</button>
+      <button class="navitem" data-sec="calendar"><span class="idx">05</span> TIME AXIS</button>
+    </nav>
+
+    <div class="side-foot">
+      PILOT: A. DREPANIOTIS<br>
+      CLEARANCE: LEVEL-A<br>
+      TOKYO-3 · AD 2026<br>
+      <span style="color:var(--green)">◉</span> DATA SYNCED LOCAL
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center">
+        <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <span class="crumb">NERV // <b id="crumb">TERMINAL</b></span>
+      </div>
+      <div class="status-cluster">
+        <span class="stat-chip"><span class="dot"></span>SYNC RATIO <b id="ratio" style="color:var(--ink)">—</b></span>
+        <span class="stat-chip" id="clock">--:--:--</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== HOME / TERMINAL ===== -->
+      <section class="section show" id="s-home">
+        <div class="hero">
+          <canvas id="rays"></canvas>
+          <div>
+            <div class="kicker">OPEN SOURCE · SELF · MIT LICENSE</div>
+            <h1 class="title">THE PILOT<br>THAT GROWS<br>WITH YOU</h1>
+            <p>Personal command terminal for Aiden Drepaniotis — coursework, algorithm sync trials, deployment tracking, and pilot logs. God's in his heaven.</p>
+            <button class="hero-cta" onclick="go('intern')">◆ Deployment Status →</button>
+          </div>
+          <div class="art">
+            <svg viewBox="0 0 200 200" width="220" height="220" fill="none" stroke="#EDEBFF" stroke-width=".7" opacity=".9">
+              <circle cx="100" cy="100" r="70" stroke-opacity=".5"/>
+              <circle cx="100" cy="100" r="52" stroke="#FF6A00" stroke-opacity=".8"/>
+              <polygon points="100,34 157,67 157,133 100,166 43,133 43,67" stroke-opacity=".7"/>
+              <polygon points="100,52 141,76 141,124 100,148 59,124 59,76" stroke="#25F5A0" stroke-opacity=".6"/>
+              <circle cx="100" cy="100" r="14"/>
+              <line x1="100" y1="10" x2="100" y2="190" stroke-opacity=".25"/>
+              <line x1="10" y1="100" x2="190" y2="100" stroke-opacity=".25"/>
+              <line x1="30" y1="30" x2="170" y2="170" stroke-opacity=".2"/>
+              <line x1="170" y1="30" x2="30" y2="170" stroke-opacity=".2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="grid g4" style="margin-bottom:22px">
+          <div class="tile accent"><div class="lab">Deployments</div><div class="big" id="k-total">0</div><div class="meta">applications filed</div></div>
+          <div class="tile"><div class="lab">Submitted</div><div class="big" id="k-sub" style="color:var(--green)">0</div><div class="meta">awaiting signal</div></div>
+          <div class="tile"><div class="lab">Sync Trials</div><div class="big" id="k-lc" style="color:var(--gold)">0</div><div class="meta">problems logged</div></div>
+          <div class="tile"><div class="lab">Active Courses</div><div class="big" id="k-cls">0</div><div class="meta">this term</div></div>
+        </div>
+
+        <div class="grid g2">
+          <div class="panel" style="margin:0">
+            <h3>Directive Board</h3>
+            <div id="directives" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+          <div class="panel" style="margin:0">
+            <h3>System Readout</h3>
+            <pre style="font-family:var(--mono);font-size:11.5px;color:var(--green);line-height:1.85;margin:0;white-space:pre-wrap">&gt; magi.status()........ <span style="color:var(--ink)">ALL NOMINAL</span>
+&gt; at_field............. <span style="color:var(--ink)">STABLE</span>
+&gt; local_store.......... <span style="color:var(--ink)">PERSISTENT</span>
+&gt; pilot_morale......... <span style="color:var(--gold)">ELEVATED</span>
+&gt; next_target.......... <span style="color:var(--amber)">HRT-CLASS FIRM</span>
+&gt; motto................ "GET IN THE ROBOT"</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ACADEMY / CLASSES ===== -->
+      <section class="section" id="s-classes">
+        <div class="eyebrow">SECTION 01 · MARDUK REPORT</div>
+        <h2 class="sec">Academy</h2>
+        <p class="lede">Active coursework and training regimen. Cells are editable — click to type; everything saves to this device automatically.</p>
+        <div class="panel">
+          <h3>Course Registry</h3>
+          <div class="table-wrap">
+            <table id="tbl-classes">
+              <thead><tr>
+                <th>#</th><th>Course</th><th>Code</th><th>Instructor</th><th>Schedule</th><th>Room</th><th>Status</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button class="addrow" onclick="addClass()">＋ Add course</button>
+          <span class="savenote" id="save-classes">◉ auto-saved</span>
+        </div>
+      </section>
+
+      <!-- ===== LEETCODE / SYNC TRIALS ===== -->
+      <section class="section" id="s-leetcode">
+        <div class="eyebrow">SECTION 02 · SYNCHRONIZATION</div>
+        <h2 class="sec">Sync Trials</h2>
+        <p class="lede">Every algorithm problem is a sync test. Log the process, the mistakes, the solution — raise your ratio.</p>
+
+        <div class="grid g4" style="margin-bottom:18px">
+          <div class="tile"><div class="lab">Total Logged</div><div class="big" id="lc-total" style="color:var(--gold)">0</div></div>
+          <div class="tile"><div class="lab">Easy</div><div class="big" id="lc-e" style="color:var(--green)">0</div></div>
+          <div class="tile"><div class="lab">Medium</div><div class="big" id="lc-m" style="color:var(--gold)">0</div></div>
+          <div class="tile"><div class="lab">Hard</div><div class="big" id="lc-h" style="color:var(--amber)">0</div></div>
+        </div>
+
+        <div class="panel">
+          <h3>Trial Log</h3>
+          <div class="table-wrap">
+            <table id="tbl-lc">
+              <thead><tr>
+                <th>#</th><th>Problem</th><th>Process</th><th>Mistakes</th><th>Solution</th><th>Overall</th><th>Difficulty</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button class="addrow" onclick="addLC()">＋ Log trial</button>
+          <span class="savenote" id="save-lc">◉ auto-saved</span>
+        </div>
+      </section>
+
+      <!-- ===== INTERNSHIP / DEPLOYMENT ===== -->
+      <section class="section" id="s-intern">
+        <div class="eyebrow">SECTION 03 · DEPLOYMENT</div>
+        <h2 class="sec">Deployment</h2>
+        <p class="lede">Every application is an EVA launch. Status colors update the counts live. Cells editable; links open in a new tab.</p>
+
+        <div class="keygrid" id="intern-key">
+          <div class="keycard"><div class="k"><span class="sw" style="background:var(--green)"></span>Submitted</div><div class="v" id="c-Submitted">0</div></div>
+          <div class="keycard"><div class="k"><span class="sw" style="background:var(--amber)"></span>Rejected</div><div class="v" id="c-Rejected">0</div></div>
+          <div class="keycard"><div class="k"><span class="sw" style="background:var(--gold)"></span>In Progress</div><div class="v" id="c-InProgress">0</div></div>
+          <div class="keycard"><div class="k"><span class="sw" style="background:var(--ink-dim)"></span>Need Contact</div><div class="v" id="c-Needcontact">0</div></div>
+        </div>
+
+        <div class="panel">
+          <h3>Launch Manifest</h3>
+          <div class="table-wrap">
+            <table id="tbl-intern">
+              <thead><tr>
+                <th>#</th><th>Company</th><th>Position</th><th>Date Applied</th><th>Application Status</th><th>Details</th><th>Portal</th><th>Website</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button class="addrow" onclick="addIntern()">＋ Add application</button>
+          <span class="savenote" id="save-intern">◉ auto-saved</span>
+        </div>
+      </section>
+
+      <!-- ===== BLOG / PILOT LOG ===== -->
+      <section class="section" id="s-blog">
+        <div class="eyebrow">SECTION 04 · PERSONAL RECORD</div>
+        <h2 class="sec">Pilot Log</h2>
+        <p class="lede">Field notes, reflections, wins, and the days you didn't want to get in the robot. Posts save to this device.</p>
+        <div class="panel">
+          <h3>New Entry</h3>
+          <div class="blog-form">
+            <input id="blog-title" placeholder="Entry title — e.g. 'First sync test above 40%'">
+            <textarea id="blog-body" rows="4" placeholder="Write your log..."></textarea>
+            <button class="btn" onclick="addBlog()">▸ Commit entry</button>
+          </div>
+        </div>
+        <div id="blog-list"></div>
+      </section>
+
+      <!-- ===== CALENDAR / TIME AXIS ===== -->
+      <section class="section" id="s-calendar">
+        <div class="eyebrow">SECTION 05 · TIME AXIS</div>
+        <h2 class="sec">Time Axis</h2>
+        <p class="lede">Operational calendar. Click any day to log an event — interviews, deadlines, exams, sync trials. Everything saves to this device.</p>
+
+        <div class="cal-shell">
+          <div class="cal-head">
+            <button class="cal-nav" onclick="calNav(-1)">◄ PREV</button>
+            <div class="cal-month" id="cal-month">—</div>
+            <button class="cal-nav" onclick="calNav(1)">NEXT ►</button>
+            <button class="cal-today" onclick="calToday()">◎ TODAY</button>
+          </div>
+          <div class="cal-dow"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+
+        <div class="day-panel" id="day-panel" style="display:none"></div>
+
+        <div class="grid g2">
+          <div class="panel" style="margin:0">
+            <h3>Upcoming Operations</h3>
+            <div id="cal-upcoming"></div>
+          </div>
+          <div class="panel" style="margin:0">
+            <h3>Google Calendar Bridge</h3>
+            <p style="color:var(--ink-dim);font-size:13.5px;margin:0 0 16px;line-height:1.6">The calendar above logs to this device instantly. For live two-way Google sync, open it in a full app — a hosted page can't hold a live external calendar.</p>
+            <a class="biglink" href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener">◆ OPEN GOOGLE CALENDAR ↗</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   NERV TERMINAL — state + persistence (localStorage)
+   ============================================================ */
+const LS = {
+  get:(k,d)=>{try{const v=localStorage.getItem('nerv_'+k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set:(k,v)=>{try{localStorage.setItem('nerv_'+k,JSON.stringify(v));}catch(e){}}
+};
+
+/* ---- seed data ---- */
+const SEED_INTERN = [
+  ["Susquehanna","Quant Dev","3/30/26","Rejected","SIG — first-round","",""],
+  ["Point72","Quant Dev","3/30/26","Rejected","Cubist / Point72","",""],
+  ["Salesforce","3-Day Program","5/16/26","Submitted","Futureforce","",""],
+  ["Apple","ML & SWE","5/20/26","Submitted","","","https://jobs.apple.com/app/en-us/profile/roles"],
+  ["Peak6","Quant Dev","","Submitted","","","https://peak6group.wd.myworkdayjobs.com"],
+  ["Aquatica","—","","Submitted","","",""],
+  ["Radix","Quant Dev","","Submitted","","",""],
+  ["Morgan Stanley","SWE","","Submitted","","","https://morganstanley.com/careers"],
+  ["Optiver","Quant Dev","","Submitted","","",""],
+  ["Trans Market","DevOps / SRE","","Submitted","","",""],
+  ["IMC","Quant Dev","","Rejected","","",""],
+  ["Walleye Capital","Quant Dev","","Rejected","","",""],
+  ["Voloridge Investment Mgmt","Quant Dev","","Submitted","","",""],
+  ["Citadel","Quant Dev","","Submitted","","",""],
+  ["Jump Trading","Quant Dev","","Submitted","","",""],
+  ["Jane Street","Quant Dev","","Submitted","","",""],
+  ["DRW","Quant Dev","","Rejected","","",""]
+];
+const SEED_LC = [
+  ["Two Sum","Hash map, one pass — store complement","Tried brute O(n²) first","Dict of value→index, check target−x","Clean, know it cold","Easy"],
+  ["Trapping Rain Water","Two pointers, track maxL/maxR","Overcomplicated with stacks initially","Move the smaller side inward","Retry in a week","Hard"],
+  ["LRU Cache","Hashmap + doubly linked list","Forgot to move node on get()","OrderedDict or manual DLL","Core pattern","Medium"]
+];
+const SEED_CLASSES = [
+  ["Stochastic Calculus","MATH 6890","Dr. Ikari","Mon/Wed 10:00","Bldg C-03","Enrolled"],
+  ["Data Structures & Algorithms","CS 3510","Prof. Akagi","Tue/Thu 13:00","Lab 7","Enrolled"],
+  ["Real Analysis","MATH 4317","Dr. Fuyutsuki","Mon/Wed/Fri 09:00","Hall A","Enrolled"],
+  ["Probability Theory","MATH 3225","Prof. Katsuragi","Tue/Thu 11:00","Bldg C-01","Enrolled"],
+  ["Machine Learning","CS 4641","Dr. Akagi","Wed 15:00","Lab 3","Planned"]
+];
+
+/* ---- status / difficulty option sets ---- */
+const STATUS = ["Submitted","Rejected","In Progress","Need contact"];
+const DIFF = ["Easy","Medium","Hard"];
+const cls = s => 's-'+s.replace(/\s+/g,'');
+
+/* ============================================================
+   RENDERERS
+   ============================================================ */
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* -------- INTERNSHIPS -------- */
+function renderIntern(){
+  const data = LS.get('intern', SEED_INTERN);
+  const tb = document.querySelector('#tbl-intern tbody'); tb.innerHTML='';
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    const website = r[6] ? `<a class="ext" href="${esc(r[6])}" target="_blank" rel="noopener">link ↗</a>` : '';
+    const portal  = r[5] ? `<a class="ext" href="${esc(r[5])}" target="_blank" rel="noopener">portal ↗</a>` : '';
+    tr.innerHTML =
+      `<td class="num">${String(i+1).padStart(2,'0')}</td>`+
+      `<td contenteditable data-c="0">${esc(r[0])}</td>`+
+      `<td contenteditable data-c="1">${esc(r[1])}</td>`+
+      `<td contenteditable data-c="2">${esc(r[2])}</td>`+
+      `<td>${statusSelect(r[3],i)}</td>`+
+      `<td contenteditable data-c="4">${esc(r[4])}</td>`+
+      `<td contenteditable data-c="5">${portal||esc(r[5])}</td>`+
+      `<td contenteditable data-c="6">${website||esc(r[6])}</td>`+
+      `<td class="rowdel"><button title="delete" onclick="delRow('intern',${i})">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+  bindEdit('intern','#tbl-intern');
+  updateInternCounts(data);
+}
+function statusSelect(val,i){
+  const opts = STATUS.map(o=>`<option ${o===val?'selected':''}>${o}</option>`).join('');
+  return `<select class="pill ${cls(val)}" onchange="setStatus(${i},this)">${opts}</select>`;
+}
+function setStatus(i,el){
+  const data=LS.get('intern',SEED_INTERN); data[i][3]=el.value; LS.set('intern',data);
+  el.className='pill '+cls(el.value); updateInternCounts(data); flash('save-intern');
+}
+function updateInternCounts(data){
+  const c={Submitted:0,Rejected:0,"In Progress":0,"Need contact":0};
+  data.forEach(r=>{if(c[r[3]]!==undefined)c[r[3]]++;});
+  document.getElementById('c-Submitted').textContent=c.Submitted;
+  document.getElementById('c-Rejected').textContent=c.Rejected;
+  document.getElementById('c-InProgress').textContent=c["In Progress"];
+  document.getElementById('c-Needcontact').textContent=c["Need contact"];
+  document.getElementById('k-total').textContent=data.length;
+  document.getElementById('k-sub').textContent=c.Submitted;
+  const rr = data.length ? Math.round(c.Submitted/data.length*100) : 0;
+  document.getElementById('ratio').textContent = rr+'%';
+  renderDirectives(data,c);
+}
+
+/* -------- LEETCODE -------- */
+function renderLC(){
+  const data=LS.get('lc',SEED_LC);
+  const tb=document.querySelector('#tbl-lc tbody'); tb.innerHTML='';
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    const opts=DIFF.map(o=>`<option ${o===r[5]?'selected':''}>${o}</option>`).join('');
+    tr.innerHTML=
+      `<td class="num">${String(i+1).padStart(2,'0')}</td>`+
+      `<td contenteditable data-c="0"><b>${esc(r[0])}</b></td>`+
+      `<td contenteditable data-c="1">${esc(r[1])}</td>`+
+      `<td contenteditable data-c="2">${esc(r[2])}</td>`+
+      `<td contenteditable data-c="3">${esc(r[3])}</td>`+
+      `<td contenteditable data-c="4">${esc(r[4])}</td>`+
+      `<td><select class="pill d-${r[5]}" onchange="setDiff(${i},this)">${opts}</select></td>`+
+      `<td class="rowdel"><button onclick="delRow('lc',${i})">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+  bindEdit('lc','#tbl-lc');
+  const d=LS.get('lc',SEED_LC);
+  document.getElementById('lc-total').textContent=d.length;
+  document.getElementById('lc-e').textContent=d.filter(r=>r[5]==='Easy').length;
+  document.getElementById('lc-m').textContent=d.filter(r=>r[5]==='Medium').length;
+  document.getElementById('lc-h').textContent=d.filter(r=>r[5]==='Hard').length;
+  document.getElementById('k-lc').textContent=d.length;
+}
+function setDiff(i,el){const d=LS.get('lc',SEED_LC);d[i][5]=el.value;LS.set('lc',d);el.className='pill d-'+el.value;renderLC();flash('save-lc');}
+
+/* -------- CLASSES -------- */
+const CSTATUS=["Enrolled","Completed","Planned","Dropped"];
+function renderClasses(){
+  const data=LS.get('classes',SEED_CLASSES);
+  const tb=document.querySelector('#tbl-classes tbody'); tb.innerHTML='';
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    const opts=CSTATUS.map(o=>`<option ${o===r[5]?'selected':''}>${o}</option>`).join('');
+    tr.innerHTML=
+      `<td class="num">${String(i+1).padStart(2,'0')}</td>`+
+      `<td contenteditable data-c="0"><b>${esc(r[0])}</b></td>`+
+      `<td contenteditable data-c="1">${esc(r[1])}</td>`+
+      `<td contenteditable data-c="2">${esc(r[2])}</td>`+
+      `<td contenteditable data-c="3">${esc(r[3])}</td>`+
+      `<td contenteditable data-c="4">${esc(r[4])}</td>`+
+      `<td><select class="pill" onchange="setCStatus(${i},this)">${opts}</select></td>`+
+      `<td class="rowdel"><button onclick="delRow('classes',${i})">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+  bindEdit('classes','#tbl-classes');
+  const active=data.filter(r=>r[5]==='Enrolled').length;
+  document.getElementById('k-cls').textContent=active;
+}
+function setCStatus(i,el){const d=LS.get('classes',SEED_CLASSES);d[i][5]=el.value;LS.set('classes',d);renderClasses();flash('save-classes');}
+
+/* -------- shared editing -------- */
+function bindEdit(key,sel){
+  document.querySelectorAll(sel+' tbody td[contenteditable]').forEach(td=>{
+    td.addEventListener('blur',()=>{
+      const tr=td.parentElement, rows=[...tr.parentElement.children], ri=rows.indexOf(tr);
+      const ci=+td.dataset.c;
+      const data=LS.get(key, key==='intern'?SEED_INTERN:key==='lc'?SEED_LC:SEED_CLASSES);
+      if(data[ri]){ data[ri][ci]=td.innerText.trim(); LS.set(key,data); flash('save-'+key); }
+    });
+  });
+}
+function delRow(key,i){
+  const seed=key==='intern'?SEED_INTERN:key==='lc'?SEED_LC:SEED_CLASSES;
+  const data=LS.get(key,seed); data.splice(i,1); LS.set(key,data);
+  key==='intern'?renderIntern():key==='lc'?renderLC():renderClasses();
+  flash('save-'+key);
+}
+function addIntern(){const d=LS.get('intern',SEED_INTERN);d.push(["New Target","Quant Dev","","In Progress","","",""]);LS.set('intern',d);renderIntern();flash('save-intern');}
+function addLC(){const d=LS.get('lc',SEED_LC);d.push(["New Problem","","","","","Medium"]);LS.set('lc',d);renderLC();flash('save-lc');}
+function addClass(){const d=LS.get('classes',SEED_CLASSES);d.push(["New Course","","","","","Planned"]);LS.set('classes',d);renderClasses();flash('save-classes');}
+function flash(id){const el=document.getElementById(id);if(!el)return;el.style.color='var(--green)';el.textContent='◉ saved '+new Date().toLocaleTimeString();setTimeout(()=>{el.textContent='◉ auto-saved';el.style.color='';},1600);}
+
+/* -------- directives (home) -------- */
+function renderDirectives(data,c){
+  const box=document.getElementById('directives'); if(!box)return;
+  const pending=data.filter(r=>r[3]==='In Progress'||r[3]==='Need contact').length;
+  const items=[
+    ['◆',`${c.Submitted} applications live — chase Peak6 & Optiver referrals`,'var(--green)'],
+    ['◆',`${pending} in-progress / need contact — assign a directive`,'var(--gold)'],
+    ['◆','Log today\'s sync trial before 23:00','var(--amber)'],
+    ['◆','Review rejected: SIG, Point72, IMC — extract patterns','var(--ink-dim)']
+  ];
+  box.innerHTML=items.map(([b,t,col])=>
+    `<div style="display:flex;gap:10px;font-family:var(--mono);font-size:12px;color:var(--ink-dim)">
+       <span style="color:${col}">${b}</span><span>${t}</span></div>`).join('');
+}
+
+/* -------- BLOG -------- */
+const SEED_BLOG=[{t:"Terminal online",b:"MAGI came up clean on the first boot. Every application is a launch, every LeetCode problem a sync test. Target locked: HRT-class firm. Let's raise the ratio.",ts:Date.now()}];
+function renderBlog(){
+  const data=LS.get('blog',SEED_BLOG);
+  const list=document.getElementById('blog-list');
+  if(!data.length){list.innerHTML='<p style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no entries yet — commit your first log above</p>';return;}
+  list.innerHTML=data.map((e,i)=>
+    `<div class="logentry">
+       <button class="del" onclick="delBlog(${i})">✕ purge</button>
+       <div class="lh"><h4>${esc(e.t)||'Untitled'}</h4>
+       <span class="ts">${new Date(e.ts).toLocaleString([], {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span></div>
+       <p>${esc(e.b)}</p>
+     </div>`).join('');
+}
+function addBlog(){
+  const t=document.getElementById('blog-title').value.trim();
+  const b=document.getElementById('blog-body').value.trim();
+  if(!t&&!b)return;
+  const data=LS.get('blog',SEED_BLOG); data.unshift({t,b,ts:Date.now()}); LS.set('blog',data);
+  document.getElementById('blog-title').value='';document.getElementById('blog-body').value='';
+  renderBlog();
+}
+function delBlog(i){const d=LS.get('blog',SEED_BLOG);d.splice(i,1);LS.set('blog',d);renderBlog();}
+
+/* -------- CALENDAR (interactive, persists to localStorage) -------- */
+let calView=new Date(), calSel=null;
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const getEvents=()=>LS.get('calEvents',{});
+const setEvents=o=>LS.set('calEvents',o);
+const pad2=n=>String(n).padStart(2,'0');
+const dstr=(y,m,d)=>y+'-'+pad2(m+1)+'-'+pad2(d);
+const todayStr=()=>{const t=new Date();return dstr(t.getFullYear(),t.getMonth(),t.getDate());};
+function renderCal(){
+  const grid=document.getElementById('cal-grid'); if(!grid)return;
+  const y=calView.getFullYear(), m=calView.getMonth();
+  document.getElementById('cal-month').textContent=MONTHS[m]+' '+y;
+  const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+  const ev=getEvents(), tstr=todayStr();
+  let html='';
+  for(let i=0;i<first;i++) html+='<div class="cal-cell empty"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=dstr(y,m,d), list=ev[ds]||[];
+    let cls='cal-cell'; if(list.length)cls+=' hasev'; if(ds===tstr)cls+=' today'; if(ds===calSel)cls+=' sel';
+    let chips='';
+    list.slice(0,2).forEach(e=>chips+=`<div class="cal-ev" title="${esc(e)}">${esc(e)}</div>`);
+    if(list.length>2) chips+=`<div class="cal-ev more">+${list.length-2} more</div>`;
+    html+=`<div class="${cls}" onclick="selectDay('${ds}')"><span class="dnum">${d}</span>${chips}</div>`;
+  }
+  grid.innerHTML=html;
+  renderDayPanel();
+}
+function selectDay(ds){calSel=ds;renderCal();}
+function renderDayPanel(){
+  const el=document.getElementById('day-panel'); if(!el)return;
+  if(!calSel){el.style.display='none';return;}
+  el.style.display='block';
+  const ev=getEvents(), list=ev[calSel]||[];
+  const [y,m,d]=calSel.split('-').map(Number);
+  const rows = list.length
+    ? list.map((e,i)=>`<div class="evrow"><span>◆ ${esc(e)}</span><button title="delete" onclick="delEvent(${i})">✕</button></div>`).join('')
+    : '<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no entries logged</div>';
+  el.innerHTML=`<h4>${MONTHS[m-1]} ${d}, ${y}</h4>${rows}
+    <div class="day-add"><input id="ev-input" placeholder="Log an event — interview, deadline, exam…" onkeydown="if(event.key==='Enter')addEvent()"><button class="btn" onclick="addEvent()">▸ Add</button></div>`;
+  const inp=document.getElementById('ev-input'); if(inp)inp.focus();
+}
+function addEvent(){const inp=document.getElementById('ev-input');if(!inp)return;const v=inp.value.trim();if(!v||!calSel)return;const ev=getEvents();(ev[calSel]=ev[calSel]||[]).push(v);setEvents(ev);renderCal();renderUpcoming();}
+function delEvent(i){const ev=getEvents();if(ev[calSel]){ev[calSel].splice(i,1);if(!ev[calSel].length)delete ev[calSel];setEvents(ev);}renderCal();renderUpcoming();}
+function renderUpcoming(){
+  const el=document.getElementById('cal-upcoming'); if(!el)return;
+  const ev=getEvents(), t=todayStr(), rows=[];
+  Object.keys(ev).sort().forEach(ds=>{if(ds>=t)ev[ds].forEach(e=>rows.push([ds,e]));});
+  if(!rows.length){el.innerHTML='<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no upcoming entries — click a day to log one</div>';return;}
+  el.innerHTML=rows.slice(0,14).map(([ds,e])=>{const [y,m,d]=ds.split('-').map(Number);return `<div class="up-row"><span class="update">${MONTHS[m-1].slice(0,3)} ${d}</span><span class="uptxt">${esc(e)}</span></div>`;}).join('');
+}
+function calNav(delta){calView=new Date(calView.getFullYear(),calView.getMonth()+delta,1);renderCal();}
+function calToday(){calView=new Date();calSel=todayStr();renderCal();}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+const CRUMBS={home:'TERMINAL',classes:'ACADEMY',leetcode:'SYNC TRIALS',intern:'DEPLOYMENT',blog:'PILOT LOG',calendar:'TIME AXIS'};
+function go(sec){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('show'));
+  document.getElementById('s-'+sec).classList.add('show');
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active',n.dataset.sec===sec));
+  document.getElementById('crumb').textContent=CRUMBS[sec];
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.navitem').forEach(n=>n.addEventListener('click',()=>go(n.dataset.sec)));
+
+/* ============================================================
+   CLOCK
+   ============================================================ */
+function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('en-GB');}
+setInterval(tick,1000);tick();
+
+/* ============================================================
+   RAYS CANVAS (Hermes engraving evocation — original art)
+   ============================================================ */
+(function(){
+  const c=document.getElementById('rays'); if(!c)return; const ctx=c.getContext('2d');
+  let raf, t=0, reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function size(){const r=c.getBoundingClientRect();c.width=r.width*devicePixelRatio;c.height=r.height*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}
+  function draw(){
+    const w=c.clientWidth,h=c.clientHeight; ctx.clearRect(0,0,w,h);
+    const cx=w*0.72, cy=h*0.5, N=110;
+    ctx.strokeStyle='rgba(255,255,255,0.5)';
+    for(let i=0;i<N;i++){
+      const a=(i/N)*Math.PI*2 + t*0.02;
+      const len=Math.max(w,h);
+      const jitter=(Math.sin(i*12.9898)*43758.5453)%1;
+      ctx.globalAlpha=0.12+0.20*Math.abs(Math.sin(i*1.7));
+      ctx.lineWidth=0.5+ (jitter>0.85?0.9:0);
+      ctx.beginPath();ctx.moveTo(cx,cy);
+      ctx.lineTo(cx+Math.cos(a)*len,cy+Math.sin(a)*len);ctx.stroke();
+    }
+    ctx.globalAlpha=0.5;
+    for(let r=30;r<Math.max(w,h);r+=46){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.globalAlpha=0.06;ctx.stroke();}
+    if(!reduce){t+=1;raf=requestAnimationFrame(draw);}else{draw2();}
+  }
+  function draw2(){/* static */}
+  size();draw();
+  addEventListener('resize',()=>{size();if(reduce)draw();});
+})();
+
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+const BOOT_LINES=[
+  ['&gt; initializing MAGI supercomputer array...','ok'],
+  ['&gt; MELCHIOR-1 ...... <span class="ok">ONLINE</span>',''],
+  ['&gt; BALTHASAR-2 ..... <span class="ok">ONLINE</span>',''],
+  ['&gt; CASPER-3 ........ <span class="ok">ONLINE</span>',''],
+  ['&gt; mounting local datastore ....... <span class="ok">OK</span>',''],
+  ['&gt; loading deployment manifest .... <span class="ok">17 RECORDS</span>',''],
+  ['&gt; A.T. field ..................... <span class="warn">STABLE</span>',''],
+  ['&gt; pilot authentication ........... <span class="ok">A. DREPANIOTIS</span>',''],
+  ['&gt; sync ratio nominal. welcome, pilot.','ok']
+];
+let bootDone=false;
+function runBoot(){
+  const log=document.getElementById('bootlog'), bar=document.getElementById('bootbar');
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){finishBoot();return;}
+  let i=0;
+  (function step(){
+    if(bootDone)return;
+    if(i<BOOT_LINES.length){
+      log.innerHTML+=BOOT_LINES[i][0]+'<br>';
+      bar.style.width=Math.round((i+1)/BOOT_LINES.length*100)+'%';
+      i++; setTimeout(step, 230+Math.random()*160);
+    } else { setTimeout(finishBoot,520); }
+  })();
+}
+function finishBoot(){
+  if(bootDone)return; bootDone=true;
+  const b=document.getElementById('boot'); b.classList.add('done');
+  setTimeout(()=>b.style.display='none',900);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderIntern();renderLC();renderClasses();renderBlog();
+if(!localStorage.getItem('nerv_calEvents')){
+  const t=new Date(), y=t.getFullYear(), m=t.getMonth();
+  const clamp=d=>Math.min(d,new Date(y,m+1,0).getDate());
+  const seed={};
+  seed[dstr(y,m,clamp(t.getDate()+2))]=['Optiver OA — 90 min'];
+  seed[dstr(y,m,clamp(t.getDate()+5))]=['Jane Street phone screen','LeetCode: 2 hards'];
+  seed[dstr(y,m,clamp(t.getDate()+9))]=['Stochastic Calculus midterm'];
+  setEvents(seed);
+}
+calToday();renderUpcoming();
+runBoot();
+</script>
