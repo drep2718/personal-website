@@ -14,9 +14,9 @@ export const INTERESTS: Interest[] = [
     tagline: "Timed problems, clean algorithms, the rush of the solve.",
     emoji: "🏆",
     details: [
-      "This is the one I get genuinely obsessed with. Give me a countdown, a problem that looks impossible, and that moment where the right algorithm finally clicks — I'm hooked.",
-      "I love the whole toolkit: dynamic programming, graph algorithms, greedy proofs, and squeezing a clean solution out of a brutal time limit. I practice constantly and help teach it too, running problem-solving and interview-prep sessions at Boiler Quant.",
+      "I really do enjoy Competitive Programming it is something that I started by taking CS211 & CS311 at Purdue, it is something that is challenging and fun and I really enjoy codeforces even though I am not the best yet",
     ],
+    link: { href: "https://codeforces.com/profile/aidendrep", label: "Codeforces Account" },
   },
   {
     id: "math",
@@ -35,7 +35,7 @@ export const INTERESTS: Interest[] = [
     emoji: "🔌",
     details: [
       "I lead a team at Purdue's Autonomous Robotics Club (ARC), where we wrangle Sphero robots, open-source APIs, and every hardware-software gremlin in between.",
-      "FPGAs are the deep end I keep diving back into — I've built a pipelined Black-Scholes pricing core in SystemVerilog, and nothing beats watching logic you wired yourself run in actual silicon at nanosecond speed.",
+      "FPGAs are the deep end I keep diving back into, I've built a pipelined Black-Scholes pricing core in SystemVerilog, and nothing beats watching logic you wired yourself run in actual silicon at nanosecond speed.",
     ],
   },
   {
@@ -53,9 +53,10 @@ export const INTERESTS: Interest[] = [
     tagline: "Bouldering now — mountains next.",
     emoji: "🧗",
     details: [
-      "Bouldering is problem-solving you can feel: reading a route from the ground is half the send, and the meditative lock-in on the wall is the other half.",
-      "The long-term dream is mountaineering. I'm building toward alpine routes and, eventually, big glaciated peaks — every session on the wall is training for mountains I haven't met yet.",
+      "Bouldering is something I got into last year, falling into the CS stereotype, it is has become one of my favorite things to do in the gym, on the weekends, and the wall is a great place for a yap session",
+      "Mountaineering is something that I want to get into more, I have always liked hiking and I think I want to attempt to summit some peaks in NY soon, stay tuned!!",
     ],
+    link: { href: "https://all-mountains.vercel.app/", label: "Mountaineering app I created" },
   },
   {
     id: "reading",
@@ -63,7 +64,7 @@ export const INTERESTS: Interest[] = [
     tagline: "Fantasy epics and far too much manga.",
     emoji: "📖",
     details: [
-      "Hand me a fantasy series with a hard magic system and a thousand pages of payoff and I'll disappear for a week. Between epics I read manga constantly — everything from long-running shonen to quiet one-volume stories.",
+      "I am a huge reading fan, weather it is high fantasy and Brandon Sanderson, or some fujimoto manga I am a fan and I love talking about what I read",
       "I keep a full log of everything I've read and watched hidden somewhere on this site. Curious? Try /secret/vault.",
     ],
     link: { href: "/secret/vault", label: "Enter the vault" },
@@ -85,9 +86,7 @@ export const INTERESTS: Interest[] = [
     tagline: "Espresso shots, dialed in daily.",
     emoji: "☕",
     details: [
-      "I like to pretend I'm a barista at home — espresso machine hissing, grinder dialed to the gram, chasing that one perfect 25-second shot.",
-      "Most mornings start with a small ritual of tamping, timing, and tasting. The latte art is a work in progress; the caffeine dependency is fully shipped.",
-      "I also write up what I'm learning — pours, roasts, and the occasional tangent — on my little blog.",
+      "I love nothing more than making cool and fun coffes at my house with the fancy espresso machine I have and I like sharing about random quotes and things I think about during the day so definitly give the blog a look below",
     ],
     link: { href: "/secret/blog", label: "Read the blog" },
   },
