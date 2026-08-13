@@ -71,11 +71,24 @@ export async function GET() {
   return NextResponse.json({ configured: !!pickProvider() }, { status: 200 });
 }
 
+// The pilot can override the auto-classifier from the terminal's VERDICT MODE
+// toggle. These are authoritative council directives (a second system message),
+// NOT user text — so they take precedence over the query's shape but never over
+// the safety guardrails in SYSTEM.
+const MODE_DIRECTIVE: Record<string, string> = {
+  decision:
+    'COUNCIL DIRECTIVE — Deliberate in DECISION mode. Set "mode":"DECISION". Every unit\'s "stance" MUST be exactly APPROVE, REJECT, or CONDITIONAL, and "ruling" MUST be the majority verdict (APPROVED / REJECTED / CONDITIONAL / DEADLOCK). If the query is open-ended, reframe it as the single closest yes/no decision and rule on THAT — the pilot requires a definitive verdict. The safety guardrails still override this directive.',
+  counsel:
+    'COUNCIL DIRECTIVE — Deliberate in COUNSEL mode. Set "mode":"COUNSEL". Each unit\'s "stance" is a 1-3 word recommendation in its own voice (never APPROVE/REJECT/CONDITIONAL), and "ruling" is a concise combined recommendation phrase. Actually answer the question specifically and usefully.',
+};
+
 export async function POST(req: NextRequest) {
   let query = "";
+  let mode = "auto";
   try {
     const body = await req.json();
     query = String(body?.query ?? "").slice(0, 2000);
+    mode = String(body?.mode ?? "auto").toLowerCase();
   } catch {
     /* ignore */
   }
@@ -105,6 +118,7 @@ export async function POST(req: NextRequest) {
         max_tokens: 1100,
         messages: [
           { role: "system", content: SYSTEM },
+          ...(MODE_DIRECTIVE[mode] ? [{ role: "system", content: MODE_DIRECTIVE[mode] }] : []),
           { role: "user", content: query },
         ],
       }),

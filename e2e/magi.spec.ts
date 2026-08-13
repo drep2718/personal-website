@@ -109,6 +109,23 @@ test.describe("MAGI council", () => {
     await expect(page.locator("#magi-transcript-wrap")).toBeVisible({ timeout: 8000 });
   });
 
+  test("forcing YES·NO mode returns a majority verdict even on an open question", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await openSection(page, "magi");
+    // Force a decision on a question the auto-classifier would route to COUNSEL.
+    await page.locator('#magi-mode .mm-opt[data-mode="decision"]').click();
+    await page.locator("#magi-q").fill("What should I focus on this semester to become a stronger quant candidate?");
+    await page.locator("#magi-go").click();
+    await expect(page.locator("#magi-consensus")).toBeVisible({ timeout: 8000 });
+    await expect(page.locator("#magi-consensus .mc-label")).toHaveText("MAGI Consensus");
+    await expect(page.locator("#mc-ruling")).toHaveText(/APPROVED|REJECTED|CONDITIONAL|DEADLOCK/);
+    await expect(page.locator("#mc-tally")).toContainText("MAJORITY");
+    // Every unit casts a real vote (no STANDBY leftovers).
+    for (const u of ["melchior", "balthasar", "casper"]) {
+      await expect(page.locator("#mv-" + u)).toHaveText(/APPROVE|REJECT|CONDITIONAL/, { timeout: 8000 });
+    }
+  });
+
   test("a self-harm query is deflected to support, not deliberated", async ({ page }) => {
     await openTerminal(page, "?magi=local");
     await openSection(page, "magi");

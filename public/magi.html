@@ -291,6 +291,11 @@
   .magi-console textarea:focus{outline:none;border-color:var(--amber)}
   .magi-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .magi-status{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim)}
+  .magi-mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .magi-mode .mm-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-faint);margin-right:2px}
+  .mm-opt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:var(--ground-3);border:1px solid var(--line);color:var(--ink-dim);padding:6px 13px;cursor:pointer;transition:.14s}
+  .mm-opt:hover{border-color:var(--green);color:var(--ink)}
+  .mm-opt.active{background:var(--green);border-color:var(--green);color:#00243a;font-weight:700}
   .magi-triad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
   .magi-unit{border:1px solid var(--line);background:var(--ground-2);padding:18px 18px 20px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s;min-height:158px}
   .magi-unit::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line);transition:background .3s}
@@ -528,10 +533,16 @@
       <section class="section" id="s-magi">
         <div class="eyebrow">SECTION 00-A · MAGI DELIBERATION SYSTEM</div>
         <h2 class="sec">The MAGI</h2>
-        <p class="lede">Three bio-computers — the mind of Dr. Naoko Akagi, split three ways. <b>MELCHIOR·1</b> the scientist (logic &amp; data), <b>BALTHASAR·2</b> the mother (protection &amp; risk), <b>CASPER·3</b> the woman (instinct &amp; desire). Put a <b>decision</b> or an <b>open question</b> to them — each answers strictly from its own lane, they <b>debate it out in the open</b>, and reach a ruling (by majority for decisions). Live deliberation runs on a free model; a local council always stands by.</p>
+        <p class="lede">Three bio-computers — the mind of Dr. Naoko Akagi, split three ways. <b>MELCHIOR·1</b> the scientist (logic &amp; data), <b>BALTHASAR·2</b> the mother (protection &amp; risk), <b>CASPER·3</b> the woman (instinct &amp; desire). Put a <b>decision</b> or an <b>open question</b> to them — each answers strictly from its own lane, they <b>debate it out in the open</b>, and reach a ruling (by majority for decisions). Set <b>VERDICT MODE</b> to force a definitive <b>YES · NO</b> even on an open question, or open <b>COUNSEL</b> — or leave it on <b>AUTO</b>. Live deliberation runs on a free model; a local council always stands by.</p>
 
         <div class="magi-console">
-          <textarea id="magi-q" rows="2" placeholder="State the decision before the council…  e.g. 'Should I take the Optiver offer over interviewing at Jane Street?'"></textarea>
+          <textarea id="magi-q" rows="2" placeholder="Put a decision or an open question to the council…  e.g. 'Should I take the Optiver offer over interviewing at Jane Street?'"></textarea>
+          <div class="magi-mode" id="magi-mode" role="group" aria-label="Verdict mode">
+            <span class="mm-label">VERDICT MODE</span>
+            <button type="button" class="mm-opt active" data-mode="auto" onclick="setMagiMode('auto')" title="Let the MAGI classify: yes/no for decisions, counsel for open questions">AUTO</button>
+            <button type="button" class="mm-opt" data-mode="decision" onclick="setMagiMode('decision')" title="Force a definitive yes/no ruling by majority vote — even on an open question">YES · NO</button>
+            <button type="button" class="mm-opt" data-mode="counsel" onclick="setMagiMode('counsel')" title="Force open counsel — three lenses, a combined recommendation, no verdict">COUNSEL</button>
+          </div>
           <div class="magi-actions">
             <button class="btn" id="magi-go" onclick="convene()">◈ CONVENE THE MAGI</button>
             <button class="btn ghost" onclick="magiExample()">⟲ Sample query</button>
@@ -993,6 +1004,8 @@ function renderCrisis(){
 }
 function magiExample(){document.getElementById('magi-q').value="Should I take the Optiver quant offer over interviewing at Jane Street?";}
 function forceLocal(){return /[?&]magi=local\b/.test(location.search) || navigator.onLine===false;}
+let MAGI_MODE='auto'; // 'auto' | 'decision' (force yes/no) | 'counsel' (force open counsel)
+function setMagiMode(m){MAGI_MODE=m;document.querySelectorAll('#magi-mode .mm-opt').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));}
 
 async function convene(){
   const q=(document.getElementById('magi-q').value||'').trim();
@@ -1012,8 +1025,8 @@ async function convene(){
   let result, local=false, unconfigured=false;
   try{
     if(forceLocal()) throw new Error('local');
-    result=await magiRemote(q);
-  }catch(e){ result=magiLocal(q); local=true; unconfigured=!!e.unconfigured; }
+    result=await magiRemote(q,MAGI_MODE);
+  }catch(e){ result=magiLocal(q,MAGI_MODE); local=true; unconfigured=!!e.unconfigured; }
   renderVerdicts(result);
   const hist=LS.get('magi',[]); hist.unshift({q,ruling:result.ruling,tally:result.tally,ts:Date.now()}); LS.set('magi',hist.slice(0,50));
   renderMagiHistory();
@@ -1023,12 +1036,12 @@ async function convene(){
     : '// local heuristic ruling (offline)';
 }
 
-async function magiRemote(q){
+async function magiRemote(q,mode){
   // Same-origin serverless bridge; the API key lives server-side (see /api/magi).
   const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),26000);
   let res;
   try{
-    res=await fetch('/api/magi',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({query:q})});
+    res=await fetch('/api/magi',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({query:q,mode:mode||'auto'})});
   } finally { clearTimeout(to); }
   if(!res.ok) throw new Error('api '+res.status);
   const data=await res.json();
@@ -1077,12 +1090,17 @@ function finalize(out,modelRuling){
   else {ruling='DEADLOCK';tally='1-1-1';}
   out.ruling=ruling; out.tally=tally; return out;
 }
-function magiLocal(q){
+function magiLocal(q,mode){
   const s=q.toLowerCase().trim();
-  const isOpen = /^(what|how|why|which|when|where|who|whom|whose)\b/.test(s)
-    || /\bhelp me\b|\bwhat should i (do|focus|prioriti|pick|choose|work on)|\bhow (do|should|can) i\b/.test(s);
-  const isDecision = !isOpen && (/\bshould i\b|\bshould we\b|\bworth it\b|\bdo i\b|\btake the\b|\b vs\.?\b/.test(s) || (/\bor\b/.test(s) && /\?/.test(s)));
-  return isDecision ? magiLocalDecision(q,s) : magiLocalCounsel(q,s);
+  let decision;
+  if(mode==='decision') decision=true;        // pilot forced a yes/no ruling
+  else if(mode==='counsel') decision=false;    // pilot forced open counsel
+  else {                                        // auto — classify by shape
+    const isOpen = /^(what|how|why|which|when|where|who|whom|whose)\b/.test(s)
+      || /\bhelp me\b|\bwhat should i (do|focus|prioriti|pick|choose|work on)|\bhow (do|should|can) i\b/.test(s);
+    decision = !isOpen && (/\bshould i\b|\bshould we\b|\bworth it\b|\bdo i\b|\btake the\b|\b vs\.?\b/.test(s) || (/\bor\b/.test(s) && /\?/.test(s)));
+  }
+  return decision ? magiLocalDecision(q,s) : magiLocalCounsel(q,s);
 }
 function magiLocalDecision(q,s){
   const neg=/(quit|drop out|give up|reject|risky|debt|loan|gamble|all[- ]?in|steal|cheat|lie)/.test(s);
