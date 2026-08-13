@@ -79,7 +79,7 @@ export function BlogComposer() {
             {checking ? "Checking…" : "Unlock"}
           </button>
           <Link
-            href="/secret/blog"
+            href="/blog"
             className="mt-4 inline-flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] transition-colors"
           >
             <ArrowLeft size={12} /> Back to the journal
@@ -256,7 +256,7 @@ function Composer({ password }: { password: string }) {
                 </p>
                 <p className="text-[var(--color-text-secondary)]">
                   It goes live in a minute or so.{" "}
-                  <Link href="/secret/blog" className="text-[var(--color-accent-red)]">
+                  <Link href="/blog" className="text-[var(--color-accent-red)]">
                     View the journal
                   </Link>
                   {publish.actionsUrl && (

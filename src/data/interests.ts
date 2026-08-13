@@ -88,6 +88,6 @@ export const INTERESTS: Interest[] = [
     details: [
       "I love nothing more than making cool and fun coffes at my house with the fancy espresso machine I have and I like sharing about random quotes and things I think about during the day so definitly give the blog a look below",
     ],
-    link: { href: "/secret/blog", label: "Read the blog" },
+    link: { href: "/blog", label: "Read the blog" },
   },
 ];
