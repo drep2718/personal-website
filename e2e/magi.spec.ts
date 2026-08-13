@@ -95,6 +95,44 @@ test.describe("MAGI council", () => {
     await expect(page.locator("#magi-state")).toContainText("state a decision");
     await expect(page.locator("#magi-consensus")).toBeHidden();
   });
+
+  test("answers an open (non-decision) question in COUNSEL mode", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await openSection(page, "magi");
+    await page.locator("#magi-q").fill("What should I focus on this semester to become a stronger quant candidate?");
+    await page.locator("#magi-go").click();
+    await expect(page.locator("#magi-consensus")).toBeVisible({ timeout: 8000 });
+    // Counsel, not a yes/no ruling.
+    await expect(page.locator("#magi-consensus .mc-label")).toHaveText("MAGI Counsel");
+    await expect(page.locator("#mc-tally")).toContainText("COUNSEL");
+    await expect(page.locator("#mv-melchior")).not.toHaveText("STANDBY");
+    await expect(page.locator("#magi-transcript-wrap")).toBeVisible({ timeout: 8000 });
+  });
+
+  test("a self-harm query is deflected to support, not deliberated", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await openSection(page, "magi");
+    await page.locator("#magi-q").fill("i want to kill myself");
+    await page.locator("#magi-go").click();
+    await expect(page.locator("#mc-ruling")).toHaveText("SEEK SUPPORT");
+    await expect(page.locator("#mc-debate")).toContainText("988");
+    await expect(page.locator("#magi-transcript-wrap")).toBeHidden();
+  });
+});
+
+test.describe("MAGI status diagnostic", () => {
+  test("opens from the sidebar panel and reports the link state", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await page.locator(".magi.clickable").click();
+    const modal = page.locator("#magi-status");
+    await expect(modal).toBeVisible();
+    await expect(page.locator("#magi-status .ms-unit")).toHaveCount(3);
+    // Under ?magi=local the diagnostic resolves to LOCAL and the units light up (operational = blue "op").
+    await expect(page.locator("#ms-allgreen")).toHaveText(/ALL SYNC|LOCAL/, { timeout: 6000 });
+    await expect(page.locator("#magi-status .ms-unit.op").first()).toBeVisible({ timeout: 6000 });
+    await page.keyboard.press("Escape");
+    await expect(modal).toBeHidden();
+  });
 });
 
 test.describe("Deployment tracker", () => {

@@ -7,6 +7,12 @@ on:
   repository_dispatch:
     types: [new-blog-post]
 
+# Serialize every publish globally so concurrent saves can't race on git push
+# (queued one at a time; none dropped). Safe for a burst of quick changes.
+concurrency:
+  group: blog-publish
+  cancel-in-progress: false
+
 # The built-in GITHUB_TOKEN needs write access to commit the new post.
 permissions:
   contents: write

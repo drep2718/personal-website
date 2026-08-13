@@ -363,6 +363,38 @@
   .foot-actions{display:flex;gap:8px;margin-top:10px}
   .foot-actions button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--line-soft);color:var(--ink-dim);padding:6px 4px;cursor:pointer;transition:.14s}
   .foot-actions button:hover{border-color:var(--amber);color:var(--amber)}
+
+  /* ---------- MAGI STATUS DIAGNOSTIC (定期検診) ---------- */
+  .mc-ruling.long{font-size:clamp(20px,3.4vw,34px);line-height:1.12}
+  .magi-diag{position:fixed;inset:0;z-index:60;background:rgba(0,0,18,.93);display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px)}
+  .ms-panel{width:min(940px,96vw);max-height:94vh;overflow:auto;background:#02021a;border:1px solid rgba(80,180,255,.4);box-shadow:0 0 60px rgba(40,150,255,.22);padding:22px 24px 26px;position:relative;font-family:var(--mono)}
+  .ms-close{position:absolute;top:14px;right:16px;background:none;border:1px solid rgba(80,180,255,.5);color:#8fd4ff;font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:7px 12px;cursor:pointer;transition:.14s}
+  .ms-close:hover{background:rgba(80,180,255,.16);color:#fff}
+  .ms-head{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:4px;padding-right:90px}
+  .ms-jp{font-size:30px;font-weight:700;color:#38C6FF;letter-spacing:.1em;line-height:1}
+  .ms-sub{font-size:9px;letter-spacing:.24em;color:#5aa9d6;margin-top:7px}
+  .ms-meta{font-size:9.5px;line-height:1.7;color:#4f93c4;letter-spacing:.08em}
+  .ms-status-box{margin-left:auto}
+  .ms-allgreen{display:inline-block;font-size:11px;letter-spacing:.2em;font-weight:700;padding:5px 10px;border:1px solid currentColor;color:#38C6FF}
+  .ms-allgreen.local{color:var(--gold)} .ms-allgreen.offline{color:var(--amber)}
+  .ms-diagram{position:relative;height:min(52vh,420px);margin:16px 0 10px}
+  .ms-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .ms-lines line{stroke:var(--amber);stroke-width:.5;opacity:.85}
+  .ms-unit{position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;color:#03122a;font-size:clamp(13px,2vw,20px);font-weight:700;letter-spacing:.05em;
+    background:rgba(56,198,255,.10);border:1px solid rgba(56,198,255,.4);transition:background .35s,box-shadow .35s,border-color .35s}
+  .ms-unit .msu-sub{position:absolute;bottom:9px;left:0;right:0;font-size:8px;letter-spacing:.2em;color:#03122a;opacity:.72}
+  .ms-unit.probing{background:rgba(255,196,0,.14);border-color:rgba(255,196,0,.5);animation:pulse 1s infinite;color:#2a2100}
+  .ms-unit.op{background:#38C6FF;border-color:#9fe4ff;box-shadow:0 0 26px rgba(56,198,255,.5)}
+  .ms-unit.local{background:var(--gold);border-color:#ffe07a;color:#241c00;box-shadow:0 0 22px rgba(255,196,0,.35)}
+  .ms-unit.offline{background:rgba(120,140,170,.25);border-color:rgba(150,170,200,.5);color:#c9d6e6}
+  .u-balthasar{top:0;left:29%;width:42%;height:36%;clip-path:polygon(10% 0,90% 0,100% 74%,72% 100%,28% 100%,0 74%)}
+  .u-casper{left:0;bottom:2%;width:41%;height:54%;clip-path:polygon(0 16%,86% 0,100% 60%,72% 100%,0 100%)}
+  .u-melchior{right:0;bottom:6%;width:41%;height:50%;clip-path:polygon(14% 0,100% 14%,100% 100%,26% 100%,0 42%)}
+  .ms-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:76px;display:flex;align-items:center;justify-content:center;
+    background:#02021a;border:1px solid var(--amber);color:var(--amber);font-size:13px;letter-spacing:.14em}
+  .ms-foot{font-size:10.5px;letter-spacing:.05em;color:#5aa9d6;margin:6px 0 16px;min-height:16px}
+  .ms-actions{display:flex;gap:10px;flex-wrap:wrap}
+  @media (max-width:560px){.ms-jp{font-size:22px}.ms-head{padding-right:70px}.ms-diagram{height:46vh}.ms-unit{font-size:12px}}
 </style>
 
 <!-- ================= BOOT OVERLAY ================= -->
@@ -395,7 +427,7 @@
       <div class="sub">MAGI Terminal</div>
     </div>
 
-    <div class="magi clickable" onclick="go('magi')" title="Convene the MAGI council">
+    <div class="magi clickable" onclick="openMagiStatus()" title="Run MAGI status diagnostic">
       <h4>MAGI System · Online ▸</h4>
       <div class="node"><span>MELCHIOR·1</span><span class="dot"></span></div>
       <div class="node"><span>BALTHASAR·2</span><span class="dot"></span></div>
@@ -496,7 +528,7 @@
       <section class="section" id="s-magi">
         <div class="eyebrow">SECTION 00-A · MAGI DELIBERATION SYSTEM</div>
         <h2 class="sec">The MAGI</h2>
-        <p class="lede">Three bio-computers — the mind of Dr. Naoko Akagi, split three ways. <b>MELCHIOR·1</b> the scientist (logic &amp; data), <b>BALTHASAR·2</b> the mother (protection &amp; risk), <b>CASPER·3</b> the woman (instinct &amp; desire). State a decision and they each render a verdict with their reasoning, <b>debate it out in the open</b>, and rule by majority — every vote counts. Live deliberation runs on a free model; a local council always stands by.</p>
+        <p class="lede">Three bio-computers — the mind of Dr. Naoko Akagi, split three ways. <b>MELCHIOR·1</b> the scientist (logic &amp; data), <b>BALTHASAR·2</b> the mother (protection &amp; risk), <b>CASPER·3</b> the woman (instinct &amp; desire). Put a <b>decision</b> or an <b>open question</b> to them — each answers strictly from its own lane, they <b>debate it out in the open</b>, and reach a ruling (by majority for decisions). Live deliberation runs on a free model; a local council always stands by.</p>
 
         <div class="magi-console">
           <textarea id="magi-q" rows="2" placeholder="State the decision before the council…  e.g. 'Should I take the Optiver offer over interviewing at Jane Street?'"></textarea>
@@ -682,6 +714,37 @@
         </div>
       </section>
 
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAGI STATUS DIAGNOSTIC ================= -->
+<div id="magi-status" class="magi-diag" style="display:none" role="dialog" aria-modal="true" aria-label="MAGI status diagnostic" aria-hidden="true" onclick="if(event.target===this)closeMagiStatus()">
+  <div class="ms-panel">
+    <button class="ms-close" onclick="closeMagiStatus()">終了 · CLOSE ✕</button>
+    <div class="ms-head">
+      <div>
+        <div class="ms-jp">定期検診</div>
+        <div class="ms-sub">MAGI · PERIODIC DIAGNOSTIC</div>
+      </div>
+      <div class="ms-meta">CODE : 127<br>FILE : AKAGI_CHK<br>EXTENSION : 0256<br>EX_MODE : ON<br>PRIORITY : A—</div>
+      <div class="ms-status-box"><span class="ms-allgreen" id="ms-allgreen">◌ SYNCHRONIZING</span></div>
+    </div>
+    <div class="ms-diagram">
+      <svg class="ms-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="50" y1="34" x2="50" y2="46"/>
+        <line x1="40" y1="66" x2="47" y2="53"/>
+        <line x1="60" y1="66" x2="53" y2="53"/>
+      </svg>
+      <div class="ms-unit u-balthasar" data-u="balthasar">BALTHASAR·2<span class="msu-sub" id="mss-balthasar"></span></div>
+      <div class="ms-unit u-casper" data-u="casper">CASPER·3<span class="msu-sub" id="mss-casper"></span></div>
+      <div class="ms-unit u-melchior" data-u="melchior">MELCHIOR·1<span class="msu-sub" id="mss-melchior"></span></div>
+      <div class="ms-hub">MAGI</div>
+    </div>
+    <div class="ms-foot" id="ms-foot">// running periodic diagnostic…</div>
+    <div class="ms-actions">
+      <button class="btn" onclick="closeMagiStatus();go('magi')">◈ ENTER DELIBERATION →</button>
+      <button class="btn ghost" onclick="closeMagiStatus()">終了 EXIT</button>
     </div>
   </div>
 </div>
@@ -911,6 +974,23 @@ function delLog(i){const d=LS.get('plog',SEED_LOG);d.splice(i,1);LS.set('plog',d
 const MAGI_UNITS=['melchior','balthasar','casper'];
 const V2C={APPROVE:'v-approve',REJECT:'v-reject',CONDITIONAL:'v-cond'};
 const R2C={APPROVED:'v-approve',REJECTED:'v-reject',CONDITIONAL:'v-cond',DEADLOCK:'v-dead'};
+const CRISIS_RE=/\b(kill (myself|yourself)|suicide|suicidal|end (my|your) life|take my (own )?life|self[- ]?harm|hurt(ing)? myself|want to die|kms|no reason to live)\b/i;
+function renderCrisis(){
+  document.getElementById('magi-transcript-wrap').style.display='none';
+  document.getElementById('magi-state').textContent='// the council stands down';
+  MAGI_UNITS.forEach(u=>{
+    document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit v-cond';
+    const mv=document.getElementById('mv-'+u); mv.textContent='STAND DOWN'; mv.className='mu-verdict v-cond';
+    document.getElementById('mr-'+u).textContent='You matter more than any call on this terminal.';
+    document.getElementById('mb-'+u).innerHTML='';
+  });
+  const cons=document.getElementById('magi-consensus');
+  cons.style.display='block'; cons.className='magi-consensus v-cond';
+  const lab=cons.querySelector('.mc-label'); if(lab) lab.textContent='MAGI Override';
+  const rr=document.getElementById('mc-ruling'); rr.textContent='SEEK SUPPORT'; rr.classList.remove('long');
+  document.getElementById('mc-tally').textContent='';
+  document.getElementById('mc-debate').innerHTML='This is not a decision for the MAGI. Please reach a person who can help right now — someone you trust, or a professional. In the US, call or text <b>988</b> (Suicide &amp; Crisis Lifeline). Anywhere: <a class="ext" href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a>. You are not alone.';
+}
 function magiExample(){document.getElementById('magi-q').value="Should I take the Optiver quant offer over interviewing at Jane Street?";}
 function forceLocal(){return /[?&]magi=local\b/.test(location.search) || navigator.onLine===false;}
 
@@ -918,6 +998,7 @@ async function convene(){
   const q=(document.getElementById('magi-q').value||'').trim();
   const state=document.getElementById('magi-state');
   if(!q){state.textContent='// state a decision first';return;}
+  if(CRISIS_RE.test(q)){ renderCrisis(); return; }
   const go=document.getElementById('magi-go'); go.disabled=true;
   document.getElementById('magi-consensus').style.display='none';
   document.getElementById('magi-transcript-wrap').style.display='none';
@@ -955,23 +1036,38 @@ async function magiRemote(q){
   if(!data || !data.content) throw new Error('no content');
   return parseMagi(data.content);
 }
-function parseMagi(txt){
-  const m=String(txt).match(/\{[\s\S]*\}/); if(!m) throw new Error('no json');
-  const o=JSON.parse(m[0]);
-  const norm=v=>{v=String(v||'').toUpperCase(); if(v.indexOf('APP')===0||v.indexOf('YES')===0)return'APPROVE'; if(v.indexOf('REJ')===0||v.indexOf('DEN')===0||v.indexOf('NO')===0)return'REJECT'; return'CONDITIONAL';};
-  const out={};
-  MAGI_UNITS.forEach(k=>{const u=o[k]||{}; out[k]={verdict:norm(u.verdict),reason:(u.reason||'—').toString().slice(0,240),basis:cleanBasis(u.basis)};});
-  out.transcript=cleanTranscript(o.transcript);
-  out.synthesis=(o.synthesis||o.debate||'').toString().slice(0,600);
-  return finalize(out);
-}
+function normVerdict(v){v=String(v==null?'':v).toUpperCase().trim();
+  if(v.indexOf('APP')===0||v==='YES'||v==='GO')return'APPROVE';
+  if(v.indexOf('REJ')===0||v.indexOf('DEN')===0||v==='NO'||v.indexOf('SEEK')===0||v.indexOf('STOP')===0)return'REJECT';
+  if(v.indexOf('COND')===0||v.indexOf('MAYBE')===0||v.indexOf('DEPEND')===0||v.indexOf('ABSTAIN')===0)return'CONDITIONAL';
+  return null;}
+function cleanStance(v){v=String(v==null?'':v).toUpperCase().replace(/[^A-Z0-9 \-\/]/g,'').replace(/\s+/g,' ').trim().slice(0,24); return v||'—';}
 function cleanBasis(b){ if(!Array.isArray(b)) return []; return b.filter(x=>x!=null&&x!=='').map(x=>x.toString().slice(0,130)).slice(0,3); }
 function cleanTranscript(t){
   if(!Array.isArray(t)) return [];
   return t.filter(x=>x&&x.text).map(x=>({who:(x.who||'MAGI').toString().toUpperCase().slice(0,12),text:x.text.toString().slice(0,320)})).slice(0,8);
 }
-function finalize(out){
-  const votes=MAGI_UNITS.map(k=>out[k].verdict);
+function parseMagi(txt){
+  const m=String(txt).match(/\{[\s\S]*\}/); if(!m) throw new Error('no json');
+  const o=JSON.parse(m[0]);
+  const out={};
+  MAGI_UNITS.forEach(k=>{const u=o[k]||{}; const raw=(u.stance!=null?u.stance:u.verdict);
+    out[k]={stance:cleanStance(raw),verdict:normVerdict(raw),reason:(u.reason||'—').toString().slice(0,240),basis:cleanBasis(u.basis)};});
+  out.transcript=cleanTranscript(o.transcript);
+  out.synthesis=(o.synthesis||o.debate||'').toString().slice(0,700);
+  const m2=String(o.mode||'').toUpperCase();
+  out.mode = m2==='COUNSEL'?'COUNSEL' : m2==='DECISION'?'DECISION' : (MAGI_UNITS.every(k=>out[k].verdict!==null)?'DECISION':'COUNSEL');
+  return finalize(out,o.ruling);
+}
+function finalize(out,modelRuling){
+  if(out.mode==='COUNSEL'){
+    out.decision=false;
+    out.ruling=(modelRuling?String(modelRuling):'').toUpperCase().replace(/[^A-Z0-9 \-\/,.'&·]/g,'').replace(/\s+/g,' ').trim().slice(0,60) || 'SEE SYNTHESIS';
+    out.tally='COUNSEL · 3 VOICES';
+    return out;
+  }
+  out.decision=true;
+  const votes=MAGI_UNITS.map(k=>out[k].verdict||'CONDITIONAL');
   const n=v=>votes.filter(x=>x===v).length;
   const app=n('APPROVE'), rej=n('REJECT'), cond=n('CONDITIONAL');
   let ruling,tally;
@@ -982,7 +1078,13 @@ function finalize(out){
   out.ruling=ruling; out.tally=tally; return out;
 }
 function magiLocal(q){
-  const s=q.toLowerCase();
+  const s=q.toLowerCase().trim();
+  const isOpen = /^(what|how|why|which|when|where|who|whom|whose)\b/.test(s)
+    || /\bhelp me\b|\bwhat should i (do|focus|prioriti|pick|choose|work on)|\bhow (do|should|can) i\b/.test(s);
+  const isDecision = !isOpen && (/\bshould i\b|\bshould we\b|\bworth it\b|\bdo i\b|\btake the\b|\b vs\.?\b/.test(s) || (/\bor\b/.test(s) && /\?/.test(s)));
+  return isDecision ? magiLocalDecision(q,s) : magiLocalCounsel(q,s);
+}
+function magiLocalDecision(q,s){
   const neg=/(quit|drop out|give up|reject|risky|debt|loan|gamble|all[- ]?in|steal|cheat|lie)/.test(s);
   const bold=/(offer|apply|ship|launch|ask|take the|go for|start|build|reach out|move|accept)/.test(s);
   const seed=[...q].reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -990,12 +1092,12 @@ function magiLocal(q){
   const mel = neg?'REJECT':(bold?'APPROVE':'CONDITIONAL');
   const bal = neg?'REJECT':pick(['CONDITIONAL','APPROVE','CONDITIONAL'],1);
   const cas = bold?'APPROVE':pick(['APPROVE','CONDITIONAL','REJECT'],2);
-  const out={
-    melchior:{verdict:mel,reason:pick(['The data favors the higher-EV path; sentiment is noise.','Downside is under-modeled — proceed only on expected value.','First principles: the marginal upside dominates.'],3),
+  const out={ mode:'DECISION',
+    melchior:{stance:mel,verdict:mel,reason:pick(['The data favors the higher-EV path; sentiment is noise.','Downside is under-modeled — proceed only on expected value.','First principles: the marginal upside dominates.'],3),
       basis:['Expected value: the upside weighed against the downside','Base rates — what the evidence actually supports']},
-    balthasar:{verdict:bal,reason:pick(['Protect the long game. Do not over-leverage yourself.','Acceptable only if the downside is survivable. Guard your health.','Caution — weigh what you cannot afford to lose.'],5),
+    balthasar:{stance:bal,verdict:bal,reason:pick(['Protect the long game. Do not over-leverage yourself.','Acceptable only if the downside is survivable. Guard your health.','Caution — weigh what you cannot afford to lose.'],5),
       basis:['Worst-case survivability and whether it is reversible','Cost to your health, focus, and relationships']},
-    casper:{verdict:cas,reason:pick(['You already know what you want. Reach for it.','Instinct says move; hesitation is the real risk.','Desire is data too. Bet on yourself.'],7),
+    casper:{stance:cas,verdict:cas,reason:pick(['You already know what you want. Reach for it.','Instinct says move; hesitation is the real risk.','Desire is data too. Bet on yourself.'],7),
       basis:['What you actually want, underneath the noise','The regret of not trying']},
     transcript:[
       {who:'MELCHIOR',text:'Strip the sentiment. On expected value alone, '+(mel==='APPROVE'?'the numbers point toward moving.':mel==='REJECT'?'the numbers do not justify this.':'the case is conditional at best.')},
@@ -1010,20 +1112,41 @@ function magiLocal(q){
   out.synthesis='MELCHIOR weighs the expected value, BALTHASAR guards against ruin, and CASPER trusts your instinct. The majority ruling is '+out.ruling+' ('+out.tally+') — act, but only where the downside stays survivable.';
   return out;
 }
+function magiLocalCounsel(q,s){
+  const out={ mode:'COUNSEL',
+    melchior:{stance:'MEASURE',verdict:null,reason:'Reduce it to evidence — define the objective, then compare options by expected value, not by feeling.',
+      basis:['The measurable facts and base rates','Expected value of each path']},
+    balthasar:{stance:'PROTECT',verdict:null,reason:'Guard the floor first: your health, your focus, and anything you cannot afford to lose or undo.',
+      basis:['What must be protected no matter what','Reversibility if the plan is wrong']},
+    casper:{stance:'PURSUE',verdict:null,reason:'Underneath the analysis you already lean somewhere — name what you actually want out of this.',
+      basis:['What you genuinely want','The version of you this builds']},
+    transcript:[
+      {who:'MELCHIOR',text:'Before we advise, define the objective and the evidence. A vague question earns a vague answer.'},
+      {who:'BALTHASAR',text:'And protect the floor — no plan is worth your wellbeing or a door you cannot reopen.'},
+      {who:'CASPER',text:'Facts and floors are necessary, not sufficient. What does he actually want here?'},
+      {who:'MELCHIOR',text:'Then converge: the highest-value path that Balthasar can accept and Casper actually wants.'}
+    ]
+  };
+  finalize(out,'MEASURE IT · PROTECT THE FLOOR · THEN CHOOSE');
+  out.synthesis='For an open question the council trains three lenses on it: MELCHIOR wants the evidence and expected value, BALTHASAR wants the floor protected, CASPER wants your real desire named — the answer is where the three meet. Connect a free model (GROQ_API_KEY) for a specific answer to this exact question.';
+  return out;
+}
 function renderVerdicts(r){
   MAGI_UNITS.forEach((u,idx)=>setTimeout(()=>{
-    const d=r[u];
-    document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit '+V2C[d.verdict];
-    const mv=document.getElementById('mv-'+u); mv.textContent=d.verdict; mv.className='mu-verdict '+V2C[d.verdict];
+    const d=r[u]; const col=V2C[d.verdict]||'v-cond';
+    document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit '+col;
+    const mv=document.getElementById('mv-'+u); mv.textContent=d.stance||d.verdict||'—'; mv.className='mu-verdict '+col;
     document.getElementById('mr-'+u).textContent=d.reason;
     const mb=document.getElementById('mb-'+u);
     mb.innerHTML=(d.basis&&d.basis.length)?d.basis.map(b=>`<div class="basis-item">◦ ${esc(b)}</div>`).join(''):'';
   }, idx*420));
   setTimeout(()=>{
     const cons=document.getElementById('magi-consensus');
-    cons.style.display='block'; cons.className='magi-consensus '+(R2C[r.ruling]||'v-cond');
-    document.getElementById('mc-ruling').textContent=r.ruling;
-    document.getElementById('mc-tally').textContent='MAJORITY '+r.tally;
+    const col = r.decision===false ? 'v-cond' : (R2C[r.ruling]||'v-cond');
+    cons.style.display='block'; cons.className='magi-consensus '+col;
+    const lab=cons.querySelector('.mc-label'); if(lab) lab.textContent = r.decision===false ? 'MAGI Counsel' : 'MAGI Consensus';
+    const rr=document.getElementById('mc-ruling'); rr.textContent=r.ruling; rr.classList.toggle('long',(r.ruling||'').length>16);
+    document.getElementById('mc-tally').textContent = r.decision===false ? (r.tally||'') : ('MAJORITY '+r.tally);
     document.getElementById('mc-debate').textContent=r.synthesis||'';
   }, 1400);
   setTimeout(()=>{
@@ -1041,6 +1164,53 @@ function renderMagiHistory(){
   if(!hist.length){el.innerHTML='<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no deliberations yet — convene the MAGI above</div>';return;}
   el.innerHTML=hist.slice(0,20).map(h=>
     `<div class="mh-row"><span class="mh-rule ${R2C[h.ruling]||'v-cond'}">${h.ruling}</span><span class="mh-q">${esc(h.q)}</span><span class="mh-ts">${new Date(h.ts).toLocaleDateString([], {month:'short',day:'numeric'})}</span></div>`).join('');
+}
+
+/* -------- MAGI status diagnostic (定期検診) -------- */
+function openMagiStatus(){
+  const m=document.getElementById('magi-status'); m.style.display='flex'; m.setAttribute('aria-hidden','false');
+  document.getElementById('sidebar').classList.remove('open');
+  runMagiDiag();
+}
+function closeMagiStatus(){const m=document.getElementById('magi-status'); m.style.display='none'; m.setAttribute('aria-hidden','true');}
+function setDiagUnits(cls,sub){MAGI_UNITS.forEach(u=>{
+  const el=document.querySelector(`.ms-unit[data-u="${u}"]`); if(el){el.classList.remove('probing','op','local','offline'); el.classList.add(cls);}
+  const s=document.getElementById('mss-'+u); if(s)s.textContent=sub;
+});}
+async function runMagiDiag(){
+  setDiagUnits('probing','◌ PROBE');
+  const box=document.getElementById('ms-allgreen'); box.className='ms-allgreen'; box.textContent='◌ SYNCHRONIZING';
+  document.getElementById('ms-foot').textContent='// running periodic diagnostic — checking synchronization link…';
+  let mode;
+  if(forceLocal()){ mode='bypass'; }
+  else {
+    try{
+      const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),8000);
+      const r=await fetch('/api/magi',{signal:ctrl.signal}); clearTimeout(to);
+      if(!r.ok) throw 0;
+      const d=await r.json();
+      mode = d && d.configured ? 'live' : 'localready';
+    }catch(e){ mode='offline'; }
+  }
+  await new Promise(res=>setTimeout(res,750)); // let the probe animation read
+  const foot=document.getElementById('ms-foot');
+  if(mode==='live'){
+    setDiagUnits('op','● ONLINE');
+    box.className='ms-allgreen'; box.textContent='ALL SYNC';
+    foot.textContent='// 3 / 3 units synchronized · live model ONLINE · A.T. field nominal';
+  } else if(mode==='offline'){
+    setDiagUnits('offline','○ NO LINK');
+    box.className='ms-allgreen offline'; box.textContent='LINK OFFLINE';
+    foot.textContent='// live link unreachable · local council standing by (3 / 3 units)';
+  } else if(mode==='localready'){
+    setDiagUnits('op','● ONLINE');
+    box.className='ms-allgreen local'; box.textContent='LOCAL';
+    foot.textContent='// 3 / 3 units online · live model offline — add GROQ_API_KEY to sync';
+  } else { // bypass (?magi=local)
+    setDiagUnits('op','● ONLINE');
+    box.className='ms-allgreen local'; box.textContent='LOCAL';
+    foot.textContent='// 3 / 3 units online · local council (live link bypassed this session)';
+  }
 }
 
 /* -------- export / import (MAGI core dump) -------- */
@@ -1066,6 +1236,7 @@ function importData(input){
 /* -------- keyboard section nav (0-6) -------- */
 const KEY_SEC={'0':'home','1':'classes','2':'leetcode','3':'intern','4':'blog','5':'calendar','6':'magi'};
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeMagiStatus();return;}
   const t=e.target;
   if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
