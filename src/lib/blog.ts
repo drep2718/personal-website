@@ -11,7 +11,7 @@ import path from "path";
 //   ---
 //   Body goes here in markdown...
 //
-// Drop a new .md file in that folder, commit, and it shows up on /secret/blog.
+// Drop a new .md file in that folder, commit, and it shows up on /blog.
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 

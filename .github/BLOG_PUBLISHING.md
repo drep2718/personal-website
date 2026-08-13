@@ -47,7 +47,7 @@ select **Read and write permissions** → Save. (The workflow also declares
 Push these changes (or hit **Redeploy** in Vercel) so the new `/api/publish`
 route ships. Then open `/secret/blogentry`, write a post, and click
 **Publish to site**. Watch it under the repo's **Actions** tab; the post
-appears on `/secret/blog` right after the redeploy finishes.
+appears on `/blog` right after the redeploy finishes.
 
 ---
 

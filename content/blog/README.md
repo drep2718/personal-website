@@ -1,6 +1,6 @@
 # Blog entries
 
-Each `.md` file in this folder becomes a post on `/secret/blog`.
+Each `.md` file in this folder becomes a post on `/blog`.
 
 ## How to add a post
 
