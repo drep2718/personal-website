@@ -319,6 +319,19 @@
   .mh-rule.v-approve{color:var(--green)}.mh-rule.v-reject{color:var(--amber)}.mh-rule.v-cond{color:var(--gold)}.mh-rule.v-dead{color:var(--ink-dim)}
   .mh-q{flex:1;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mh-ts{color:var(--ink-faint);white-space:nowrap}
+  .mu-basis{margin-top:12px;display:flex;flex-direction:column;gap:4px}
+  .mu-basis:not(:empty){border-top:1px solid var(--line-soft);padding-top:10px}
+  .basis-item{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.02em;line-height:1.45}
+  .magi-transcript{display:flex;flex-direction:column;gap:14px}
+  .mt-turn{display:flex;flex-direction:column;gap:4px;border-left:2px solid var(--line-soft);padding:1px 0 1px 14px}
+  .mt-turn.melchior{border-color:var(--green)}
+  .mt-turn.balthasar{border-color:var(--gold)}
+  .mt-turn.casper{border-color:var(--amber)}
+  .mt-who{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+  .mt-turn.melchior .mt-who{color:var(--green)}
+  .mt-turn.balthasar .mt-who{color:var(--gold)}
+  .mt-turn.casper .mt-who{color:var(--amber)}
+  .mt-text{font-family:var(--sans);font-size:13.5px;color:var(--ink-dim);line-height:1.55}
   @media (max-width:760px){.magi-triad{grid-template-columns:1fr}}
 
   /* ---------- PILOT LOG (personal) ---------- */
@@ -483,7 +496,7 @@
       <section class="section" id="s-magi">
         <div class="eyebrow">SECTION 00-A · MAGI DELIBERATION SYSTEM</div>
         <h2 class="sec">The MAGI</h2>
-        <p class="lede">Three supercomputers — the fractured mind of Dr. Akagi. State a decision; <b>MELCHIOR</b> (logic), <b>BALTHASAR</b> (protection) and <b>CASPER</b> (instinct) each render a verdict, argue it out, and rule by majority. Live deliberation runs on a free model; a local council always stands by as fallback.</p>
+        <p class="lede">Three bio-computers — the mind of Dr. Naoko Akagi, split three ways. <b>MELCHIOR·1</b> the scientist (logic &amp; data), <b>BALTHASAR·2</b> the mother (protection &amp; risk), <b>CASPER·3</b> the woman (instinct &amp; desire). State a decision and they each render a verdict with their reasoning, <b>debate it out in the open</b>, and rule by majority — every vote counts. Live deliberation runs on a free model; a local council always stands by.</p>
 
         <div class="magi-console">
           <textarea id="magi-q" rows="2" placeholder="State the decision before the council…  e.g. 'Should I take the Optiver offer over interviewing at Jane Street?'"></textarea>
@@ -498,17 +511,20 @@
           <div class="magi-unit" data-u="melchior">
             <div class="mu-head"><span class="mu-name">MELCHIOR·1</span><span class="mu-role">The Scientist</span></div>
             <div class="mu-verdict" id="mv-melchior">STANDBY</div>
-            <div class="mu-reason" id="mr-melchior">// awaiting query</div>
+            <div class="mu-reason" id="mr-melchior">// logic · data · expected value</div>
+            <div class="mu-basis" id="mb-melchior"></div>
           </div>
           <div class="magi-unit" data-u="balthasar">
             <div class="mu-head"><span class="mu-name">BALTHASAR·2</span><span class="mu-role">The Mother</span></div>
             <div class="mu-verdict" id="mv-balthasar">STANDBY</div>
-            <div class="mu-reason" id="mr-balthasar">// awaiting query</div>
+            <div class="mu-reason" id="mr-balthasar">// protection · risk · the long game</div>
+            <div class="mu-basis" id="mb-balthasar"></div>
           </div>
           <div class="magi-unit" data-u="casper">
             <div class="mu-head"><span class="mu-name">CASPER·3</span><span class="mu-role">The Woman</span></div>
             <div class="mu-verdict" id="mv-casper">STANDBY</div>
-            <div class="mu-reason" id="mr-casper">// awaiting query</div>
+            <div class="mu-reason" id="mr-casper">// instinct · desire · what you want</div>
+            <div class="mu-basis" id="mb-casper"></div>
           </div>
         </div>
 
@@ -517,6 +533,11 @@
           <div class="mc-ruling" id="mc-ruling">—</div>
           <div class="mc-tally" id="mc-tally"></div>
           <div class="mc-debate" id="mc-debate"></div>
+        </div>
+
+        <div class="panel" id="magi-transcript-wrap" style="display:none;margin-top:22px">
+          <h3>Deliberation Transcript</h3>
+          <div class="magi-transcript" id="magi-transcript"></div>
         </div>
 
         <div class="panel" style="margin-top:22px">
@@ -882,9 +903,10 @@ function addLog(){
 function delLog(i){const d=LS.get('plog',SEED_LOG);d.splice(i,1);LS.set('plog',d);renderLog();}
 
 /* ============================================================
-   MAGI COUNCIL — three models deliberate on a decision.
-   Primary: a free, keyless LLM (Pollinations). Fallback: local
-   heuristics (also forced with ?magi=local, used by the tests).
+   MAGI COUNCIL — three units render verdicts, cite their basis,
+   debate each other, and rule by majority.
+   Primary: a free model via the /api/magi serverless bridge.
+   Fallback: a local council (also forced with ?magi=local).
    ============================================================ */
 const MAGI_UNITS=['melchior','balthasar','casper'];
 const V2C={APPROVE:'v-approve',REJECT:'v-reject',CONDITIONAL:'v-cond'};
@@ -898,10 +920,12 @@ async function convene(){
   if(!q){state.textContent='// state a decision first';return;}
   const go=document.getElementById('magi-go'); go.disabled=true;
   document.getElementById('magi-consensus').style.display='none';
+  document.getElementById('magi-transcript-wrap').style.display='none';
   MAGI_UNITS.forEach(u=>{
     document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit thinking';
     const mv=document.getElementById('mv-'+u); mv.textContent='◌ ANALYZING'; mv.className='mu-verdict';
     document.getElementById('mr-'+u).textContent='// synchronizing…';
+    document.getElementById('mb-'+u).innerHTML='';
   });
   state.textContent='◌ MAGI deliberating…';
   let result, local=false, unconfigured=false;
@@ -936,9 +960,15 @@ function parseMagi(txt){
   const o=JSON.parse(m[0]);
   const norm=v=>{v=String(v||'').toUpperCase(); if(v.indexOf('APP')===0||v.indexOf('YES')===0)return'APPROVE'; if(v.indexOf('REJ')===0||v.indexOf('DEN')===0||v.indexOf('NO')===0)return'REJECT'; return'CONDITIONAL';};
   const out={};
-  MAGI_UNITS.forEach(k=>{const u=o[k]||{}; out[k]={verdict:norm(u.verdict),reason:(u.reason||'—').toString().slice(0,220)};});
-  out.debate=(o.debate||'').toString().slice(0,400);
+  MAGI_UNITS.forEach(k=>{const u=o[k]||{}; out[k]={verdict:norm(u.verdict),reason:(u.reason||'—').toString().slice(0,240),basis:cleanBasis(u.basis)};});
+  out.transcript=cleanTranscript(o.transcript);
+  out.synthesis=(o.synthesis||o.debate||'').toString().slice(0,600);
   return finalize(out);
+}
+function cleanBasis(b){ if(!Array.isArray(b)) return []; return b.filter(x=>x!=null&&x!=='').map(x=>x.toString().slice(0,130)).slice(0,3); }
+function cleanTranscript(t){
+  if(!Array.isArray(t)) return [];
+  return t.filter(x=>x&&x.text).map(x=>({who:(x.who||'MAGI').toString().toUpperCase().slice(0,12),text:x.text.toString().slice(0,320)})).slice(0,8);
 }
 function finalize(out){
   const votes=MAGI_UNITS.map(k=>out[k].verdict);
@@ -961,12 +991,24 @@ function magiLocal(q){
   const bal = neg?'REJECT':pick(['CONDITIONAL','APPROVE','CONDITIONAL'],1);
   const cas = bold?'APPROVE':pick(['APPROVE','CONDITIONAL','REJECT'],2);
   const out={
-    melchior:{verdict:mel,reason:pick(['The data favors the higher-EV path; sentiment is noise.','Downside is under-modeled — proceed only on expected value.','First principles: the marginal upside dominates.'],3)},
-    balthasar:{verdict:bal,reason:pick(['Protect the long game. Do not over-leverage yourself.','Acceptable only if the downside is survivable. Guard your health.','Caution — weigh what you cannot afford to lose.'],5)},
-    casper:{verdict:cas,reason:pick(['You already know what you want. Reach for it.','Instinct says move; hesitation is the real risk.','Desire is data too. Bet on yourself.'],7)},
-    debate:'MELCHIOR cites expected value; BALTHASAR flags the tail risk; CASPER calls it — the pilot wants this. Majority rules.'
+    melchior:{verdict:mel,reason:pick(['The data favors the higher-EV path; sentiment is noise.','Downside is under-modeled — proceed only on expected value.','First principles: the marginal upside dominates.'],3),
+      basis:['Expected value: the upside weighed against the downside','Base rates — what the evidence actually supports']},
+    balthasar:{verdict:bal,reason:pick(['Protect the long game. Do not over-leverage yourself.','Acceptable only if the downside is survivable. Guard your health.','Caution — weigh what you cannot afford to lose.'],5),
+      basis:['Worst-case survivability and whether it is reversible','Cost to your health, focus, and relationships']},
+    casper:{verdict:cas,reason:pick(['You already know what you want. Reach for it.','Instinct says move; hesitation is the real risk.','Desire is data too. Bet on yourself.'],7),
+      basis:['What you actually want, underneath the noise','The regret of not trying']},
+    transcript:[
+      {who:'MELCHIOR',text:'Strip the sentiment. On expected value alone, '+(mel==='APPROVE'?'the numbers point toward moving.':mel==='REJECT'?'the numbers do not justify this.':'the case is conditional at best.')},
+      {who:'BALTHASAR',text:'And if it fails? I will not endorse anything that leaves you unable to recover. Protect the long game before you chase the upside.'},
+      {who:'CASPER',text:'You are both narrating what he already knows he wants. The real risk here is hesitation — name it.'},
+      {who:'MELCHIOR',text:'Then we condition it: proceed only where the downside stays bounded and reversible. Balthasar?'},
+      {who:'BALTHASAR',text:'Acceptable on that condition. Casper, do not let him shrink it into nothing.'},
+      {who:'CASPER',text:'Agreed — measured, but commit. Half-in is the worst outcome of all.'}
+    ]
   };
-  return finalize(out);
+  finalize(out);
+  out.synthesis='MELCHIOR weighs the expected value, BALTHASAR guards against ruin, and CASPER trusts your instinct. The majority ruling is '+out.ruling+' ('+out.tally+') — act, but only where the downside stays survivable.';
+  return out;
 }
 function renderVerdicts(r){
   MAGI_UNITS.forEach((u,idx)=>setTimeout(()=>{
@@ -974,14 +1016,24 @@ function renderVerdicts(r){
     document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit '+V2C[d.verdict];
     const mv=document.getElementById('mv-'+u); mv.textContent=d.verdict; mv.className='mu-verdict '+V2C[d.verdict];
     document.getElementById('mr-'+u).textContent=d.reason;
+    const mb=document.getElementById('mb-'+u);
+    mb.innerHTML=(d.basis&&d.basis.length)?d.basis.map(b=>`<div class="basis-item">◦ ${esc(b)}</div>`).join(''):'';
   }, idx*420));
   setTimeout(()=>{
     const cons=document.getElementById('magi-consensus');
     cons.style.display='block'; cons.className='magi-consensus '+(R2C[r.ruling]||'v-cond');
     document.getElementById('mc-ruling').textContent=r.ruling;
     document.getElementById('mc-tally').textContent='MAJORITY '+r.tally;
-    document.getElementById('mc-debate').textContent=r.debate||'';
+    document.getElementById('mc-debate').textContent=r.synthesis||'';
   }, 1400);
+  setTimeout(()=>{
+    const wrap=document.getElementById('magi-transcript-wrap'), tr=document.getElementById('magi-transcript');
+    if(r.transcript&&r.transcript.length){
+      const KEY={MELCHIOR:'melchior',BALTHASAR:'balthasar',CASPER:'casper'};
+      wrap.style.display='block';
+      tr.innerHTML=r.transcript.map(t=>{const k=KEY[t.who]||'';return `<div class="mt-turn ${k}"><span class="mt-who">${esc(t.who||'MAGI')}</span><span class="mt-text">${esc(t.text)}</span></div>`;}).join('');
+    } else { wrap.style.display='none'; }
+  }, 1650);
 }
 function renderMagiHistory(){
   const el=document.getElementById('magi-history'); if(!el)return;

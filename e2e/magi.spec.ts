@@ -71,11 +71,19 @@ test.describe("MAGI council", () => {
     for (const u of ["melchior", "balthasar", "casper"]) {
       await expect(page.locator("#mv-" + u)).toHaveText(/APPROVE|REJECT|CONDITIONAL/, { timeout: 8000 });
     }
-    // A consensus banner reveals with a ruling + tally.
+    // Each unit cites its basis (its "sources").
+    await expect(page.locator("#mb-melchior .basis-item").first()).toBeVisible({ timeout: 8000 });
+    // A consensus banner reveals with a ruling + tally + synthesis (the "why").
     const consensus = page.locator("#magi-consensus");
     await expect(consensus).toBeVisible({ timeout: 8000 });
     await expect(page.locator("#mc-ruling")).toHaveText(/APPROVED|REJECTED|CONDITIONAL|DEADLOCK/);
     await expect(page.locator("#mc-tally")).toContainText("MAJORITY");
+    await expect(page.locator("#mc-debate")).toContainText("majority ruling");
+    // They debate each other in an open transcript (multi-turn, referencing each other).
+    await expect(page.locator("#magi-transcript-wrap")).toBeVisible({ timeout: 8000 });
+    const turns = page.locator("#magi-transcript .mt-turn");
+    expect(await turns.count()).toBeGreaterThanOrEqual(3);
+    await expect(page.locator("#magi-transcript")).toContainText("MELCHIOR");
     // Logged to the deliberation history.
     await expect(page.locator("#magi-history")).toContainText("Optiver");
   });
