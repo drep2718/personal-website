@@ -1,7 +1,7 @@
 ---
-title: Meteor shower
+title: Meteor Shower
 date: 2026-08-13
-category: Bridge
+category: Hill
 ---
 
-WE got to lock in and see the Meteor shower tonight. #cushion challenge
+We saw 3 of them, #noCushion
