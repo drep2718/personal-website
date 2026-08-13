@@ -7,14 +7,17 @@ import { test, expect, type Page } from "@playwright/test";
  * interaction tests run directly against /magi.html (same document, no frame
  * hops). Each Playwright test gets an isolated storage context, so the
  * dashboard's localStorage seed regenerates per test.
+ *
+ * The MAGI council calls a serverless model; we exercise it with ?magi=local
+ * so the tests are deterministic and never depend on network/keys.
  */
 
 // The boot overlay auto-dismisses after its sequence; wait it out first.
 async function bootThrough(page: Page) {
   await expect(page.locator("#boot")).toBeHidden({ timeout: 20_000 });
 }
-async function openTerminal(page: Page) {
-  await page.goto("/magi.html");
+async function openTerminal(page: Page, query = "") {
+  await page.goto("/magi.html" + query);
   await bootThrough(page);
 }
 async function openSection(page: Page, sec: string) {
@@ -38,7 +41,7 @@ test.describe("Terminal shell", () => {
   test("boots and exposes every section with live home stats", async ({ page }) => {
     await openTerminal(page);
     await expect(page.locator("h1.title")).toContainText("PILOT");
-    for (const label of ["TERMINAL", "ACADEMY", "SYNC TRIALS", "DEPLOYMENT", "PILOT LOG", "TIME AXIS"]) {
+    for (const label of ["TERMINAL", "MAGI COUNCIL", "ACADEMY", "SYNC TRIALS", "DEPLOYMENT", "PILOT LOG", "TIME AXIS"]) {
       await expect(page.locator(".navitem", { hasText: label })).toBeVisible();
     }
     await expect(page.locator("#k-total")).toHaveText("17"); // 17 seeded applications
@@ -48,12 +51,41 @@ test.describe("Terminal shell", () => {
 
   test("navigation switches sections and updates the breadcrumb", async ({ page }) => {
     await openTerminal(page);
+    await openSection(page, "magi");
+    await expect(page.locator("#crumb")).toHaveText("MAGI COUNCIL");
     await openSection(page, "intern");
     await expect(page.locator("#crumb")).toHaveText("DEPLOYMENT");
     await openSection(page, "calendar");
     await expect(page.locator("#crumb")).toHaveText("TIME AXIS");
-    await openSection(page, "home");
-    await expect(page.locator("#crumb")).toHaveText("TERMINAL");
+  });
+});
+
+test.describe("MAGI council", () => {
+  test("deliberates (local fallback) and returns a majority consensus", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await openSection(page, "magi");
+    await page.locator("#magi-q").fill("Should I take the Optiver offer over Jane Street?");
+    await page.locator("#magi-go").click();
+
+    // Each unit renders a verdict.
+    for (const u of ["melchior", "balthasar", "casper"]) {
+      await expect(page.locator("#mv-" + u)).toHaveText(/APPROVE|REJECT|CONDITIONAL/, { timeout: 8000 });
+    }
+    // A consensus banner reveals with a ruling + tally.
+    const consensus = page.locator("#magi-consensus");
+    await expect(consensus).toBeVisible({ timeout: 8000 });
+    await expect(page.locator("#mc-ruling")).toHaveText(/APPROVED|REJECTED|CONDITIONAL|DEADLOCK/);
+    await expect(page.locator("#mc-tally")).toContainText("MAJORITY");
+    // Logged to the deliberation history.
+    await expect(page.locator("#magi-history")).toContainText("Optiver");
+  });
+
+  test("empty query is rejected without deliberating", async ({ page }) => {
+    await openTerminal(page, "?magi=local");
+    await openSection(page, "magi");
+    await page.locator("#magi-go").click();
+    await expect(page.locator("#magi-state")).toContainText("state a decision");
+    await expect(page.locator("#magi-consensus")).toBeHidden();
   });
 });
 
@@ -73,7 +105,6 @@ test.describe("Deployment tracker", () => {
     await openSection(page, "intern");
     const submitted = page.locator("#c-Submitted");
     const before = Number(await submitted.textContent());
-    // Row 1 (Susquehanna) is seeded as Rejected -> flip to Submitted.
     await page.locator("#tbl-intern tbody tr").first().locator("select.pill").selectOption("Submitted");
     await expect(submitted).toHaveText(String(before + 1));
   });
@@ -129,23 +160,26 @@ test.describe("Academy (classes)", () => {
   });
 });
 
-test.describe("Pilot Log (blog)", () => {
-  test("commits an entry, persists it, and can purge it", async ({ page }) => {
+test.describe("Pilot Log (personal)", () => {
+  test("commits a personal entry with mood + sync, persists, and purges", async ({ page }) => {
     await openTerminal(page);
     await openSection(page, "blog");
-    await page.locator("#blog-title").fill("Sync test 42%");
-    await page.locator("#blog-body").fill("First real breakthrough.");
+    await page.locator('.mood-btn[data-mood="SYNCHED"]').click();
+    await page.locator("#plog-body").fill("Closed a hard problem today.");
     await page.locator("#s-blog .btn").click();
-    await expect(page.locator(".logentry", { hasText: "Sync test 42%" })).toBeVisible();
+
+    const entry = page.locator(".plog-entry", { hasText: "Closed a hard problem today." });
+    await expect(entry).toBeVisible();
+    await expect(entry.locator(".pe-mood")).toHaveText("SYNCHED");
 
     await page.reload();
     await bootThrough(page);
     await openSection(page, "blog");
-    const entry = page.locator(".logentry", { hasText: "Sync test 42%" });
-    await expect(entry).toBeVisible();
+    const again = page.locator(".plog-entry", { hasText: "Closed a hard problem today." });
+    await expect(again).toBeVisible();
 
-    await entry.locator(".del").click();
-    await expect(page.locator(".logentry", { hasText: "Sync test 42%" })).toHaveCount(0);
+    await again.locator(".del").click();
+    await expect(page.locator(".plog-entry", { hasText: "Closed a hard problem today." })).toHaveCount(0);
   });
 });
 

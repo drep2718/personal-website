@@ -282,6 +282,74 @@
   .up-row .update{color:var(--amber);white-space:nowrap;min-width:66px}
   .up-row .uptxt{color:var(--ink)}
   @media (max-width:640px){.cal-cell{min-height:58px}.cal-ev{display:none}.cal-cell.hasev .dnum::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--amber);margin-left:5px;vertical-align:middle}}
+
+  /* ---------- MAGI COUNCIL ---------- */
+  .magi.clickable{cursor:pointer;transition:border-color .15s}
+  .magi.clickable:hover{border-color:var(--amber)}
+  .magi-console{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+  .magi-console textarea{font-family:var(--sans);background:var(--ground-3);border:1px solid var(--line);color:var(--ink);padding:14px 16px;font-size:15px;width:100%;resize:vertical}
+  .magi-console textarea:focus{outline:none;border-color:var(--amber)}
+  .magi-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .magi-status{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim)}
+  .magi-triad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .magi-unit{border:1px solid var(--line);background:var(--ground-2);padding:18px 18px 20px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s;min-height:158px}
+  .magi-unit::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line);transition:background .3s}
+  .magi-unit.thinking::before{background:var(--gold);animation:pulse 1s infinite}
+  .magi-unit.v-approve{border-color:rgba(37,245,160,.5)}.magi-unit.v-approve::before{background:var(--green)}
+  .magi-unit.v-reject{border-color:rgba(255,106,0,.55)}.magi-unit.v-reject::before{background:var(--amber)}
+  .magi-unit.v-cond{border-color:rgba(255,196,0,.5)}.magi-unit.v-cond::before{background:var(--gold)}
+  .mu-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+  .mu-name{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink)}
+  .mu-role{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase}
+  .mu-verdict{font-family:var(--serif);font-size:24px;line-height:1;margin-bottom:10px;color:var(--ink-dim)}
+  .mu-verdict.v-approve{color:var(--green)}.mu-verdict.v-reject{color:var(--amber)}.mu-verdict.v-cond{color:var(--gold)}
+  .mu-reason{font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--ink-dim)}
+  .magi-consensus{border:1px solid var(--line);background:var(--ground-3);padding:24px;text-align:center;margin-bottom:8px}
+  .magi-consensus.v-approve{border-color:var(--green);box-shadow:inset 0 0 44px rgba(37,245,160,.14)}
+  .magi-consensus.v-reject{border-color:var(--amber);box-shadow:inset 0 0 44px rgba(255,106,0,.14)}
+  .magi-consensus.v-cond{border-color:var(--gold)}
+  .magi-consensus.v-dead{border-color:var(--ink-dim)}
+  .mc-label{font-family:var(--mono);font-size:10px;letter-spacing:.34em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:10px}
+  .mc-ruling{font-family:var(--serif);font-size:clamp(34px,6vw,58px);line-height:1;letter-spacing:.02em}
+  .magi-consensus.v-approve .mc-ruling{color:var(--green)}.magi-consensus.v-reject .mc-ruling{color:var(--amber)}.magi-consensus.v-cond .mc-ruling{color:var(--gold)}.magi-consensus.v-dead .mc-ruling{color:var(--ink)}
+  .mc-tally{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-dim);margin-top:8px}
+  .mc-debate{font-family:var(--sans);font-size:14px;color:var(--ink-dim);margin:14px auto 0;max-width:60ch;line-height:1.6}
+  .mh-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-family:var(--mono);font-size:12px}
+  .mh-rule{min-width:98px;font-weight:600;letter-spacing:.06em}
+  .mh-rule.v-approve{color:var(--green)}.mh-rule.v-reject{color:var(--amber)}.mh-rule.v-cond{color:var(--gold)}.mh-rule.v-dead{color:var(--ink-dim)}
+  .mh-q{flex:1;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mh-ts{color:var(--ink-faint);white-space:nowrap}
+  @media (max-width:760px){.magi-triad{grid-template-columns:1fr}}
+
+  /* ---------- PILOT LOG (personal) ---------- */
+  .plog-form{border:1px solid var(--line);background:var(--ground-2);padding:20px 22px;margin-bottom:22px;display:flex;flex-direction:column;gap:16px}
+  .plog-row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end}
+  .plog-field{display:flex;flex-direction:column;gap:8px}
+  .plog-field label{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--ink-dim);text-transform:uppercase}
+  .mood-btns{display:flex;gap:6px}
+  .mood-btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;background:none;border:1px solid var(--line);color:var(--ink-dim);padding:7px 11px;cursor:pointer;text-transform:uppercase;transition:.14s}
+  .mood-btn:hover{border-color:var(--amber)}
+  .mood-btn.on{background:var(--amber);color:#180000;border-color:var(--amber);font-weight:700}
+  .plog-slider{display:flex;align-items:center;gap:12px}
+  .plog-slider input[type=range]{width:180px;accent-color:var(--amber)}
+  .plog-slider .val{font-family:var(--serif);font-size:30px;color:var(--amber);min-width:74px;font-variant-numeric:tabular-nums}
+  .plog-form textarea{font-family:var(--sans);background:var(--ground-3);border:1px solid var(--line);color:var(--ink);padding:12px 14px;font-size:14px;width:100%;resize:vertical}
+  .plog-form textarea:focus{outline:none;border-color:var(--amber)}
+  .plog-entry{border:1px solid var(--line);border-left:2px solid var(--amber);background:var(--ground-2);padding:16px 20px;margin-bottom:14px;position:relative}
+  .plog-entry .peh{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+  .plog-entry .pe-date{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink)}
+  .plog-entry .pe-mood{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border:1px solid currentColor;border-radius:2px}
+  .plog-entry .pe-sync{font-family:var(--mono);font-size:11px;color:var(--amber);margin-left:auto}
+  .plog-entry p{margin:0;color:var(--ink-dim);white-space:pre-wrap;font-size:14.5px;line-height:1.65}
+  .plog-entry .del{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--ink-faint);cursor:pointer;font-family:var(--mono);opacity:0;transition:.12s}
+  .plog-entry:hover .del{opacity:1}
+  .plog-entry .del:hover{color:var(--red)}
+  .mood-SYNCHED{color:var(--green)}.mood-STABLE{color:var(--ink)}.mood-STRAINED{color:var(--gold)}.mood-BERSERK{color:var(--amber)}
+
+  /* export / import */
+  .foot-actions{display:flex;gap:8px;margin-top:10px}
+  .foot-actions button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--line-soft);color:var(--ink-dim);padding:6px 4px;cursor:pointer;transition:.14s}
+  .foot-actions button:hover{border-color:var(--amber);color:var(--amber)}
 </style>
 
 <!-- ================= BOOT OVERLAY ================= -->
@@ -314,8 +382,8 @@
       <div class="sub">MAGI Terminal</div>
     </div>
 
-    <div class="magi">
-      <h4>MAGI System · Online</h4>
+    <div class="magi clickable" onclick="go('magi')" title="Convene the MAGI council">
+      <h4>MAGI System · Online ▸</h4>
       <div class="node"><span>MELCHIOR·1</span><span class="dot"></span></div>
       <div class="node"><span>BALTHASAR·2</span><span class="dot"></span></div>
       <div class="node"><span>CASPER·3</span><span class="dot"></span></div>
@@ -324,6 +392,7 @@
     <nav id="nav">
       <div class="nav-label">Command</div>
       <button class="navitem active" data-sec="home"><span class="idx">00</span> TERMINAL</button>
+      <button class="navitem" data-sec="magi"><span class="idx">✦</span> MAGI COUNCIL</button>
       <div class="nav-label">Operations</div>
       <button class="navitem" data-sec="classes"><span class="idx">01</span> ACADEMY</button>
       <button class="navitem" data-sec="leetcode"><span class="idx">02</span> SYNC TRIALS</button>
@@ -338,6 +407,11 @@
       CLEARANCE: LEVEL-A<br>
       TOKYO-3 · AD 2026<br>
       <span style="color:var(--green)">◉</span> DATA SYNCED LOCAL
+      <div class="foot-actions">
+        <button onclick="exportData()" title="Download all your data as a backup">⤓ Core Dump</button>
+        <button onclick="document.getElementById('import-file').click()" title="Restore from a backup">⤒ Restore</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importData(this)">
     </div>
   </aside>
 
@@ -402,6 +476,52 @@
 &gt; next_target.......... <span style="color:var(--amber)">HRT-CLASS FIRM</span>
 &gt; motto................ "GET IN THE ROBOT"</pre>
           </div>
+        </div>
+      </section>
+
+      <!-- ===== MAGI COUNCIL ===== -->
+      <section class="section" id="s-magi">
+        <div class="eyebrow">SECTION 00-A · MAGI DELIBERATION SYSTEM</div>
+        <h2 class="sec">The MAGI</h2>
+        <p class="lede">Three supercomputers — the fractured mind of Dr. Akagi. State a decision; <b>MELCHIOR</b> (logic), <b>BALTHASAR</b> (protection) and <b>CASPER</b> (instinct) each render a verdict, argue it out, and rule by majority. Live deliberation runs on a free model; a local council always stands by as fallback.</p>
+
+        <div class="magi-console">
+          <textarea id="magi-q" rows="2" placeholder="State the decision before the council…  e.g. 'Should I take the Optiver offer over interviewing at Jane Street?'"></textarea>
+          <div class="magi-actions">
+            <button class="btn" id="magi-go" onclick="convene()">◈ CONVENE THE MAGI</button>
+            <button class="btn ghost" onclick="magiExample()">⟲ Sample query</button>
+            <span class="magi-status" id="magi-state"></span>
+          </div>
+        </div>
+
+        <div class="magi-triad" id="magi-triad">
+          <div class="magi-unit" data-u="melchior">
+            <div class="mu-head"><span class="mu-name">MELCHIOR·1</span><span class="mu-role">The Scientist</span></div>
+            <div class="mu-verdict" id="mv-melchior">STANDBY</div>
+            <div class="mu-reason" id="mr-melchior">// awaiting query</div>
+          </div>
+          <div class="magi-unit" data-u="balthasar">
+            <div class="mu-head"><span class="mu-name">BALTHASAR·2</span><span class="mu-role">The Mother</span></div>
+            <div class="mu-verdict" id="mv-balthasar">STANDBY</div>
+            <div class="mu-reason" id="mr-balthasar">// awaiting query</div>
+          </div>
+          <div class="magi-unit" data-u="casper">
+            <div class="mu-head"><span class="mu-name">CASPER·3</span><span class="mu-role">The Woman</span></div>
+            <div class="mu-verdict" id="mv-casper">STANDBY</div>
+            <div class="mu-reason" id="mr-casper">// awaiting query</div>
+          </div>
+        </div>
+
+        <div class="magi-consensus" id="magi-consensus" style="display:none">
+          <div class="mc-label">MAGI Consensus</div>
+          <div class="mc-ruling" id="mc-ruling">—</div>
+          <div class="mc-tally" id="mc-tally"></div>
+          <div class="mc-debate" id="mc-debate"></div>
+        </div>
+
+        <div class="panel" style="margin-top:22px">
+          <h3>Deliberation Log</h3>
+          <div id="magi-history"></div>
         </div>
       </section>
 
@@ -481,20 +601,32 @@
         </div>
       </section>
 
-      <!-- ===== BLOG / PILOT LOG ===== -->
+      <!-- ===== PILOT LOG (personal daily log) ===== -->
       <section class="section" id="s-blog">
         <div class="eyebrow">SECTION 04 · PERSONAL RECORD</div>
         <h2 class="sec">Pilot Log</h2>
-        <p class="lede">Field notes, reflections, wins, and the days you didn't want to get in the robot. Posts save to this device.</p>
-        <div class="panel">
-          <h3>New Entry</h3>
-          <div class="blog-form">
-            <input id="blog-title" placeholder="Entry title — e.g. 'First sync test above 40%'">
-            <textarea id="blog-body" rows="4" placeholder="Write your log..."></textarea>
-            <button class="btn" onclick="addBlog()">▸ Commit entry</button>
+        <p class="lede">Private field log — how the day actually went. Mental state, sync ratio, and whatever you're carrying. Just for you; it never leaves this device. <span style="color:var(--ink-faint)">(Your public writing lives in the blog.)</span></p>
+
+        <div class="plog-form">
+          <div class="plog-row">
+            <div class="plog-field">
+              <label>Mental State</label>
+              <div class="mood-btns" id="mood-btns">
+                <button type="button" class="mood-btn" data-mood="SYNCHED" onclick="selectMood('SYNCHED')">Synched</button>
+                <button type="button" class="mood-btn" data-mood="STABLE" onclick="selectMood('STABLE')">Stable</button>
+                <button type="button" class="mood-btn" data-mood="STRAINED" onclick="selectMood('STRAINED')">Strained</button>
+                <button type="button" class="mood-btn" data-mood="BERSERK" onclick="selectMood('BERSERK')">Berserk</button>
+              </div>
+            </div>
+            <div class="plog-field">
+              <label>Sync Ratio · self-rated</label>
+              <div class="plog-slider"><input type="range" id="plog-sync" min="0" max="100" value="70" oninput="document.getElementById('plog-syncv').textContent=this.value+'%'"><span class="val" id="plog-syncv">70%</span></div>
+            </div>
           </div>
+          <textarea id="plog-body" rows="4" placeholder="What happened today? What are you carrying — a win, a lesson, a worry, a thing you're proud of…"></textarea>
+          <button class="btn" onclick="addLog()">▸ Commit log</button>
         </div>
-        <div id="blog-list"></div>
+        <div id="plog-list"></div>
       </section>
 
       <!-- ===== CALENDAR / TIME AXIS ===== -->
@@ -720,29 +852,173 @@ function renderDirectives(data,c){
        <span style="color:${col}">${b}</span><span>${t}</span></div>`).join('');
 }
 
-/* -------- BLOG -------- */
-const SEED_BLOG=[{t:"Terminal online",b:"MAGI came up clean on the first boot. Every application is a launch, every LeetCode problem a sync test. Target locked: HRT-class firm. Let's raise the ratio.",ts:Date.now()}];
-function renderBlog(){
-  const data=LS.get('blog',SEED_BLOG);
-  const list=document.getElementById('blog-list');
-  if(!data.length){list.innerHTML='<p style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no entries yet — commit your first log above</p>';return;}
+/* -------- PILOT LOG (personal daily log) -------- */
+const SEED_LOG=[{mood:'SYNCHED',sync:78,body:"MAGI came up clean on the first boot. Felt sharp today — closed a hard problem I'd been stuck on and it just clicked. Target's still HRT-class. Onward.",ts:Date.now()}];
+let plogMood='STABLE';
+function selectMood(m){plogMood=m;document.querySelectorAll('#mood-btns .mood-btn').forEach(b=>b.classList.toggle('on',b.dataset.mood===m));}
+function renderLog(){
+  const data=LS.get('plog',SEED_LOG);
+  const list=document.getElementById('plog-list'); if(!list)return;
+  if(!data.length){list.innerHTML='<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no entries yet — commit your first log above</div>';return;}
   list.innerHTML=data.map((e,i)=>
-    `<div class="logentry">
-       <button class="del" onclick="delBlog(${i})">✕ purge</button>
-       <div class="lh"><h4>${esc(e.t)||'Untitled'}</h4>
-       <span class="ts">${new Date(e.ts).toLocaleString([], {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span></div>
-       <p>${esc(e.b)}</p>
+    `<div class="plog-entry">
+       <button class="del" onclick="delLog(${i})">✕ purge</button>
+       <div class="peh">
+         <span class="pe-date">${new Date(e.ts).toLocaleDateString([], {weekday:'short',year:'numeric',month:'short',day:'numeric'})}</span>
+         <span class="pe-mood mood-${esc(e.mood||'STABLE')}">${esc(e.mood||'STABLE')}</span>
+         <span class="pe-sync">SYNC ${e.sync==null?'—':e.sync+'%'}</span>
+       </div>
+       <p>${esc(e.body)}</p>
      </div>`).join('');
 }
-function addBlog(){
-  const t=document.getElementById('blog-title').value.trim();
-  const b=document.getElementById('blog-body').value.trim();
-  if(!t&&!b)return;
-  const data=LS.get('blog',SEED_BLOG); data.unshift({t,b,ts:Date.now()}); LS.set('blog',data);
-  document.getElementById('blog-title').value='';document.getElementById('blog-body').value='';
-  renderBlog();
+function addLog(){
+  const body=document.getElementById('plog-body').value.trim();
+  const sync=Number(document.getElementById('plog-sync').value);
+  if(!body)return;
+  const data=LS.get('plog',SEED_LOG); data.unshift({mood:plogMood,sync,body,ts:Date.now()}); LS.set('plog',data);
+  document.getElementById('plog-body').value='';
+  renderLog();
 }
-function delBlog(i){const d=LS.get('blog',SEED_BLOG);d.splice(i,1);LS.set('blog',d);renderBlog();}
+function delLog(i){const d=LS.get('plog',SEED_LOG);d.splice(i,1);LS.set('plog',d);renderLog();}
+
+/* ============================================================
+   MAGI COUNCIL — three models deliberate on a decision.
+   Primary: a free, keyless LLM (Pollinations). Fallback: local
+   heuristics (also forced with ?magi=local, used by the tests).
+   ============================================================ */
+const MAGI_UNITS=['melchior','balthasar','casper'];
+const V2C={APPROVE:'v-approve',REJECT:'v-reject',CONDITIONAL:'v-cond'};
+const R2C={APPROVED:'v-approve',REJECTED:'v-reject',CONDITIONAL:'v-cond',DEADLOCK:'v-dead'};
+function magiExample(){document.getElementById('magi-q').value="Should I take the Optiver quant offer over interviewing at Jane Street?";}
+function forceLocal(){return /[?&]magi=local\b/.test(location.search) || navigator.onLine===false;}
+
+async function convene(){
+  const q=(document.getElementById('magi-q').value||'').trim();
+  const state=document.getElementById('magi-state');
+  if(!q){state.textContent='// state a decision first';return;}
+  const go=document.getElementById('magi-go'); go.disabled=true;
+  document.getElementById('magi-consensus').style.display='none';
+  MAGI_UNITS.forEach(u=>{
+    document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit thinking';
+    const mv=document.getElementById('mv-'+u); mv.textContent='◌ ANALYZING'; mv.className='mu-verdict';
+    document.getElementById('mr-'+u).textContent='// synchronizing…';
+  });
+  state.textContent='◌ MAGI deliberating…';
+  let result, local=false, unconfigured=false;
+  try{
+    if(forceLocal()) throw new Error('local');
+    result=await magiRemote(q);
+  }catch(e){ result=magiLocal(q); local=true; unconfigured=!!e.unconfigured; }
+  renderVerdicts(result);
+  const hist=LS.get('magi',[]); hist.unshift({q,ruling:result.ruling,tally:result.tally,ts:Date.now()}); LS.set('magi',hist.slice(0,50));
+  renderMagiHistory();
+  go.disabled=false;
+  state.textContent = !local ? '◉ ruling rendered by live MAGI'
+    : unconfigured ? '// local ruling — set a free GROQ_API_KEY in Vercel to wake the live MAGI'
+    : '// local heuristic ruling (offline)';
+}
+
+async function magiRemote(q){
+  // Same-origin serverless bridge; the API key lives server-side (see /api/magi).
+  const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),26000);
+  let res;
+  try{
+    res=await fetch('/api/magi',{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({query:q})});
+  } finally { clearTimeout(to); }
+  if(!res.ok) throw new Error('api '+res.status);
+  const data=await res.json();
+  if(data && data.configured===false){ const e=new Error('unconfigured'); e.unconfigured=true; throw e; }
+  if(!data || !data.content) throw new Error('no content');
+  return parseMagi(data.content);
+}
+function parseMagi(txt){
+  const m=String(txt).match(/\{[\s\S]*\}/); if(!m) throw new Error('no json');
+  const o=JSON.parse(m[0]);
+  const norm=v=>{v=String(v||'').toUpperCase(); if(v.indexOf('APP')===0||v.indexOf('YES')===0)return'APPROVE'; if(v.indexOf('REJ')===0||v.indexOf('DEN')===0||v.indexOf('NO')===0)return'REJECT'; return'CONDITIONAL';};
+  const out={};
+  MAGI_UNITS.forEach(k=>{const u=o[k]||{}; out[k]={verdict:norm(u.verdict),reason:(u.reason||'—').toString().slice(0,220)};});
+  out.debate=(o.debate||'').toString().slice(0,400);
+  return finalize(out);
+}
+function finalize(out){
+  const votes=MAGI_UNITS.map(k=>out[k].verdict);
+  const n=v=>votes.filter(x=>x===v).length;
+  const app=n('APPROVE'), rej=n('REJECT'), cond=n('CONDITIONAL');
+  let ruling,tally;
+  if(app>=2){ruling='APPROVED';tally=app+'-'+(3-app);}
+  else if(rej>=2){ruling='REJECTED';tally=rej+'-'+(3-rej);}
+  else if(cond>=2){ruling='CONDITIONAL';tally=cond+'-'+(3-cond);}
+  else {ruling='DEADLOCK';tally='1-1-1';}
+  out.ruling=ruling; out.tally=tally; return out;
+}
+function magiLocal(q){
+  const s=q.toLowerCase();
+  const neg=/(quit|drop out|give up|reject|risky|debt|loan|gamble|all[- ]?in|steal|cheat|lie)/.test(s);
+  const bold=/(offer|apply|ship|launch|ask|take the|go for|start|build|reach out|move|accept)/.test(s);
+  const seed=[...q].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const pick=(arr,off)=>arr[(seed+off)%arr.length];
+  const mel = neg?'REJECT':(bold?'APPROVE':'CONDITIONAL');
+  const bal = neg?'REJECT':pick(['CONDITIONAL','APPROVE','CONDITIONAL'],1);
+  const cas = bold?'APPROVE':pick(['APPROVE','CONDITIONAL','REJECT'],2);
+  const out={
+    melchior:{verdict:mel,reason:pick(['The data favors the higher-EV path; sentiment is noise.','Downside is under-modeled — proceed only on expected value.','First principles: the marginal upside dominates.'],3)},
+    balthasar:{verdict:bal,reason:pick(['Protect the long game. Do not over-leverage yourself.','Acceptable only if the downside is survivable. Guard your health.','Caution — weigh what you cannot afford to lose.'],5)},
+    casper:{verdict:cas,reason:pick(['You already know what you want. Reach for it.','Instinct says move; hesitation is the real risk.','Desire is data too. Bet on yourself.'],7)},
+    debate:'MELCHIOR cites expected value; BALTHASAR flags the tail risk; CASPER calls it — the pilot wants this. Majority rules.'
+  };
+  return finalize(out);
+}
+function renderVerdicts(r){
+  MAGI_UNITS.forEach((u,idx)=>setTimeout(()=>{
+    const d=r[u];
+    document.querySelector(`.magi-unit[data-u="${u}"]`).className='magi-unit '+V2C[d.verdict];
+    const mv=document.getElementById('mv-'+u); mv.textContent=d.verdict; mv.className='mu-verdict '+V2C[d.verdict];
+    document.getElementById('mr-'+u).textContent=d.reason;
+  }, idx*420));
+  setTimeout(()=>{
+    const cons=document.getElementById('magi-consensus');
+    cons.style.display='block'; cons.className='magi-consensus '+(R2C[r.ruling]||'v-cond');
+    document.getElementById('mc-ruling').textContent=r.ruling;
+    document.getElementById('mc-tally').textContent='MAJORITY '+r.tally;
+    document.getElementById('mc-debate').textContent=r.debate||'';
+  }, 1400);
+}
+function renderMagiHistory(){
+  const el=document.getElementById('magi-history'); if(!el)return;
+  const hist=LS.get('magi',[]);
+  if(!hist.length){el.innerHTML='<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">// no deliberations yet — convene the MAGI above</div>';return;}
+  el.innerHTML=hist.slice(0,20).map(h=>
+    `<div class="mh-row"><span class="mh-rule ${R2C[h.ruling]||'v-cond'}">${h.ruling}</span><span class="mh-q">${esc(h.q)}</span><span class="mh-ts">${new Date(h.ts).toLocaleDateString([], {month:'short',day:'numeric'})}</span></div>`).join('');
+}
+
+/* -------- export / import (MAGI core dump) -------- */
+function exportData(){
+  const dump={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.indexOf('nerv_')===0) dump[k]=localStorage.getItem(k);}
+  const blob=new Blob([JSON.stringify({_nerv:1,exported:new Date().toISOString(),data:dump},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='nerv-core-dump-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function importData(input){
+  const f=input.files&&input.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const parsed=JSON.parse(r.result); const data=parsed.data||parsed;
+    Object.keys(data).forEach(k=>{if(k.indexOf('nerv_')===0)localStorage.setItem(k,data[k]);});
+    location.reload();
+  }catch(e){alert('Core dump unreadable — expected a JSON backup.');}};
+  r.readAsText(f); input.value='';
+}
+
+/* -------- keyboard section nav (0-6) -------- */
+const KEY_SEC={'0':'home','1':'classes','2':'leetcode','3':'intern','4':'blog','5':'calendar','6':'magi'};
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(KEY_SEC[e.key]) go(KEY_SEC[e.key]);
+});
 
 /* -------- CALENDAR (interactive, persists to localStorage) -------- */
 let calView=new Date(), calSel=null;
@@ -800,7 +1076,7 @@ function calToday(){calView=new Date();calSel=todayStr();renderCal();}
 /* ============================================================
    NAV
    ============================================================ */
-const CRUMBS={home:'TERMINAL',classes:'ACADEMY',leetcode:'SYNC TRIALS',intern:'DEPLOYMENT',blog:'PILOT LOG',calendar:'TIME AXIS'};
+const CRUMBS={home:'TERMINAL',magi:'MAGI COUNCIL',classes:'ACADEMY',leetcode:'SYNC TRIALS',intern:'DEPLOYMENT',blog:'PILOT LOG',calendar:'TIME AXIS'};
 function go(sec){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('show'));
   document.getElementById('s-'+sec).classList.add('show');
@@ -854,6 +1130,7 @@ const BOOT_LINES=[
   ['&gt; MELCHIOR-1 ...... <span class="ok">ONLINE</span>',''],
   ['&gt; BALTHASAR-2 ..... <span class="ok">ONLINE</span>',''],
   ['&gt; CASPER-3 ........ <span class="ok">ONLINE</span>',''],
+  ['&gt; deliberation core .............. <span class="warn">ARMED</span>',''],
   ['&gt; mounting local datastore ....... <span class="ok">OK</span>',''],
   ['&gt; loading deployment manifest .... <span class="ok">17 RECORDS</span>',''],
   ['&gt; A.T. field ..................... <span class="warn">STABLE</span>',''],
@@ -883,7 +1160,7 @@ function finishBoot(){
 /* ============================================================
    INIT
    ============================================================ */
-renderIntern();renderLC();renderClasses();renderBlog();
+renderIntern();renderLC();renderClasses();renderLog();selectMood('STABLE');renderMagiHistory();
 if(!localStorage.getItem('nerv_calEvents')){
   const t=new Date(), y=t.getFullYear(), m=t.getMonth();
   const clamp=d=>Math.min(d,new Date(y,m+1,0).getDate());
