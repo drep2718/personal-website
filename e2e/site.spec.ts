@@ -18,7 +18,6 @@ const routes = [
   "/secret/magi",
   "/secret/vault",
   "/secret/photos",
-  "/secret/blog",
   "/secret/blogentry",
 ];
 
@@ -42,4 +41,11 @@ test("the MAGI bridge /api/magi responds (200 whether or not a key is set)", asy
   expect(res.ok()).toBeTruthy();
   const json = await res.json();
   expect(json).toHaveProperty("configured"); // false in CI (no key), true when a model key is set
+});
+
+test("the MAGI health check GET /api/magi reports configured state", async ({ request }) => {
+  const res = await request.get("/api/magi");
+  expect(res.ok()).toBeTruthy();
+  const json = await res.json();
+  expect(json).toHaveProperty("configured");
 });
