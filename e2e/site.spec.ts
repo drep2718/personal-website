@@ -36,3 +36,10 @@ test("the terminal document itself is served from /public", async ({ page }) => 
   expect(res?.ok()).toBeTruthy();
   await expect(page).toHaveTitle(/MAGI Terminal/i);
 });
+
+test("the MAGI bridge /api/magi responds (200 whether or not a key is set)", async ({ request }) => {
+  const res = await request.post("/api/magi", { data: { query: "smoke test" } });
+  expect(res.ok()).toBeTruthy();
+  const json = await res.json();
+  expect(json).toHaveProperty("configured"); // false in CI (no key), true when a model key is set
+});
