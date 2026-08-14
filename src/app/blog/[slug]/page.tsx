@@ -19,7 +19,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPost(slug);
   return {
-    title: post ? `${post.title} — Aiden Drepaniotis` : "Blog — Aiden Drepaniotis",
+    title: post
+      ? post.title
+        ? `${post.title} — Aiden Drepaniotis`
+        : "Note — Aiden Drepaniotis"
+      : "Blog — Aiden Drepaniotis",
     description: post?.excerpt,
   };
 }
@@ -58,9 +62,11 @@ export default async function BlogPostPage({
             )}
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-light text-[var(--color-text-primary)] mb-8 leading-tight">
-            {post.title}
-          </h1>
+          {post.title && (
+            <h1 className="text-3xl md:text-4xl font-light text-[var(--color-text-primary)] mb-8 leading-tight">
+              {post.title}
+            </h1>
+          )}
 
           <div className="blog-prose" dangerouslySetInnerHTML={{ __html: html }} />
         </article>
