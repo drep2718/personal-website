@@ -45,9 +45,15 @@ export default function BlogPage() {
                         className="group block content-panel p-6 hover:border-[var(--color-border-highlight)] transition-colors"
                       >
                         <div className="flex items-baseline justify-between gap-4 mb-2">
-                          <h3 className="text-lg font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-red)] transition-colors">
-                            {post.title}
-                          </h3>
+                          {post.title ? (
+                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-red)] transition-colors">
+                              {post.title}
+                            </h3>
+                          ) : (
+                            <span className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
+                              Note
+                            </span>
+                          )}
                           {post.date && (
                             <span className="flex-shrink-0 text-xs text-[var(--color-text-muted)] tracking-wide">
                               {formatDate(post.date)}

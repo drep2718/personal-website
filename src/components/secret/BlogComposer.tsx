@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Lock, Copy, Download, Check, ArrowLeft, Send, Loader2, ExternalLink } from "lucide-react";
+import { Lock, Copy, Download, Check, ArrowLeft, Send, Loader2, ExternalLink, Trash2 } from "lucide-react";
 import { renderMarkdown } from "@/lib/markdown";
+import { formatDate } from "@/lib/date";
+import type { BlogPost } from "@/lib/blog";
 
 // SHA-256 of the passphrase — the plaintext is never stored in the repo.
 // Override at deploy time with NEXT_PUBLIC_BLOGENTRY_SHA256 if you rotate it.
@@ -31,7 +33,7 @@ function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function BlogComposer() {
+export function BlogComposer({ posts }: { posts: BlogPost[] }) {
   const [unlocked, setUnlocked] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -89,7 +91,7 @@ export function BlogComposer() {
     );
   }
 
-  return <Composer password={password} />;
+  return <Composer password={password} posts={posts} />;
 }
 
 type PublishState =
@@ -98,24 +100,28 @@ type PublishState =
   | { status: "success"; actionsUrl?: string }
   | { status: "error"; message: string };
 
-function Composer({ password }: { password: string }) {
+function Composer({ password, posts }: { password: string; posts: BlogPost[] }) {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Coffee");
+  const [category, setCategory] = useState("");
   const [date, setDate] = useState(today());
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
   const [copied, setCopied] = useState(false);
   const [publish, setPublish] = useState<PublishState>({ status: "idle" });
+  const [existingPosts, setExistingPosts] = useState(posts);
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const slug = slugify(title) || "untitled";
+  const firstLine = body.split(/\r?\n/).find((l) => l.trim()) || "";
+  const slug = slugify(title) || slugify(firstLine) || "note";
   const filename = `${date}-${slug}.md`;
 
   const fileContent = useMemo(() => {
     return [
       "---",
-      `title: ${title || "Untitled"}`,
+      ...(title ? [`title: ${title}`] : []),
       `date: ${date}`,
-      `category: ${category}`,
+      `category: ${category || "Uncategorized"}`,
       ...(excerpt ? [`excerpt: ${excerpt}`] : []),
       "---",
       "",
@@ -143,8 +149,8 @@ function Composer({ password }: { password: string }) {
   };
 
   const publishToSite = async () => {
-    if (!title.trim() || !body.trim()) {
-      setPublish({ status: "error", message: "Add a title and a body first." });
+    if (!body.trim()) {
+      setPublish({ status: "error", message: "Write something in the body first." });
       return;
     }
     setPublish({ status: "publishing" });
@@ -165,6 +171,30 @@ function Composer({ password }: { password: string }) {
     }
   };
 
+  const deletePost = async (post: BlogPost) => {
+    const label = post.title || "this note";
+    if (!window.confirm(`Delete "${label}"? Once the workflow runs, it's really gone.`)) return;
+    setDeletingSlug(post.slug);
+    setDeleteError(null);
+    try {
+      const res = await fetch("/api/publish", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, slug: post.slug }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setExistingPosts((prev) => prev.filter((p) => p.slug !== post.slug));
+      } else {
+        setDeleteError(data.error || `Failed (${res.status}).`);
+      }
+    } catch {
+      setDeleteError("Network error — couldn't reach the server.");
+    } finally {
+      setDeletingSlug(null);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-6 md:px-8 pt-28 pb-24">
       <div className="mb-8">
@@ -179,21 +209,22 @@ function Composer({ password }: { password: string }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Form */}
         <div className="space-y-4">
-          <Field label="Title">
+          <Field label="Title (optional)">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Dialing in the perfect shot"
+              placeholder="Leave blank for a quick one-liner"
               className="composer-input"
             />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Category">
+            <Field label="Category (optional)">
               <input
                 list="blog-categories"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                placeholder="Uncategorized"
                 className="composer-input"
               />
               <datalist id="blog-categories">
@@ -221,12 +252,12 @@ function Composer({ password }: { password: string }) {
             />
           </Field>
 
-          <Field label="Body (plain text or markdown)">
+          <Field label="Body — required, everything else is optional">
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={14}
-              placeholder={"Just write. Blank lines start new paragraphs.\n\nMarkdown works too: ## headings, - lists, **bold**, *italic*, `code`, [links](https://example.com)."}
+              placeholder={"Just write. Blank lines start new paragraphs.\n\nMarkdown works too: ## headings, - lists, **bold**, *italic*, `code`, [links](https://example.com).\n\nOr just one line and hit publish — that counts."}
               className="composer-input font-mono text-sm leading-relaxed resize-y"
             />
           </Field>
@@ -309,15 +340,58 @@ function Composer({ password }: { password: string }) {
           </p>
           <div className="flex items-center gap-3 mb-4">
             <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-0.5 rounded-full border border-[var(--color-accent-red-dim)] text-[var(--color-accent-red)]">
-              {category || "Category"}
+              {category || "Uncategorized"}
             </span>
             <span className="text-xs text-[var(--color-text-muted)]">{date}</span>
           </div>
-          <h2 className="text-2xl font-light text-[var(--color-text-primary)] mb-5">
-            {title || "Untitled"}
-          </h2>
+          {title ? (
+            <h2 className="text-2xl font-light text-[var(--color-text-primary)] mb-5">{title}</h2>
+          ) : (
+            <p className="text-xs tracking-[0.2em] uppercase text-[var(--color-text-muted)] mb-5">
+              Note
+            </p>
+          )}
           <div className="blog-prose" dangerouslySetInnerHTML={{ __html: previewHtml }} />
         </div>
+      </div>
+
+      {/* Manage entries: everything currently live, with a real delete */}
+      <div className="mt-14 pt-8 border-t border-[var(--color-border)]">
+        <p className="text-xs tracking-[0.3em] text-[var(--color-text-muted)] uppercase mb-5">
+          Manage entries ({existingPosts.length})
+        </p>
+        {deleteError && (
+          <p className="mb-4 text-sm text-[var(--color-accent-red)]">{deleteError}</p>
+        )}
+        {existingPosts.length === 0 ? (
+          <p className="text-sm text-[var(--color-text-muted)]">No entries yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {existingPosts.map((post) => (
+              <div
+                key={post.slug}
+                className="flex items-center justify-between gap-4 content-panel px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm text-[var(--color-text-primary)] truncate">
+                    {post.title || <span className="italic">{post.excerpt || "Note"}</span>}
+                  </p>
+                  <p className="text-xs text-[var(--color-text-muted)]">
+                    {post.category} · {post.date ? formatDate(post.date) : "no date"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => deletePost(post)}
+                  disabled={deletingSlug === post.slug}
+                  className="flex-shrink-0 inline-flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-red)] transition-colors disabled:opacity-50"
+                >
+                  <Trash2 size={13} />
+                  {deletingSlug === post.slug ? "Deleting…" : "Delete"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

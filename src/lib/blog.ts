@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+export { formatDate } from "./date";
 
 // Blog posts are plain markdown files in /content/blog with simple frontmatter:
 //
@@ -68,7 +69,7 @@ export function getAllPosts(): BlogPost[] {
           .slice(0, 150);
       return {
         slug,
-        title: data.title || slug,
+        title: data.title || "",
         date: data.date || "",
         category: data.category || "Uncategorized",
         excerpt,
@@ -99,18 +100,4 @@ export function getPostsByCategory(): CategoryGroup[] {
   return [...groups.entries()]
     .map(([category, posts]) => ({ category, posts }))
     .sort((a, b) => a.category.localeCompare(b.category));
-}
-
-export function formatDate(date: string): string {
-  if (!date) return "";
-  // Parse as UTC and format in UTC so a "2026-07-20" date never slips a day
-  // backward in a timezone behind UTC.
-  const d = new Date(`${date}T00:00:00Z`);
-  if (Number.isNaN(d.getTime())) return date;
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  });
 }
