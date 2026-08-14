@@ -373,13 +373,13 @@
   .mc-ruling.long{font-size:clamp(20px,3.4vw,34px);line-height:1.12}
   .magi-diag{position:fixed;inset:0;z-index:60;background:rgba(0,0,18,.93);display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px)}
   .ms-panel{width:min(940px,96vw);max-height:94vh;overflow:auto;background:#02021a;border:1px solid rgba(80,180,255,.4);box-shadow:0 0 60px rgba(40,150,255,.22);padding:22px 24px 26px;position:relative;font-family:var(--mono)}
-  .ms-close{position:absolute;top:14px;right:16px;background:none;border:1px solid rgba(80,180,255,.5);color:#8fd4ff;font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:7px 12px;cursor:pointer;transition:.14s}
+  .ms-close{flex-shrink:0;background:none;border:1px solid rgba(80,180,255,.5);color:#8fd4ff;font-family:var(--mono);font-size:10px;letter-spacing:.14em;padding:7px 12px;cursor:pointer;transition:.14s;white-space:nowrap}
   .ms-close:hover{background:rgba(80,180,255,.16);color:#fff}
-  .ms-head{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:4px;padding-right:90px}
+  .ms-head{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:4px}
   .ms-jp{font-size:30px;font-weight:700;color:#38C6FF;letter-spacing:.1em;line-height:1}
   .ms-sub{font-size:9px;letter-spacing:.24em;color:#5aa9d6;margin-top:7px}
   .ms-meta{font-size:9.5px;line-height:1.7;color:#4f93c4;letter-spacing:.08em}
-  .ms-status-box{margin-left:auto}
+  .ms-status-box{margin-left:auto;flex-shrink:0}
   .ms-allgreen{display:inline-block;font-size:11px;letter-spacing:.2em;font-weight:700;padding:5px 10px;border:1px solid currentColor;color:#38C6FF}
   .ms-allgreen.local{color:var(--gold)} .ms-allgreen.offline{color:var(--amber)}
   .ms-diagram{position:relative;height:min(52vh,420px);margin:16px 0 10px}
@@ -399,7 +399,7 @@
     background:#02021a;border:1px solid var(--amber);color:var(--amber);font-size:13px;letter-spacing:.14em}
   .ms-foot{font-size:10.5px;letter-spacing:.05em;color:#5aa9d6;margin:6px 0 16px;min-height:16px}
   .ms-actions{display:flex;gap:10px;flex-wrap:wrap}
-  @media (max-width:560px){.ms-jp{font-size:22px}.ms-head{padding-right:70px}.ms-diagram{height:46vh}.ms-unit{font-size:12px}}
+  @media (max-width:560px){.ms-jp{font-size:22px}.ms-diagram{height:46vh}.ms-unit{font-size:12px}}
 </style>
 
 <!-- ================= BOOT OVERLAY ================= -->
@@ -732,7 +732,6 @@
 <!-- ================= MAGI STATUS DIAGNOSTIC ================= -->
 <div id="magi-status" class="magi-diag" style="display:none" role="dialog" aria-modal="true" aria-label="MAGI status diagnostic" aria-hidden="true" onclick="if(event.target===this)closeMagiStatus()">
   <div class="ms-panel">
-    <button class="ms-close" onclick="closeMagiStatus()">終了 · CLOSE ✕</button>
     <div class="ms-head">
       <div>
         <div class="ms-jp">定期検診</div>
@@ -740,6 +739,7 @@
       </div>
       <div class="ms-meta">CODE : 127<br>FILE : AKAGI_CHK<br>EXTENSION : 0256<br>EX_MODE : ON<br>PRIORITY : A—</div>
       <div class="ms-status-box"><span class="ms-allgreen" id="ms-allgreen">◌ SYNCHRONIZING</span></div>
+      <button class="ms-close" onclick="closeMagiStatus()">終了 · CLOSE ✕</button>
     </div>
     <div class="ms-diagram">
       <svg class="ms-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
